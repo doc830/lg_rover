@@ -9,7 +9,7 @@ const {SerialPort} =  require("serialport")
 const {UBXParser} = require('ubx-parser')
 const parser = new UBXParser();
 const port = new SerialPort({
-    path: 'COM3',
+    path: '/dev/ttyS1',
     baudRate: 115200
 })
 
@@ -24,13 +24,3 @@ async function start() {
     }
 }
 start();
-
-
-// const serialport =  require("serialport")
-// //import { SerialPort } from "serialport";
-// //import { UBXParser } from "ubx-parser";
-// serialport.SerialPort({ path: "/dev/ttyS1", baudRate: 115200 }, () => console.log("port opened"));
-// const parser = new UBXParser();
-//
-// serialport.on("data", (buffer) => parser.parse(buffer));
-// parser.on("data", (data) => console.log(data));
