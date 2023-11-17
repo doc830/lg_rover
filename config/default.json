@@ -1,4 +1,6 @@
 {
   "port":8000,
-  "baseUrl": "http://localhost:8000"
+  "baseUrl": "http://localhost:8000",
+  "serialPort": "/dev/ttyS1",
+  "baudRate": 115200
 }
