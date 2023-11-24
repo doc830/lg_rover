@@ -9,7 +9,7 @@ const serialPort = new SerialPort({
     path: config.get('serialPort'),
     baudRate: config.get('baudRate')
 })
-let marker = 'ro'
+let marker = 'w'
 let nav_data = 0
 serialPort.on("data", (buffer) => Parser.parse(buffer))
 Parser.on("data", async (data)=> {
