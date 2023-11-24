@@ -1,6 +1,9 @@
 {
+  "base-host": "http://localhost:5000",
+  "base-port":5000,
+  "pass": "0000",
+  "self-host": "http://localhost:8000",
   "port":8000,
-  "baseUrl": "http://localhost:8000",
-  "serialPort": "/dev/ttyS1",
+  "serialPort": "COM3",
   "baudRate": 115200
 }

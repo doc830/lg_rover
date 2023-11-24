@@ -14,8 +14,9 @@
   "dependencies": {
     "config": "^3.3.2",
     "express": "^4.17.1",
-    "socket.io": "^2.3.0",
+    "mongoose": "^8.0.1",
     "serialport": "^12.0.0",
+    "socket.io": "^2.3.0",
     "ubx-parser": "git@github.com:doc830/ubx_parser.git"
   },
   "devDependencies": {

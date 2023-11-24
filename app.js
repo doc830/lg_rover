@@ -1,31 +1,25 @@
 const express = require('express')
 const config = require ('config')
 const app = express()
-const server = require('http').createServer(app)
+const http = require('http')
 const PORT = config.get('port')
-app.use('/', require('./routes/routes'))
-
-const {SerialPort} =  require("serialport")
-const {UBXParser} = require('ubx-parser')
-const parser = new UBXParser();
-
+app.use('/api/nav_data', require('./routes/nav_data.routes'))
 async function start() {
     try {
-        const port = new SerialPort({
-            path: config.get('serialPort'),
-            baudRate: config.get('baudRate')
-        })
-        server.listen(PORT, () => console.log(`Server has been started on port ${PORT}...`))
-        port.on("data", (buffer) => parser.parse(buffer));
-        parser.on("data", (data) => {
-            app.get('/', function (req,res){
-                res.send("<html lang=\"en\"><body>"+data+"</body></html>");
-            });
-            console.log(data)
+        await app.listen(PORT)
+        await http.get(config.get('base-host')+'/api/rover/'+'?host='+config.get('self-host')+'&pass='+config.get('pass'),
+            (res) => {
+            if (res.statusCode !== 200) {
+                console.error(`Ошибка подключения к базе: ${res.statusCode}`)
+                res.resume()
+            }
         })
     } catch (e) {
-        console.log('Server error ', e.message);
-        process.exit(1);
+        console.log('Server error ', e.message)
+        process.exit(1)
     }
 }
-start();
+start()
+
+
+
