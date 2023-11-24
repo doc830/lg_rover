@@ -1,5 +1,6 @@
 const {Router} = require('express')
 const router = Router()
+const http = require('http')
 const {UBXParser} = require('ubx-parser')
 const {SerialPort} = require("serialport");
 const config = require("config");
@@ -9,7 +10,7 @@ const serialPort = new SerialPort({
     baudRate: config.get('baudRate')
 })
 let marker = 'ro'
-let nav_data
+let nav_data = 0
 serialPort.on("data", (buffer) => Parser.parse(buffer))
 Parser.on("data", async (data)=> {
     if (marker !== 'ro') {
@@ -19,18 +20,17 @@ Parser.on("data", async (data)=> {
         marker = 'w'
     }
 })
-router.get('/',   async (req, res) => {
+router.get('/data',   async (req, res) => {
     try {
-        await res.send(readNavData())
+        await http.get(config.get('base-host')+'/api/rover/nav'+'?length='+readNavData())
     } catch (e) {
         res.status(500).json({message: "Что-то пошло не так, попробуйте снова"})
     }
-
 })
 function readNavData () {
     marker = 'ro'
     let buffer = nav_data
     marker = 'w'
-    return buffer
+    return buffer["Lenght"]
 }
 module.exports = router
