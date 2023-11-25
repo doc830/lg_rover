@@ -1,8 +1,8 @@
 {
-  "base-host": "http://localhost:5000",
-  "base-port":5000,
+  "baseHost": "http://localhost:5000",
+  "basePort":5000,
   "pass": "0000",
-  "self-host": "http://localhost:8000",
+  "selfHost": "http://localhost:8000",
   "port":8000,
   "serialPort": "COM3",
   "baudRate": 115200
