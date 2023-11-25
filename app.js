@@ -1,24 +1,47 @@
-const express = require('express')
 const config = require ('config')
-const app = express()
+const {ReadlineParser} = require('@serialport/parser-readline')
 const http = require('http')
-const PORT = config.get('port')
-app.use('/api/nav', require('./routes/nav.routes'))
-async function start() {
+const {UBXParser} = require('ubx-parser')
+const {SerialPort} = require("serialport")
+const ubxParser = new UBXParser
+const serialPort = new SerialPort({
+    path: config.get('serialPort'),
+    baudRate: config.get('baudRate')
+})
+const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
+let ubxData = 0
+let nmeaData = 0
+nmeaParser.on("data", async (msg) => {
     try {
-        await app.listen(PORT)
-        // await http.get(config.get('base-host')+'/api/rover/'+'?host='+config.get('self-host')+'&pass='+config.get('pass'),
-        //     (res) => {
-        //     if (res.statusCode !== 200) {
-        //         console.error(`Ошибка подключения к базе: ${res.statusCode}`)
-        //     }
-        // })
+        if (msg.match(/^\$GNGST,(\d{6})+/m)) {
+            nmeaData = msg.split(/(\d{6})+/m)[1]
+            console.log(nmeaData)
+        }
     } catch (e) {
-        console.log('Server error ', e.message)
-        process.exit(1)
+        console.error("ERROR with nmea packet")
     }
+})
+serialPort.on("data", async (buffer) =>{
+    ubxParser.parse(buffer)
+})
+ubxParser.on("data", async (data)=> {
+    ubxData = data
+    console.log(ubxData["relPosLength"])
+})
+setInterval(async ()=>{
+    await sendNavData()
+},500)
+async function sendNavData () {
+    let request = await http.request(
+        config.get('base-host')+'/api/rover/navigate'
+        +'?length='+ubxData["relPosLength"]
+        +'&UTC='+nmeaData
+        +'&isFix='+ubxData["diffFixOK"]
+    )
+    request.on('error', ()=> {
+        console.log('Error with connection to base')
+    })
+    request.end()
 }
-start()
-
 
 
