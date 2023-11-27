@@ -5,5 +5,6 @@
   "selfHost": "http://localhost:8000",
   "port":8000,
   "serialPort": "COM3",
-  "baudRate": 115200
+  "baudRate": 115200,
+  "gnssCorrectionCFG": "./config/gnss_correction.yaml"
 }
