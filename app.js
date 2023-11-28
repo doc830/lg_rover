@@ -17,19 +17,48 @@ serialPort.on('error', ()=> {
     process.exit(1)
 })
 
-//setIP() //ip config og gnss_correction
+//setIP() //ip config for gnss_correction
 //sendIP()
 
 const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
 let ubxData = 0
-let nmeaData = 0
+let nmeaData = {
+    "time": '',
+    "lat": '',
+    "NS": '',
+    "lon": '',
+    "EW": '',
+    "C1": "",
+    "C2": ""
+}
 
 nmeaParser.on("data", async (msg) => {
-    if (msg.match(/^\$GNGST,(\d{6})+/m)) {
-        nmeaData = msg.split(/(\d{6})+/m)[1]
+    if (msg.match(/^\$GNGGA,+/m)) {
+        msg = msg.split(',')
+        nmeaData["time"] = msg[1]
+        nmeaData["lat"] = msg[2]
+        nmeaData["NS"] = msg[3]
+        nmeaData["lon"] = msg[4]
+        nmeaData["EW"] = msg[5]
         //console.log(nmeaData)
+        await mapPosition(nmeaData["lat"], nmeaData["lon"])
     }
 })
+
+async function mapPosition (lat, lon) {
+    let dd = lat.slice(0,2)
+    let mm = lat.slice(2)
+    let ddd = lon.slice(0,3)
+    let mmm = lon.slice(3)
+    dd = parseFloat(dd)
+    mm = parseFloat(mm)
+    ddd = parseFloat(ddd)
+    mmm = parseFloat(mmm)
+    let C1 = dd + (mm/60)
+    let C2 = ddd + (mmm/60)
+    nmeaData["C1"] = C1
+    nmeaData["C2"] = C2
+}
 
 serialPort.on("data", async (buffer) =>{
     ubxParser.parse(buffer)
@@ -48,13 +77,19 @@ async function sendNavData () {
     let request = await http.request(
         config.get('baseHost')+'/api/rover/navigate'
         +'?length='+ubxData["relPosLength"]
-        +'&UTC='+nmeaData
         +'&isFix='+ubxData["diffFixOK"]
         +'&diffSol='+ubxData["diffSoln"]
         +'&carrSol='+ubxData["carrSoln"]
+        +'&time='+nmeaData["time"]
+        +'&lat='+nmeaData["lat"]
+        +'&NS='+nmeaData["NS"]
+        +'&lon='+nmeaData["lon"]
+        +'&EW='+nmeaData["EW"]
+        +'&C1='+nmeaData["C1"]
+        +'&C2='+nmeaData["C2"]
     )
     request.on('error', ()=> {
-        console.log('Error with connection to base via '+ config.get('baseHost'))
+       console.log('Error with connection to base via '+ config.get('baseHost'))
     })
     request.end()
 }
