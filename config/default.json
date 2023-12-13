@@ -1,6 +1,6 @@
 {
-  "baseHost": "http://localhost:5000",
-  "basePort":5000,
+  "iHost": "http://localhost:5000",
+  "iPort":5000,
   "pass": "0000",
   "selfHost": "http://localhost:8000",
   "port":8000,
