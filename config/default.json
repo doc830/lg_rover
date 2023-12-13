@@ -1,10 +1,7 @@
 {
-  "iHost": "http://localhost:5000",
+  "iHost": "http://192.168.92.236:5000",
   "iPort":5000,
-  "pass": "0000",
-  "selfHost": "http://localhost:8000",
-  "port":8000,
-  "serialPort": "COM3",
+  "serialPort": "/dev/ttyS1",
   "baudRate": 115200,
   "gnssCorrectionCFG": "./config/gnss_correction.yaml"
 }

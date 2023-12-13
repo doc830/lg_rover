@@ -1,12 +1,13 @@
-const config = require ('config')
-const { exec } = require("child_process")
-const {ReadlineParser} = require('@serialport/parser-readline')
-const http = require('http')
+//node modules
+const fs = require('fs')
 const ip = require('ip')
+const http = require('http')
+const config = require ('config')
 const {UBXParser} = require('ubx-parser')
 const {SerialPort} = require("serialport")
-const fs = require('fs')
-const ubxParser = new UBXParser
+const { exec } = require("child_process")
+const {ReadlineParser} = require('@serialport/parser-readline')
+//logic
 //open serial
 const serialPort = new SerialPort({
     path: config.get('serialPort'),
@@ -17,13 +18,14 @@ serialPort.on('error', ()=> {
     console.log("CANNOT OPEN SERIAL PORT "+config.get('serialPort')+" WITH BAUD RATE "+config.get('baudRate'))
     process.exit(1)
 })
+//init UBX parser
+const ubxParser = new UBXParser
 //catch UBX
 serialPort.on("data", async (buffer) =>{
     ubxParser.parse(buffer)
 })
 //send UBX
 ubxParser.on("data", async (data)=> {
-    console.log(data["relPosLength"])
     let request = await http.request(
         config.get('iHost')+'/api/rover/ubx'
         +'?itow='+data["iTOW"]
@@ -36,6 +38,7 @@ ubxParser.on("data", async (data)=> {
         console.log('Error with connection to investigator via '+ config.get('iHost'))
     })
     request.end()
+    console.log(data["relPosLength"])
 })
 //catch NMEA
 const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
@@ -43,10 +46,9 @@ const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
 nmeaParser.on("data", async (msg) => {
     if (msg.match(/^\$GNGGA,+/m)) {
         msg = msg.split(',')
-        console.log(msg)
         let request = await http.request(
             config.get('iHost')+'/api/rover/nmea'
-            +'?nTime'+msg[1]
+            +'?nTime='+msg[1]
             +'&lat='+msg[2]
             +'&NS='+msg[3]
             +'&lon='+msg[4]
@@ -56,9 +58,10 @@ nmeaParser.on("data", async (msg) => {
             console.log('Error with connection to investigator via '+ config.get('iHost'))
         })
         request.end()
+        console.log(msg)
     }
 })
-
+//initialization
 async function setIP () {
     let line = 'ip: ' + ip.address()
      await fs.readFile(config.get('gnssCorrectionCFG'), 'utf8', (err, data) => {
