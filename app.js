@@ -23,9 +23,9 @@ serialPort.on("data", async (buffer) =>{
 })
 //send UBX
 ubxParser.on("data", async (data)=> {
-    console.log(ubxData["relPosLength"])
+    console.log(data["relPosLength"])
     let request = await http.request(
-        config.get('baseHost')+'/api/rover/ubx'
+        config.get('iHost')+'/api/rover/ubx'
         +'?itow='+data["iTOW"]
         +'&length='+data["relPosLength"]
         +'&isFix='+data["diffFixOK"]
@@ -37,40 +37,28 @@ ubxParser.on("data", async (data)=> {
     })
     request.end()
 })
+//catch NMEA
+const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
+//send NMEA
+nmeaParser.on("data", async (msg) => {
+    if (msg.match(/^\$GNGGA,+/m)) {
+        msg = msg.split(',')
+        console.log(msg)
+        let request = await http.request(
+            config.get('iHost')+'/api/rover/nmea'
+            +'?=nTime'+msg[1]
+            +'&lat='+msg[2]
+            +'&NS='+msg[3]
+            +'&lon='+msg[4]
+            +'&EW='+msg[5]
+        )
+        request.on('error', ()=> {
+            console.log('Error with connection to investigator via '+ config.get('iHost'))
+        })
+        request.end()
+    }
+})
 
-//const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
-
-// nmeaParser.on("data", async (msg) => {
-//     if (msg.match(/^\$GNGGA,+/m)) {
-//         msg = msg.split(',')
-//         nmeaData["time"] = msg[1]
-//         nmeaData["lat"] = msg[2]
-//         nmeaData["NS"] = msg[3]
-//         nmeaData["lon"] = msg[4]
-//         nmeaData["EW"] = msg[5]
-//         //console.log(nmeaData)
-//         await mapPosition(nmeaData["lat"], nmeaData["lon"])
-//     }
-// })
-
-// async function mapPosition (lat, lon) {
-//     let dd = lat.slice(0,2)
-//     let mm = lat.slice(2)
-//     let ddd = lon.slice(0,3)
-//     let mmm = lon.slice(3)
-//     dd = parseFloat(dd)
-//     mm = parseFloat(mm)
-//     ddd = parseFloat(ddd)
-//     mmm = parseFloat(mmm)
-//     let C1 = dd + (mm/60)
-//     let C2 = ddd + (mmm/60)
-//     nmeaData["C1"] = C1
-//     nmeaData["C2"] = C2
-// }
-
-async function sendNavData () {
-
-}
 async function setIP () {
     let line = 'ip: ' + ip.address()
      await fs.readFile(config.get('gnssCorrectionCFG'), 'utf8', (err, data) => {
