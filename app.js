@@ -46,7 +46,7 @@ nmeaParser.on("data", async (msg) => {
         console.log(msg)
         let request = await http.request(
             config.get('iHost')+'/api/rover/nmea'
-            +'?=nTime'+msg[1]
+            +'?nTime'+msg[1]
             +'&lat='+msg[2]
             +'&NS='+msg[3]
             +'&lon='+msg[4]
