@@ -12,18 +12,12 @@
   "author": "Ivan Tolstov",
   "license": "ISC",
   "dependencies": {
-    "@drivetech/node-nmea": "^2.0.1",
     "@serialport/parser-readline": "^12.0.0",
     "@serialport/parser-regex": "^12.0.0",
     "config": "^3.3.2",
     "express": "^4.17.1",
     "ip": "^1.1.8",
-    "mongoose": "^8.0.1",
-    "nmea-decoder": "^0.2.0",
-    "nmea-simple": "^3.3.0",
-    "node-nmea": "^2.0.0",
     "serialport": "^12.0.0",
-    "socket.io": "^2.3.0",
     "ubx-parser": "git@github.com:doc830/ubx_parser.git"
   },
   "devDependencies": {
