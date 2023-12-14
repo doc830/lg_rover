@@ -41,7 +41,7 @@ ubxParser.on("data", async (data)=> {
         console.log('Error with connection to investigator via '+ config.get('iHost'))
     })
     request.end()
-    console.log(data["relPosLength"])
+    console.log(data)
 })
 //catch NMEA
 const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
