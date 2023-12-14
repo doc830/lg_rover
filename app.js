@@ -29,6 +29,9 @@ ubxParser.on("data", async (data)=> {
     let request = await http.request(
         config.get('iHost')+'/api/rover/ubx'
         +'?itow='+data["iTOW"]
+        +'&relPosN='+data["relPosN"]
+        +'&relPosE='+data["relPosE"]
+        +'&relPosD='+data["relPosD"]
         +'&length='+data["relPosLength"]
         +'&isFix='+data["diffFixOK"]
         +'&diffSol='+data["diffSoln"]
