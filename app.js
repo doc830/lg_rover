@@ -40,6 +40,7 @@ serialPort.on("data", async (buffer) =>{
 })
 //send UBX
 ubxParser.on("data", async (data)=> {
+    let timestamp = Date.now()
     let request = await http.request(
         config.get('iHost')+'/api/rover/ubx'
         +'?itow='+data["iTOW"]
@@ -50,12 +51,12 @@ ubxParser.on("data", async (data)=> {
         +'&isFix='+data["diffFixOK"]
         +'&diffSol='+data["diffSoln"]
         +'&carrSol='+data["carrSoln"]
-        +'&r_timestamp='+Date.now()
+        +'&r_timestamp='+timestamp
         +'&roverID='+config.get('roverID')
     )
     let ubx = {
         roverID: config.get('roverID'),
-        sys_timestamp: Date.now(),
+        sys_timestamp: timestamp,
         itow: data["iTOW"],
         relPosN: data["relPosN"],
         relPosE: data["relPosE"],
@@ -76,6 +77,7 @@ ubxParser.on("data", async (data)=> {
 const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
 //send NMEA
 nmeaParser.on("data", async (msg) => {
+    let timestamp = Date.now()
     if (msg.match(/^\$GNGGA,+/m)) {
         msg = msg.split(',')
         let request = await http.request(
@@ -85,12 +87,12 @@ nmeaParser.on("data", async (msg) => {
             +'&NS='+msg[3]
             +'&lon='+msg[4]
             +'&EW='+msg[5]
-            +'&r_timestamp='+Date.now()
+            +'&r_timestamp='+timestamp
             +'&roverID='+config.get('roverID')
         )
         let nmea = {
             roverID: config.get('roverID'),
-            sys_timestamp: Date.now(),
+            sys_timestamp: timestamp,
             nTime: msg[1],
             lat: msg[2],
             NS: msg[3],
