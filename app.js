@@ -36,6 +36,7 @@ ubxParser.on("data", async (data)=> {
         +'&isFix='+data["diffFixOK"]
         +'&diffSol='+data["diffSoln"]
         +'&carrSol='+data["carrSoln"]
+        +'&r_timestamp='+Date.now()
     )
     request.on('error', ()=> {
         console.log('Error with connection to investigator via '+ config.get('iHost'))
@@ -56,6 +57,7 @@ nmeaParser.on("data", async (msg) => {
             +'&NS='+msg[3]
             +'&lon='+msg[4]
             +'&EW='+msg[5]
+            +'&r_timestamp='+Date.now()
         )
         request.on('error', ()=> {
             console.log('Error with connection to investigator via '+ config.get('iHost'))

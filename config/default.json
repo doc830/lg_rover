@@ -1,5 +1,5 @@
 {
-  "iHost": "http://192.168.92.236:5000",
+  "iHost": "http://192.168.92.201:5000",
   "iPort":5000,
   "serialPort": "/dev/ttyS1",
   "baudRate": 115200,
