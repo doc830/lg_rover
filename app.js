@@ -5,6 +5,7 @@ const {UBXParser} = require('ubx-parser')
 const {SerialPort} = require("serialport")
 const {ReadlineParser} = require('@serialport/parser-readline')
 const fs = require("fs");
+let TIMESTAMP = 0
 // current date
 let date_ob = new Date();
 // adjust 0 before single digit date
@@ -36,11 +37,11 @@ serialPort.on('error', ()=> {
 const ubxParser = new UBXParser
 //catch UBX
 serialPort.on("data", async (buffer) =>{
+    TIMESTAMP = Date.now()
     ubxParser.parse(buffer)
 })
 //send UBX
 ubxParser.on("data", async (data)=> {
-    let timestamp = Date.now()
     let request = await http.request(
         config.get('iHost')+'/api/rover/ubx'
         +'?itow='+data["iTOW"]
@@ -51,12 +52,12 @@ ubxParser.on("data", async (data)=> {
         +'&isFix='+data["diffFixOK"]
         +'&diffSol='+data["diffSoln"]
         +'&carrSol='+data["carrSoln"]
-        +'&r_timestamp='+timestamp
+        +'&r_timestamp='+TIMESTAMP
         +'&roverID='+config.get('roverID')
     )
     let ubx = {
         roverID: config.get('roverID'),
-        sys_timestamp: timestamp,
+        sys_timestamp: TIMESTAMP,
         itow: data["iTOW"],
         relPosN: data["relPosN"],
         relPosE: data["relPosE"],
@@ -74,10 +75,11 @@ ubxParser.on("data", async (data)=> {
     console.log(data)
 })
 //catch NMEA
-const nmeaParser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n'  }))
+const nmeaParser = serialPort.pipe(new ReadlineParser({delimiter: '\r\n'}), ()=>{
+    TIMESTAMP = Date.now()
+})
 //send NMEA
 nmeaParser.on("data", async (msg) => {
-    let timestamp = Date.now()
     if (msg.match(/^\$GNGGA,+/m)) {
         msg = msg.split(',')
         let request = await http.request(
@@ -87,12 +89,12 @@ nmeaParser.on("data", async (msg) => {
             +'&NS='+msg[3]
             +'&lon='+msg[4]
             +'&EW='+msg[5]
-            +'&r_timestamp='+timestamp
+            +'&r_timestamp='+TIMESTAMP
             +'&roverID='+config.get('roverID')
         )
         let nmea = {
             roverID: config.get('roverID'),
-            sys_timestamp: timestamp,
+            sys_timestamp: TIMESTAMP,
             nTime: msg[1],
             lat: msg[2],
             NS: msg[3],
