@@ -4,6 +4,23 @@ const config = require ('config')
 const {UBXParser} = require('ubx-parser')
 const {SerialPort} = require("serialport")
 const {ReadlineParser} = require('@serialport/parser-readline')
+const fs = require("fs");
+// current date
+let date_ob = new Date();
+// adjust 0 before single digit date
+let date = ("0" + date_ob.getDate()).slice(-2);
+// current month
+let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+// current year
+let year = date_ob.getFullYear();
+// current hours
+let hours = date_ob.getHours();
+// current minutes
+let minutes = date_ob.getMinutes();
+// current seconds
+let seconds = date_ob.getSeconds();
+let file = year + "-" + month + "-" + date + " " + hours + "-" + minutes + "-" + seconds
+const writeableStream = fs.createWriteStream("logs/"+file+".txt")
 //logic
 //open serial
 const serialPort = new SerialPort({
@@ -36,6 +53,19 @@ ubxParser.on("data", async (data)=> {
         +'&r_timestamp='+Date.now()
         +'&roverID='+config.get('roverID')
     )
+    let ubx = {
+        roverID: config.get('roverID'),
+        sys_timestamp: Date.now(),
+        itow: data["iTOW"],
+        relPosN: data["relPosN"],
+        relPosE: data["relPosE"],
+        relPosD: data["relPosD"],
+        length: data["relPosLength"],
+        isFix: data["diffFixOK"],
+        diffSol: data["diffSoln"],
+        carrSol: data["carrSoln"]
+    }
+    writeableStream.write(JSON.stringify(ubx)+"\n")
     request.on('error', ()=> {
         console.log('Error with connection to investigator via '+ config.get('iHost'))
     })
@@ -58,6 +88,16 @@ nmeaParser.on("data", async (msg) => {
             +'&r_timestamp='+Date.now()
             +'&roverID='+config.get('roverID')
         )
+        let nmea = {
+            roverID: config.get('roverID'),
+            sys_timestamp: Date.now(),
+            nTime: msg[1],
+            lat: msg[2],
+            NS: msg[3],
+            lon: msg[4],
+            EW: msg[5]
+        }
+        writeableStream.write(JSON.stringify(nmea)+"\n")
         request.on('error', ()=> {
             console.log('Error with connection to investigator via '+ config.get('iHost'))
         })
