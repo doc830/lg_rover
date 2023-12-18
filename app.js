@@ -1,11 +1,8 @@
 //node modules
-const fs = require('fs')
-const ip = require('ip')
 const http = require('http')
 const config = require ('config')
 const {UBXParser} = require('ubx-parser')
 const {SerialPort} = require("serialport")
-const { exec } = require("child_process")
 const {ReadlineParser} = require('@serialport/parser-readline')
 //logic
 //open serial
@@ -37,6 +34,7 @@ ubxParser.on("data", async (data)=> {
         +'&diffSol='+data["diffSoln"]
         +'&carrSol='+data["carrSoln"]
         +'&r_timestamp='+Date.now()
+        +'&roverID='+config.get('roverID')
     )
     request.on('error', ()=> {
         console.log('Error with connection to investigator via '+ config.get('iHost'))
@@ -58,6 +56,7 @@ nmeaParser.on("data", async (msg) => {
             +'&lon='+msg[4]
             +'&EW='+msg[5]
             +'&r_timestamp='+Date.now()
+            +'&roverID='+config.get('roverID')
         )
         request.on('error', ()=> {
             console.log('Error with connection to investigator via '+ config.get('iHost'))
@@ -66,34 +65,3 @@ nmeaParser.on("data", async (msg) => {
         console.log(msg)
     }
 })
-//initialization
-async function setIP () {
-    let line = 'ip: ' + ip.address()
-     await fs.readFile(config.get('gnssCorrectionCFG'), 'utf8', (err, data) => {
-        if (err) {
-            console.log(err+" Error with opening gnss_correction configuration file")
-            process.exit(1)
-        }
-        let replaceable = data.split('\n')[15]
-        let replaced = data.replace(replaceable, line)
-        fs.writeFile(config.get('gnssCorrectionCFG'), replaced,'utf8', (err) => {
-            if (err) {
-                console.log(err+" Error with writing to gnss_correction configuration file")
-                process.exit(1)
-            }
-        })
-    })
-    await exec("systemctl restart gnss_correction", (error) => {
-        if (error) {
-            console.log(`Cannot restart gnss_correction`)
-            process.exit(1)
-        }
-    })
-}
-async function sendIP () {
-    let request = await http.request(config.get('baseHost')+'/api/rover?pass='+config.get('pass'))
-    request.on('error', ()=> {
-        console.log('Error with connection to base via '+ config.get('baseHost'))
-    })
-    request.end()
-}

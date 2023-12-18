@@ -1,7 +1,6 @@
 {
-  "iHost": "http://192.168.92.201:5000",
-  "iPort":5000,
+  "iHost": "http://192.168.92.236:5000",
+  "roverID": "human",
   "serialPort": "/dev/ttyS1",
-  "baudRate": 115200,
-  "gnssCorrectionCFG": "./config/gnss_correction.yaml"
+  "baudRate": 115200
 }
