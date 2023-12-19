@@ -35,7 +35,7 @@ serialPort.on('error', ()=> {
 //check the ability for streaming data to file
 fs.access('logs/', (err) => {
     if (err) {
-        console.log('Directory "logs" is required in "lg_aw" ', err.message);
+        console.log('Directory "logs" is required in "lg_rover" ', err.message);
         process.exit(1)
     }
 })
