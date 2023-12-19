@@ -21,7 +21,6 @@ let minutes = date_ob.getMinutes();
 // current seconds
 let seconds = date_ob.getSeconds();
 let file = year + "-" + month + "-" + date + " " + hours + "-" + minutes + "-" + seconds
-const writeableStream = fs.createWriteStream("logs/"+file+".txt")
 //logic
 //open serial
 const serialPort = new SerialPort({
@@ -33,6 +32,15 @@ serialPort.on('error', ()=> {
     console.log("CANNOT OPEN SERIAL PORT "+config.get('serialPort')+" WITH BAUD RATE "+config.get('baudRate'))
     process.exit(1)
 })
+//check the ability for streaming data to file
+fs.access('logs/', (err) => {
+    if (err) {
+        console.log('Directory "logs" is required in "lg_aw" ', err.message);
+        process.exit(1)
+    }
+})
+//init write to file stream
+const writeableStream = fs.createWriteStream("logs/"+file+".txt")
 //init UBX parser
 const ubxParser = new UBXParser
 //catch UBX
