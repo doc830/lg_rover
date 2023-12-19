@@ -81,7 +81,6 @@ ubxParser.on("data", async (data)=> {
         carrSol: data["carrSoln"]
     }
     writeableStream.write(JSON.stringify(ubx)+"\n")
-    console.log(data)
 })
 //catch NMEA
 const nmeaParser = serialPort.pipe(new ReadlineParser({delimiter: '\r\n'}), ()=>{
@@ -115,6 +114,5 @@ nmeaParser.on("data", async (msg) => {
             EW: msg[5]
         }
         writeableStream.write(JSON.stringify(nmea)+"\n")
-        console.log(msg)
     }
 })
