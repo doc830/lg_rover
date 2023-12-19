@@ -20,6 +20,7 @@ let hours = date_ob.getHours();
 let minutes = date_ob.getMinutes();
 // current seconds
 let seconds = date_ob.getSeconds();
+//log file name
 let file = year + "-" + month + "-" + date + " " + hours + "-" + minutes + "-" + seconds
 //logic
 //open serial
@@ -63,6 +64,10 @@ ubxParser.on("data", async (data)=> {
         +'&r_timestamp='+TIMESTAMP
         +'&roverID='+config.get('roverID')
     )
+    request.on('error', ()=> {
+        console.log('Error with connection to investigator via '+ config.get('iHost'))
+    })
+    request.end()
     let ubx = {
         roverID: config.get('roverID'),
         sys_timestamp: TIMESTAMP,
@@ -76,10 +81,6 @@ ubxParser.on("data", async (data)=> {
         carrSol: data["carrSoln"]
     }
     writeableStream.write(JSON.stringify(ubx)+"\n")
-    request.on('error', ()=> {
-        console.log('Error with connection to investigator via '+ config.get('iHost'))
-    })
-    request.end()
     console.log(data)
 })
 //catch NMEA
@@ -100,6 +101,10 @@ nmeaParser.on("data", async (msg) => {
             +'&r_timestamp='+TIMESTAMP
             +'&roverID='+config.get('roverID')
         )
+        request.on('error', ()=> {
+            console.log('Error with connection to investigator via '+ config.get('iHost'))
+        })
+        request.end()
         let nmea = {
             roverID: config.get('roverID'),
             sys_timestamp: TIMESTAMP,
@@ -110,10 +115,6 @@ nmeaParser.on("data", async (msg) => {
             EW: msg[5]
         }
         writeableStream.write(JSON.stringify(nmea)+"\n")
-        request.on('error', ()=> {
-            console.log('Error with connection to investigator via '+ config.get('iHost'))
-        })
-        request.end()
         console.log(msg)
     }
 })
