@@ -57,6 +57,7 @@ ubxParser.on("data", async (data)=> {
         +'&relPosN='+data["relPosN"]
         +'&relPosE='+data["relPosE"]
         +'&relPosD='+data["relPosD"]
+        +'&relPosH='+data["relPosHeading"]
         +'&length='+data["relPosLength"]
         +'&isFix='+data["diffFixOK"]
         +'&diffSol='+data["diffSoln"]
@@ -75,6 +76,7 @@ ubxParser.on("data", async (data)=> {
         relPosN: data["relPosN"],
         relPosE: data["relPosE"],
         relPosD: data["relPosD"],
+        relPosH: data["relPosHeading"],
         length: data["relPosLength"],
         isFix: data["diffFixOK"],
         diffSol: data["diffSoln"],
