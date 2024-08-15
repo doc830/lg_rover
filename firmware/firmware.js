@@ -40,7 +40,8 @@ function firmware() {
         })
             .then(() => {})
             .catch(() => {
-            console.error('UBX POST request error:')})
+                console.error('UBX POST request error:')
+            })
     })
 //catch NMEA
     const nmeaParser = serialPort.pipe(new ReadlineParser({delimiter: '\r\n'}), () => {
@@ -48,6 +49,7 @@ function firmware() {
     })
 //send NMEA
     nmeaParser.on("data", async (msg) => {
+        console.log(msg)
         if (msg.match(/^\$GNGGA,+/m)) {
             msg = msg.split(',')
             await axios.post(config.get('gw'), {
@@ -62,7 +64,8 @@ function firmware() {
             })
                 .then(() => {})
                 .catch(() => {
-                    console.error('UBX POST request error:')})
+                    console.error('NMEA POST request error:')
+                })
         }
     })
 }
