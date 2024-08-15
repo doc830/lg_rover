@@ -24,6 +24,7 @@ function firmware() {
     })
 //send UBX
     ubxParser.on("data", async (data) => {
+        console.log(data)
         await axios.post(config.get('gw'), {
             itow: data["iTOW"],
             relPosN: data["relPosN"],
