@@ -24,8 +24,8 @@ function firmware() {
     })
 //send UBX
     ubxParser.on("data", async (data) => {
-        console.log(data)
         await axios.post(config.get('gw'), {
+            type: 'UBX',
             itow: data["iTOW"],
             relPosN: data["relPosN"],
             relPosE: data["relPosE"],
@@ -51,6 +51,7 @@ function firmware() {
         if (msg.match(/^\$GNGGA,+/m)) {
             msg = msg.split(',')
             await axios.post(config.get('gw'), {
+                type: 'NMEA',
                 nTime: msg[1],
                 lat: msg[2],
                 NS: msg[3],
