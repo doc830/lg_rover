@@ -38,10 +38,9 @@ function firmware() {
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         })
-            .then((res) => {})
-            .catch((error) => {
-            console.error('Post request error:');
-        })
+            .then(() => {})
+            .catch(() => {
+            console.error('UBX POST request error:')})
     })
 //catch NMEA
     const nmeaParser = serialPort.pipe(new ReadlineParser({delimiter: '\r\n'}), () => {
@@ -51,20 +50,18 @@ function firmware() {
     nmeaParser.on("data", async (msg) => {
         if (msg.match(/^\$GNGGA,+/m)) {
             msg = msg.split(',')
-            // let request = await http.request(
-            //     config.get('gw')
-            //     + '?nTime=' + msg[1]
-            //     + '&lat=' + msg[2]
-            //     + '&NS=' + msg[3]
-            //     + '&lon=' + msg[4]
-            //     + '&EW=' + msg[5]
-            //     + '&r_timestamp=' + TIMESTAMP
-            //     + '&roverID=' + config.get('roverID')
-            // )
-            // request.on('error', () => {
-            //     console.log('Error with connection to investigator via ' + config.get('gw'))
-            // })
-            // request.end()
+            await axios.post(config.get('gw'), {
+                nTime: msg[1],
+                lat: msg[2],
+                NS: msg[3],
+                lon: msg[4],
+                EW: msg[5],
+                r_timestamp: TIMESTAMP,
+                roverID: config.get('roverID')
+            })
+                .then(() => {})
+                .catch(() => {
+                    console.error('UBX POST request error:')})
         }
     })
 }
