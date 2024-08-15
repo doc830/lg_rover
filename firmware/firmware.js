@@ -39,7 +39,7 @@ function firmware() {
         })
             .then((res) => {})
             .catch((error) => {
-            console.error('Post request error:', error);
+            console.error('Post request error:');
         })
     })
 //catch NMEA
