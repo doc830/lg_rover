@@ -1,5 +1,5 @@
 {
-  "gw": "http://192.168.92.201:5000/api/rover/ubx",
+  "gw": "http://192.168.92.201:5000/api/rover/navi",
   "roverID": "human",
   "serialPort": "/dev/ttyS1",
   "baudRate": 115200,
