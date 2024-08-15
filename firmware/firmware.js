@@ -49,7 +49,6 @@ function firmware() {
     })
 //send NMEA
     nmeaParser.on("data", async (msg) => {
-        console.log(msg)
         if (msg.match(/^\$GNGGA,+/m)) {
             msg = msg.split(',')
             await axios.post(config.get('gw'), {
