@@ -20,9 +20,5 @@ server.use(cors({
     allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization'
 }))
 server.use('/api/weather', require('./routes/weather.routes'))
-server.use('/', (req, res) => {
-    res.status(404)
-    res.end()
-})
-// end interface routes
+
 
