@@ -1,7 +1,7 @@
 {
-  "gw": "http://192.168.92.201:5000/api/rover/navi",
+  "gw": "http://192.168.92.201:5000",
   "roverID": "human",
-  "serialPort": "/dev/ttyS1",
+  "serialPort": "/dev/ttyS2",
   "baudRate": 115200,
   "port": "5050"
 }
