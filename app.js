@@ -13,7 +13,6 @@ initialization().then(()=>{
     console.error('Internal server error', err)
     process.exit(1)
 })
-server.set('view engine', 'ejs')
 server.use(cors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
