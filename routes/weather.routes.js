@@ -29,11 +29,6 @@ router.get('/info', async (req, res) => {
             humidity = humidity.readFloatBE(0)
             let pressure = Buffer.from([received[21],received[22],received[19],received[20]])
             pressure = pressure.readFloatBE(0)
-            console.log(wind_direction)
-            console.log(wind_speed)
-            console.log(temperature)
-            console.log(humidity)
-            console.log(pressure)
             res.json({
                 'wind_direction': wind_direction,
                 'wind_speed': wind_speed,
@@ -44,7 +39,8 @@ router.get('/info', async (req, res) => {
             res.end()
         }
     })
-    serialPort.on('error', () => {
+    serialPort.on('error', (err) => {
+        console.log(err)
         res.status(500)
         res.end()
     })
