@@ -3,5 +3,5 @@
   "roverID": "human",
   "serialPort": "/dev/ttyS2",
   "baudRate": 115200,
-  "port": "5050"
+  "port": "2020"
 }
