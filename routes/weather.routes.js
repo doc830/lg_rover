@@ -4,6 +4,7 @@ const router = Router()
 let serialPortWeather
 router.get('/info', async (req, res) => {
     if (!checkPort()) {
+        res.status(200)
         serialPortWeather = new SerialPort({
             path: '/dev/ttyUSB1',
             dataBits: 8,
