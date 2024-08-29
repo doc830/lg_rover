@@ -4,7 +4,7 @@ const cors = require('cors')
 const server = express()
 const firmware = require('./firmware/firmware')
 async function initialization () {
-    await server.listen("192.168.92.116"+config.get('port'))
+    await server.listen(config.get('port'))
 }
 initialization().then(()=>{
     console.log('Server started successfully on port ' + config.get('port') + '!')
