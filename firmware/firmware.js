@@ -11,7 +11,7 @@ function firmware() {
         baudRate: config.get('baudRate')
     })
     const serialPortWeather = new SerialPort({
-        path: '/dev/ttyUSB0',
+        path: '/dev/ttyUSB1',
         dataBits: 8,
         baudRate: 9600,
         stopBits: 1,
