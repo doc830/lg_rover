@@ -91,7 +91,8 @@ function firmware() {
             humidity = humidity.readFloatBE(0)
             let pressure = Buffer.from([received[21],received[22],received[19],received[20]])
             pressure = pressure.readFloatBE(0)
-            await axios.post(config.get('gw') + "/api/rover/nmea", {
+            console.log(temperature)
+            await axios.post(config.get('gw') + "/api/rover/weather", {
                 wind_direction: wind_direction,
                 wind_speed: wind_speed,
                 temperature: temperature,
@@ -106,6 +107,6 @@ function firmware() {
     })
     setInterval(()=> {
         serialPortWeather.write(Buffer.from('010300000031841E', 'hex'))
-    }, 1000)
+    }, 3000)
 }
 module.exports = firmware
