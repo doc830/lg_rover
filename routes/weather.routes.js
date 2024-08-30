@@ -67,10 +67,12 @@ function setReceiveMode() {
     })
 }
 function sendData() {
+    let data = hexStringToByteArray('010300000031841E')
+    console.log(data)
     setTransmitMode()
     setTimeout(() => {
         console.log("Try to transmit via rs485")
-        port.write((Buffer.from('010300000031841E', 'hex')), (err) => {
+        port.write(data, (err) => {
             if (err) {
                 return console.log(err.message)
             }
@@ -78,5 +80,12 @@ function sendData() {
             setReceiveMode()
         })
     }, 10)  // Небольшая задержка перед отправкой данных
+}
+function hexStringToByteArray(hex) {
+    const bytes = [];
+    for (let i = 0; i < hex.length; i += 2) {
+        bytes.push(parseInt(hex.substr(i, 2), 16))
+    }
+    return Buffer.from(bytes)
 }
 module.exports = router
