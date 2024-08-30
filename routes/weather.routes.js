@@ -14,8 +14,10 @@ port.on('error', (err) => {
 })
 const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
 router.get('/info', async (req, res) => {
+    console.log("Got request")
     await sendData()
     parser.on('data', async (data)=> {
+        console.log("try to parse")
         let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
@@ -47,6 +49,8 @@ function setTransmitMode() {
     }, (err) => {
         if (err) {
             return console.log(err.message)
+        } else {
+            return console.log("Turned on transmit")
         }
     })
 }
@@ -57,12 +61,15 @@ function setReceiveMode() {
     }, (err) => {
         if (err) {
             return console.log(err.message)
+        } else {
+            return console.log("Turned on Receive")
         }
     })
 }
 function sendData() {
     setTransmitMode()
     setTimeout(() => {
+        console.log("Try to transit via rs485")
         port.write((Buffer.from('010300000031841E', 'hex')), (err) => {
             if (err) {
                 return console.log(err.message)
