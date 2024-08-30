@@ -1,28 +1,21 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
+const {Readline} = require('@serialport/parser-readline')
 const router = Router()
-let serialPortWeather
+const port = new SerialPort({
+    path: '/dev/ttyUSB1',
+    dataBits: 8,
+    baudRate: 9600,
+    stopBits: 1,
+    parity: "even"
+})
+port.on('error', (err) => {
+    console.log(err)
+})
+const parser = port.pipe(new Readline({ delimiter: '\n' }))
 router.get('/info', async (req, res) => {
-    if (!checkPort()) {
-        res.json({
-            "answer": "ok"
-        })
-        serialPortWeather = new SerialPort({
-            path: '/dev/ttyUSB1',
-            dataBits: 8,
-            baudRate: 9600,
-            stopBits: 1,
-            parity: "even"
-        })
-        serialPortWeather.write(Buffer.from('010300000031841E', 'hex'))
-    } else {
-        serialPortWeather.write(Buffer.from('010300000031841E', 'hex'))
-    }
-    serialPortWeather.on('error', (err) => {
-        console.log(err)
-        res.status(500)
-    })
-    serialPortWeather.on('data', async (data)=> {
+    sendData((Buffer.from('010300000031841E', 'hex')))
+    parser.on('data', async (data)=> {
         let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
@@ -47,9 +40,36 @@ router.get('/info', async (req, res) => {
         }
     })
 })
-function checkPort() {
-    if (serialPortWeather) {
-        return serialPortWeather.isOpen
-    }
+function setTransmitMode() {
+    port.set({
+        rts: true,  // Включаем DE
+        dtr: false  // Выключаем RE
+    }, (err) => {
+        if (err) {
+            return console.log(err.message)
+        }
+    })
+}
+function setReceiveMode() {
+    port.set({
+        rts: false, // Выключаем DE
+        dtr: true   // Включаем RE
+    }, (err) => {
+        if (err) {
+            return console.log(err.message)
+        }
+    })
+}
+function sendData(data) {
+    setTransmitMode()
+    setTimeout(() => {
+        port.write(data, (err) => {
+            if (err) {
+                return console.log(err.message)
+            }
+            // Переключаемся обратно в режим приема после отправки данных
+            setReceiveMode()
+        })
+    }, 10)  // Небольшая задержка перед отправкой данных
 }
 module.exports = router
