@@ -67,7 +67,7 @@ function setReceiveMode() {
     })
 }
 function sendData() {
-    let data = hexStringToByteArray('ffffffffffffffff')
+    let data = hexStringToByteArray('010300000031841E')
     console.log(data)
     setTransmitMode()
     setTimeout(() => {
