@@ -14,7 +14,7 @@ port.on('error', (err) => {
 })
 const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
 router.get('/info', async (req, res) => {
-    await sendData((Buffer.from('010300000031841E', 'hex')))
+    await sendData()
     parser.on('data', async (data)=> {
         let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
@@ -60,10 +60,10 @@ function setReceiveMode() {
         }
     })
 }
-function sendData(data) {
+function sendData() {
     setTransmitMode()
     setTimeout(() => {
-        port.write(data, (err) => {
+        port.write((Buffer.from('010300000031841E', 'hex')), (err) => {
             if (err) {
                 return console.log(err.message)
             }
