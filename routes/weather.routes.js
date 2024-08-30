@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
-const {Readline} = require('@serialport/parser-readline')
+const {ReadlineParser} = require('@serialport/parser-readline')
 const router = Router()
 const port = new SerialPort({
     path: '/dev/ttyUSB1',
@@ -12,7 +12,7 @@ const port = new SerialPort({
 port.on('error', (err) => {
     console.log(err)
 })
-const parser = port.pipe(new Readline({ delimiter: '\n' }))
+const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
 router.get('/info', async (req, res) => {
     sendData((Buffer.from('010300000031841E', 'hex')))
     parser.on('data', async (data)=> {
