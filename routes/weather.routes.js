@@ -1,24 +1,37 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
-const {ReadlineParser} = require('@serialport/parser-readline')
 const router = Router()
-const port = new SerialPort({
-    path: '/dev/ttyUSB1',
-    dataBits: 8,
-    baudRate: 9600,
-    stopBits: 1,
-    parity: "even"
-})
-port.on('error', (err) => {
-    console.log(err)
-})
-const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
+let serialPort
+let test = false
 router.get('/info', async (req, res) => {
-    console.log("Got request")
-    await sendData()
-    parser.on('data', async (data)=> {
-        console.log("try to parse")
-        let received = Buffer.alloc(0)
+    if (test) {
+        await res.json({
+            'wind_direction': '170',
+            'wind_speed': '0.4622483551502228',
+            'temperature': '23.620328903198242',
+            'humidity': '35.122711181640625',
+            'pressure': '1013.4943237304688'
+        })
+        res.end()
+        return
+    }
+    let port = "/dev/ttyUSB1"
+    let received = Buffer.alloc(0)
+    if (!checkPort()) {
+        serialPort = new SerialPort({
+            path: port,
+            dataBits: 8,
+            baudRate: 9600,
+            stopBits: 1,
+            parity: "even"
+        })
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+        serialPort.removeAllListeners()
+    } else {
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+        serialPort.removeAllListeners()
+    }
+    serialPort.on('data', async (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
             let wind_direction = Buffer.from([received[5],received[6]])
@@ -31,7 +44,12 @@ router.get('/info', async (req, res) => {
             humidity = humidity.readFloatBE(0)
             let pressure = Buffer.from([received[21],received[22],received[19],received[20]])
             pressure = pressure.readFloatBE(0)
-             res.json({
+            console.log(wind_direction)
+            console.log(wind_speed)
+            console.log(temperature)
+            console.log(humidity)
+            console.log(pressure)
+            res.json({
                 'wind_direction': wind_direction,
                 'wind_speed': wind_speed,
                 'temperature': temperature,
@@ -41,51 +59,15 @@ router.get('/info', async (req, res) => {
             res.end()
         }
     })
+    serialPort.on('error', (err) => {
+        console.log(err)
+        res.status(500)
+        res.end()
+    })
 })
-function setTransmitMode() {
-    port.set({
-        rts: true,  // Включаем DE
-        dtr: false  // Выключаем RE
-    }, (err) => {
-        if (err) {
-            return console.log(err.message)
-        } else {
-            return console.log("Turned on transmit")
-        }
-    })
-}
-function setReceiveMode() {
-    port.set({
-        rts: false, // Выключаем DE
-        dtr: true   // Включаем RE
-    }, (err) => {
-        if (err) {
-            return console.log(err.message)
-        } else {
-            return console.log("Turned on Receive")
-        }
-    })
-}
-function sendData() {
-    let data = hexStringToByteArray('010300000031841E')
-    console.log(data)
-    setTransmitMode()
-    setTimeout(() => {
-        console.log("Try to transmit via rs485")
-        port.write(data, (err) => {
-            if (err) {
-                return console.log(err.message)
-            }
-            // Переключаемся обратно в режим приема после отправки данных
-            setReceiveMode()
-        })
-    }, 10)  // Небольшая задержка перед отправкой данных
-}
-function hexStringToByteArray(hex) {
-    const bytes = [];
-    for (let i = 0; i < hex.length; i += 2) {
-        bytes.push(parseInt(hex.substr(i, 2), 16))
+function checkPort() {
+    if (serialPort) {
+        return serialPort.isOpen
     }
-    return Buffer.from(bytes)
 }
 module.exports = router
