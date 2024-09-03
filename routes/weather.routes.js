@@ -25,6 +25,9 @@ router.get('/info', async (req, res) => {
             stopBits: 1,
             parity: "even"
         })
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+    } else {
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
     }
     serialPort.on('open', async ()=>{
          await serialPort.write(Buffer.from('010300000031841E', 'hex'))
