@@ -26,15 +26,15 @@ router.get('/info', async (req, res) => {
             parity: "even"
         })
         port.set({
-            rts: true,  // Включаем DE
-            dtr: false  // Выключаем RE
+            rts: false,  // Включаем DE
+            dtr: true  // Выключаем RE
         })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
 
     } else {
         port.set({
-            rts: true,  // Включаем DE
-            dtr: false  // Выключаем RE
+            rts: false,  // Включаем DE
+            dtr: true  // Выключаем RE
         })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
