@@ -23,21 +23,24 @@ router.get('/info', async (req, res) => {
             dataBits: 8,
             baudRate: 9600,
             stopBits: 1,
-            parity: "even"
+            parity: "even",
+            rtscts: true
         })
         port.set({
-            rts: false,  // Включаем DE
-            dtr: true  // Выключаем RE
+            rts: true
         })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
-
+        port.set({
+            rts: false
+        })
     } else {
         port.set({
-            rts: false,  // Включаем DE
-            dtr: true  // Выключаем RE
+            rts: true
         })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
-        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+        port.set({
+            rts: false
+        })
     }
     // serialPort.on('data', (data)=> {
     //     received = Buffer.concat([received,  Buffer.from(data, 'hex')])
