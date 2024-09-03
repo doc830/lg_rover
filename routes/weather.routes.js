@@ -25,12 +25,21 @@ router.get('/info', async (req, res) => {
             stopBits: 1,
             parity: "even"
         })
+        port.set({
+            rts: true,  // Включаем DE
+            dtr: false  // Выключаем RE
+        })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
 
     } else {
+        port.set({
+            rts: true,  // Включаем DE
+            dtr: false  // Выключаем RE
+        })
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
     }
-    // serialPort.on('data', async (data)=> {
+    // serialPort.on('data', (data)=> {
     //     received = Buffer.concat([received,  Buffer.from(data, 'hex')])
     //     if (received.length ===  103) {
     //         let wind_direction = Buffer.from([received[5],received[6]])
