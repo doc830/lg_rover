@@ -34,14 +34,11 @@ router.get('/info', async (req, res) => {
             rts: false
         })
     } else {
-        port.set({
-            rts: true
-        })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
-        port.set({
-            rts: false
-        })
     }
+    serialPort.on('open', ()=>{
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+    })
     // serialPort.on('data', (data)=> {
     //     received = Buffer.concat([received,  Buffer.from(data, 'hex')])
     //     if (received.length ===  103) {
