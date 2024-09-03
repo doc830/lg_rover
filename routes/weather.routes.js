@@ -2,19 +2,8 @@ const {Router} = require('express')
 const {SerialPort} = require("serialport")
 const router = Router()
 let serialPort
-let test = false
+
 router.get('/info', async (req, res) => {
-    if (test) {
-        await res.json({
-            'wind_direction': '170',
-            'wind_speed': '0.4622483551502228',
-            'temperature': '23.620328903198242',
-            'humidity': '35.122711181640625',
-            'pressure': '1013.4943237304688'
-        })
-        res.end()
-        return
-    }
     let port = "/dev/ttyUSB1"
     let received = Buffer.alloc(0)
     if (!checkPort()) {
@@ -28,8 +17,8 @@ router.get('/info', async (req, res) => {
     } else {
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
     }
-    serialPort.on('open', async ()=>{
-         await serialPort.write(Buffer.from('010300000031841E', 'hex'))
+    serialPort.on('open', ()=>{
+          serialPort.write(Buffer.from('010300000031841E', 'hex'))
     })
     serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
