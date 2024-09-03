@@ -23,16 +23,9 @@ router.get('/info', async (req, res) => {
             dataBits: 8,
             baudRate: 9600,
             stopBits: 1,
-            parity: "even",
-            rtscts: true
-        })
-        port.set({
-            rts: true
+            parity: "even"
         })
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
-        port.set({
-            rts: false
-        })
     } else {
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
     }
