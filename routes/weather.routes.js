@@ -2,7 +2,6 @@ const {Router} = require('express')
 const {SerialPort} = require("serialport")
 const router = Router()
 let serialPort
-
 router.get('/info', async (req, res) => {
     let port = "/dev/ttyUSB1"
     let received = Buffer.alloc(0)
