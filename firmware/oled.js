@@ -20,7 +20,7 @@ function sendData(data) {
     }
 }
 function clearDisplay() {
-    const emptyData = new Array(128 * 64/8).fill(0xFF) // Заполняем нулями для очистки экрана
+    const emptyData = new Array(128 * 64/16).fill(0xFF) // Заполняем нулями для очистки экрана
     sendData(emptyData)
 }
 function initDisplay() {
