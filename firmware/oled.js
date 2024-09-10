@@ -9,8 +9,11 @@ const font5x7 = {
 };
 async function  oled() {
     await initDisplay()
-   clearDisplay()
-    writeText('AB')
+    clearDisplay()
+    setInterval(()=> {
+        writeText('AB')
+    },1000)
+
 }
 function sendCommand(command) {
     i2cBus.writeByteSync(OLED_ADDRESS, 0x00, command); // 0x00 указывает, что это команда
