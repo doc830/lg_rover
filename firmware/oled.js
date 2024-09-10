@@ -12,27 +12,17 @@ function oled() {
         width: 128,
         height: 64,
         address: 0x3C // Используйте адрес дисплея без учёта операций (в данном случае 0x78 -> 0x3C)
-    };
+    }
 // Создаем объект дисплея
-    const oled = new Oled(i2cBus, opts);
-    let sp = "/dev/ttyS1"
-    const port = new SerialPort({
-        path: sp,
-        baudRate: 115200
-    })
+    const oled = new Oled(i2cBus, opts)
+    oled.clearDisplay()
+    oled.turnOnDisplay()
     // Обработка данных из UART
-    port.on('data', (data) => {
-        console.log('Получено сообщение:', data.toString()); // Выводим данные в консоль
+    setInterval(()=> {
         oled.clearDisplay(); // Очищаем дисплей перед выводом нового текста
-        oled.setCursor(1, 1); // Установка курсора в координаты (x, y)
-        oled.writeString(font, 1, data.toString(), 1, true); // Пишем текст на дисплей
-    });
-
-// Обработка ошибок
-    port.on('error', (err) => {
-        console.error('Ошибка UART:', err.message);
-    });
-
+        oled.setCursor(1, 1) // Установка курсора в координаты (x, y)
+        oled.writeString(font, 1, 'TEST LOGGER', 1, true) // Пишем текст на дисплей
+    }, 1000)
 
 }
 module.exports = oled
