@@ -17,7 +17,7 @@ function oled() {
     oled.clearDisplay(true)
     setInterval(()=> {
         oled.setCursor(20, Math.floor(64 / 2) +5)
-        oled.writeString(font.oled_5x7, 2, 'LOGGER', 1, true)
+        oled.writeString(font.oled_5x7, 2, ' LOGGER', 1, true)
     }, 1000)
 
 }
