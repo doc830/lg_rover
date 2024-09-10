@@ -11,7 +11,7 @@ function  oled() {
     }
     const i2cBus = i2c.openSync(opts.bus)
     let oled = new Oled(i2cBus, opts)
-    oled.clearDisplay(true)
+    oled.clearDisplay()
     oled.turnOnDisplay()
     oled.setCursor(1, 2)
     oled.writeString(font.oled_5x7, 2, 'H', 1, true)
