@@ -1,8 +1,7 @@
 const {SerialPort} = require('serialport')
 const i2c = require('i2c-bus')
 const Oled = require('oled-i2c-bus')
-const font = require('oled-font-5x7')
-
+const font = require('oled-font-pack')
 function oled() {
     let _oled
     const opts = {
