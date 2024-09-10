@@ -10,7 +10,7 @@ async function initialization () {
 initialization().then(()=>{
     console.log('Server started successfully on port ' + config.get('port') + '!')
     firmware()
-    oled()
+    //oled()
 }).catch((err)=>{
     console.error('Internal server error', err)
     process.exit(1)
