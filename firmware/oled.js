@@ -1,7 +1,7 @@
 'use strict'
 const i2c = require('i2c-bus')
 const i2cBus = i2c.openSync(2)
-const OLED_ADDRESS = '0x3C'
+const OLED_ADDRESS = 0x3C
 function  oled() {
     initDisplay()
     clearDisplay()
