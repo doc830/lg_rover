@@ -1,3 +1,4 @@
+'use strict'
 const i2c = require('i2c-bus')
 const Oled = require('oled-i2c-bus')
 const font = require('oled-font-pack')
