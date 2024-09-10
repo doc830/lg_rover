@@ -2,7 +2,7 @@ const {SerialPort} = require('serialport')
 const i2c = require('i2c-bus')
 const Oled = require('oled-i2c-bus')
 const font = require('oled-font-pack')
-async function  oled() {
+function  oled() {
     const opts = {
         width: 128,
         height: 64,
@@ -10,7 +10,7 @@ async function  oled() {
         bus: 2,
         driver:"SSD1306"
     }
-    const i2cBus = await i2c.open(opts.bus)
+    const i2cBus = i2c.open(opts.bus)
     let oled = new Oled(i2cBus, opts)
     setInterval(()=> {
         oled.clearDisplay(true)
