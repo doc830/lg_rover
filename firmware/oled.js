@@ -15,14 +15,11 @@ function oled() {
     const oled = new Oled(i2cBus, opts)
     oled.clearDisplay()
     oled.turnOnDisplay()
-    oled.invertDisplay(false)
-    oled.update();
-    oled.drawRGBAImage()
+
     setInterval(()=> {
         oled.clearDisplay()
         oled.setCursor(1, 1)
         oled.writeString(font, 1, 'TEST LOGGER', 'white', true)
-        oled.update()
     }, 2000)
 
 }
