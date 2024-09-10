@@ -48,6 +48,6 @@ function initDisplay() {
     sendCommand(0x40); // VCOMH deselect level
     sendCommand(0xA4); // Resume RAM content display
     sendCommand(0xA6); // Normal display (not inverted)
-    sendCommand(0xAF); // Display ON
+    //sendCommand(0xAF); // Display ON
 }
 module.exports = oled
