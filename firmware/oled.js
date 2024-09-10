@@ -13,6 +13,8 @@ function  oled() {
     let oled = new Oled(i2cBus, opts)
     oled.clearDisplay(true)
     oled.turnOnDisplay()
+    oled.setCursor(20, Math.floor(64 / 2) +5)
+    oled.writeString(font.oled_5x7, 2, ':', 1, true)
     // setInterval(()=> {
     //     oled.setCursor(20, Math.floor(64 / 2) +5)
     //     oled.writeString(font.oled_5x7, 2, ' LOGGER', 1, true)
