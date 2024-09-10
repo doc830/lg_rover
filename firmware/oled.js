@@ -12,7 +12,7 @@ function  oled() {
     const i2cBus = i2c.openSync(opts.bus)
     let oled = new Oled(i2cBus, opts)
     oled.clearDisplay(true)
-    oled.turnOffDisplay()
+    oled.turnOnDisplay()
     // setInterval(()=> {
     //     oled.setCursor(20, Math.floor(64 / 2) +5)
     //     oled.writeString(font.oled_5x7, 2, ' LOGGER', 1, true)
