@@ -16,9 +16,9 @@ function oled() {
     _oled = oled
     oled.clearDisplay(true)
     setInterval(()=> {
-        oled.setCursor(1, 1)
+        oled.setCursor(20, Math.floor(64 / 2) +5)
         oled.writeString(font.oled_5x7, 2, 'TEST LOGGER', 1, true)
-    }, 1)
+    }, 1000)
 
 }
 module.exports = oled
