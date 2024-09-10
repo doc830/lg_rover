@@ -20,11 +20,12 @@ function sendData(data) {
     }
 }
 function clearDisplay() {
-    const emptyData = new Array(128 * 64/8).fill(0xFF) // Заполняем нулями для очистки экрана
+    const emptyData = new Array(128 * 64/8).fill(0x00)
     sendData(emptyData)
 }
 function initDisplay() {
-    //sendCommand(0xAE); // Display OFF
+    sendCommand(0xAE); // Display OFF
+    sendCommand(0xAF);// Display ON
     sendCommand(0xD5); // Set display clock divide ratio/oscillator frequency
     sendCommand(0x80); // Suggested value
     sendCommand(0xA8); // Set multiplex ratio
@@ -48,6 +49,6 @@ function initDisplay() {
     sendCommand(0x40); // VCOMH deselect level
     sendCommand(0xA4); // Resume RAM content display
     sendCommand(0xA6); // Normal display (not inverted)
-    sendCommand(0xAF); // Display ON
+
 }
 module.exports = oled
