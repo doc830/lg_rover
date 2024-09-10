@@ -4,7 +4,7 @@ const i2cBus = i2c.openSync(2)
 const OLED_ADDRESS = 0x3C
 async function  oled() {
     await initDisplay()
-   // clearDisplay()
+   clearDisplay()
 }
 function sendCommand(command) {
     i2cBus.writeByteSync(OLED_ADDRESS, 0x00, command); // 0x00 указывает, что это команда
@@ -20,12 +20,11 @@ function sendData(data) {
     }
 }
 function clearDisplay() {
-    const emptyData = new Array(128 * 64/8).fill(0xFF)
+    const emptyData = new Array(128 * 64/8).fill(0x00)
     sendData(emptyData)
 }
 function initDisplay() {
-    //sendCommand(0xAE); // Display OFF
-
+    sendCommand(0xAE); // Display OFF
     sendCommand(0xD5); // Set display clock divide ratio/oscillator frequency
     sendCommand(0x80); // Suggested value
     sendCommand(0xA8); // Set multiplex ratio
@@ -42,13 +41,13 @@ function initDisplay() {
     sendCommand(0xDA); // Set COM pins hardware configuration
     sendCommand(0x12); // Alternative COM pin configuration
     sendCommand(0x81); // Set contrast control
-    sendCommand(0x7F); // Contrast value
+    sendCommand(0x8F); // Contrast value
     sendCommand(0xD9); // Set pre-charge period
     sendCommand(0xF1); // Pre-charge period value
     sendCommand(0xDB); // Set VCOMH deselect level
     sendCommand(0x40); // VCOMH deselect level
     sendCommand(0xA4); // Resume RAM content display
-    //sendCommand(0xA6); // Normal display (not inverted)
+    sendCommand(0xA6); // Normal display (not inverted)
     sendCommand(0xAF);// Display ON
 }
 module.exports = oled
