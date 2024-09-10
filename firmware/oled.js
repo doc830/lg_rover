@@ -20,7 +20,7 @@ function sendData(data) {
     }
 }
 function clearDisplay() {
-    const emptyData = new Array(128 * 64/8).fill(0x00)
+    const emptyData = new Array(128 * 64/8).fill(0xFF)
     sendData(emptyData)
 }
 function initDisplay() {
