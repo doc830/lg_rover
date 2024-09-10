@@ -11,11 +11,17 @@ function sendCommand(command) {
     i2cBus.writeByteSync(OLED_ADDRESS, 0x00, command); // 0x00 указывает, что это команда
 }
 function sendData(data) {
-    // Отправка массива данных (например, для вывода пикселей на дисплей)
-    i2cBus.writeI2cBlockSync(OLED_ADDRESS, 0x40, data.length, Buffer.from(data));
+    const MAX_BYTES = 32; // Максимальный размер блока (попробуем с 32 байтами)
+    let offset = 0;
+    while (offset < data.length) {
+        const chunkSize = Math.min(MAX_BYTES, data.length - offset);
+        const chunk = data.slice(offset, offset + chunkSize);
+        i2cBus.writeI2cBlockSync(OLED_ADDRESS, 0x40, chunk.length, Buffer.from(chunk));
+        offset += chunkSize;
+    }
 }
 function clearDisplay() {
-    const emptyData = new Array(128 * 64 / 8).fill(0); // 128x64 пикселя, 1 бит на пиксель
+    const emptyData = new Array(128 * 64 / 8).fill(0); // Заполняем нулями для очистки экрана
     sendData(emptyData);
 }
 function initDisplay() {
