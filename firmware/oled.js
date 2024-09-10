@@ -15,9 +15,10 @@ function oled() {
     };
 // Создаем объект дисплея
     const oled = new Oled(i2cBus, opts);
-    const port = new SerialPort('/dev/ttyS1', {
-        baudRate: 115200, // Установите нужную скорость передачи данных
-        encoding: 'utf8'
+    let sp = "/dev/ttyS1"
+    const port = new SerialPort({
+        path: sp,
+        baudRate: 115200
     })
     // Обработка данных из UART
     port.on('data', (data) => {
