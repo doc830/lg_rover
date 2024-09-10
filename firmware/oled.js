@@ -19,8 +19,8 @@ function oled() {
     setInterval(()=> {
         oled.clearDisplay()
         oled.setCursor(1, 1)
-        //oled.writeString(font, 1, 'TEST LOGGER', 'white', true)
-    }, 2000)
+        oled.writeString(font, 1, 'TEST LOGGER', 'white', true)
+    }, 10)
 
 }
 module.exports = oled
