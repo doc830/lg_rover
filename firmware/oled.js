@@ -2,8 +2,8 @@
 const i2c = require('i2c-bus')
 const i2cBus = i2c.openSync(2)
 const OLED_ADDRESS = 0x3C
-function  oled() {
-    initDisplay()
+async function  oled() {
+    await initDisplay()
     clearDisplay()
 }
 function sendCommand(command) {
@@ -48,6 +48,6 @@ function initDisplay() {
     sendCommand(0x40); // VCOMH deselect level
     sendCommand(0xA4); // Resume RAM content display
     sendCommand(0xA6); // Normal display (not inverted)
-    //sendCommand(0xAF); // Display ON
+    sendCommand(0xAF); // Display ON
 }
 module.exports = oled
