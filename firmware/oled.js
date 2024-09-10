@@ -4,7 +4,7 @@ const i2cBus = i2c.openSync(2)
 const OLED_ADDRESS = 0x3C
 async function  oled() {
     await initDisplay()
-    clearDisplay()
+   // clearDisplay()
 }
 function sendCommand(command) {
     i2cBus.writeByteSync(OLED_ADDRESS, 0x00, command); // 0x00 указывает, что это команда
