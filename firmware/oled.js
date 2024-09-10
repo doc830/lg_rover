@@ -23,8 +23,8 @@ function oled() {
     // Обработка данных из UART
     port.on('data', (data) => {
         console.log('Получено сообщение:', data.toString()); // Выводим данные в консоль
-        //oled.clearDisplay(); // Очищаем дисплей перед выводом нового текста
-        oled.setCursor(1, 1); // Установка курсора в координаты (x, y)
+        oled.clearDisplay(); // Очищаем дисплей перед выводом нового текста
+        //oled.setCursor(1, 1); // Установка курсора в координаты (x, y)
         oled.writeString(font, 1, data.toString(), 1, true); // Пишем текст на дисплей
     });
 
