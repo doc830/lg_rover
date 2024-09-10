@@ -5,7 +5,6 @@ const OLED_ADDRESS = 0x3C
 function  oled() {
     initDisplay()
     clearDisplay()
-
 }
 function sendCommand(command) {
     i2cBus.writeByteSync(OLED_ADDRESS, 0x00, command); // 0x00 указывает, что это команда
@@ -21,7 +20,7 @@ function sendData(data) {
     }
 }
 function clearDisplay() {
-    const emptyData = new Array(128 * 64 / 8).fill(0); // Заполняем нулями для очистки экрана
+    const emptyData = new Array(128 * 64).fill(0); // Заполняем нулями для очистки экрана
     sendData(emptyData);
 }
 function initDisplay() {
