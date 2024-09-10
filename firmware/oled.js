@@ -4,6 +4,7 @@ const Oled = require('oled-i2c-bus')
 const font = require('oled-font-5x7')
 
 function oled() {
+    let _oled
     const opts = {
         width: 128,
         height: 64,
@@ -12,14 +13,12 @@ function oled() {
         driver:"SSD1306"
     }
     const i2cBus = i2c.openSync(opts.bus)
-    const oled = new Oled(i2cBus, opts)
-    oled.clearDisplay()
-    oled.turnOnDisplay()
-
+    let oled = new Oled(i2cBus, opts)
+    _oled = oled
+    oled.clearDisplay(true)
     setInterval(()=> {
-        oled.clearDisplay()
         oled.setCursor(1, 1)
-        oled.writeString(font, 1, 'TEST LOGGER', 1, false)
+        oled.writeString(font.oled_5x7, 2, 'TEST LOGGER', 1, true)
     }, 1)
 
 }
