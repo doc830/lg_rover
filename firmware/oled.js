@@ -15,10 +15,12 @@ function oled() {
     let oled = new Oled(i2cBus, opts)
     _oled = oled
     oled.clearDisplay(true)
-    setInterval(()=> {
-        oled.setCursor(20, Math.floor(64 / 2) +5)
-        oled.writeString(font.oled_5x7, 2, ' LOGGER', 1, true)
-    }, 1000)
+    oled.setCursor(20, Math.floor(64 / 2) +5)
+    oled.writeString(font.oled_5x7, 2, ' LOGGER', 1, true)
+    // setInterval(()=> {
+    //     oled.setCursor(20, Math.floor(64 / 2) +5)
+    //     oled.writeString(font.oled_5x7, 2, ' LOGGER', 1, true)
+    // }, 1000)
 
 }
 module.exports = oled
