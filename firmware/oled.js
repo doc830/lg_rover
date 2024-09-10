@@ -2,9 +2,15 @@
 const i2c = require('i2c-bus')
 const i2cBus = i2c.openSync(2)
 const OLED_ADDRESS = 0x3C
+const font5x7 = {
+    'A': [0x7C, 0x12, 0x12, 0x7C], // Символ 'A'
+    'B': [0x7E, 0x52, 0x52, 0x2C], // Символ 'B'
+    // Добавьте остальные символы
+};
 async function  oled() {
     await initDisplay()
    clearDisplay()
+    writeText('AB')
 }
 function sendCommand(command) {
     i2cBus.writeByteSync(OLED_ADDRESS, 0x00, command); // 0x00 указывает, что это команда
@@ -22,6 +28,19 @@ function sendData(data) {
 function clearDisplay() {
     const emptyData = new Array(128 * 64/8).fill(0xFF)
     sendData(emptyData)
+}
+function drawChar(x, y, char) {
+    const bitmap = font5x7[char];
+    if (bitmap) {
+        for (let i = 0; i < bitmap.length; i++) {
+            sendData(bitmap[i]); // Отправляем данные по столбцам для символа
+        }
+    }
+}
+function writeText(text) {
+    for (let i = 0; i < text.length; i++) {
+        drawChar(1 + i * 6, 1, text[i]); // Смещаем координаты для каждого символа
+    }
 }
 function initDisplay() {
     sendCommand(0xAE); // Display OFF
