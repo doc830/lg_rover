@@ -20,17 +20,11 @@ function sendData(data) {
     }
 }
 function clearDisplay() {
-    for (let page = 0; page < 8; page++) {
-        sendCommand(0xB0 + page);  // Устанавливаем страницу (от 0 до 7)
-        sendCommand(0x00);         // Устанавливаем младший байт столбца
-        sendCommand(0x10);         // Устанавливаем старший байт столбца
-
-        const emptyData = new Array(128).fill(0); // Очищаем текущую страницу (128 байт)
-        sendData(emptyData); // Отправляем данные для страницы
-    }
+    const emptyData = new Array(128 * 64/8).fill(0xFF) // Заполняем нулями для очистки экрана
+    sendData(emptyData)
 }
 function initDisplay() {
-    sendCommand(0xAE); // Display OFF
+    //sendCommand(0xAE); // Display OFF
     sendCommand(0xD5); // Set display clock divide ratio/oscillator frequency
     sendCommand(0x80); // Suggested value
     sendCommand(0xA8); // Set multiplex ratio
