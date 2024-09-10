@@ -15,6 +15,7 @@ function oled() {
     };
 // Создаем объект дисплея
     const oled = new Oled(i2cBus, opts);
+    oled.invertDisplay()
     let sp = "/dev/ttyS1"
     const port = new SerialPort({
         path: sp,
