@@ -3,7 +3,7 @@ const Oled = require('oled-i2c-bus')
 const font = require('oled-font-5x7')
 function oled() {
     // Открываем шину I2C
-    const i2cBus = i2c.openSync(1); // Убедитесь, что используется правильная I2C шина
+    const i2cBus = i2c.openSync(2); // Убедитесь, что используется правильная I2C шина
 
 // Настройки дисплея
     const opts = {
