@@ -15,7 +15,7 @@ router.get('/info', async (req, res) => {
             parity: "even"
         })
     } else {
-        res.status(500)
+        res.json("Weather station is unavailable")
         res.end()
     }
     serialPort.on('open', ()=>{
@@ -24,7 +24,7 @@ router.get('/info', async (req, res) => {
             res.json("Weather station is unavailable")
             serialPort.close()
             res.end()
-        }, 2000)
+        }, 1000)
     })
     serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
