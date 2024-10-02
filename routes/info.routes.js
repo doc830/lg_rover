@@ -21,7 +21,7 @@ router.get('/raw_command', (req, res) => {
     })
     serialPort.write(Buffer.from(command.toString(), 'hex'))
     let timeout = setTimeout(()=>{
-        res.json("COM port is unavailable")
+        res.json("COM port message error")
         serialPort.close()
         res.end()
     }, 1000)
