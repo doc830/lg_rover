@@ -13,7 +13,7 @@ router.get('/battery', (req, res) => {
     let serialPort = new SerialPort({
         path: port,
         dataBits: 8,
-        baudRate: 9600,
+        baudRate: 115200,
         stopBits: 1,
         parity: "even"
     })
@@ -31,6 +31,9 @@ router.get('/battery', (req, res) => {
         serialPort.close()
         res.end()
     })
-
+    serialPort.on('error', (err) => {
+        res.json("unavailable")
+        res.end()
+    })
 })
 module.exports = router
