@@ -10,10 +10,6 @@ router.get('/devices', (req, res) => {
 router.get('/raw_command', (req, res) => {
     let command
     command = req.query.c
-    res.json({
-        "command": command
-    })
-    res.end()
     let port = "/dev/ttyS1"
     let received = Buffer.alloc(0)
     let serialPort = new SerialPort({
