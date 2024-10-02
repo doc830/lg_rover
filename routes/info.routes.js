@@ -9,8 +9,8 @@ router.get('/devices', (req, res) => {
 })
 router.get('/raw_command', (req, res) => {
     let command
-    command = req.body.c
-        res.json({
+    command = req.query.c
+    res.json({
         "answer": command
     })
     res.end()
