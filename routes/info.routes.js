@@ -24,9 +24,9 @@ router.get('/battery', (req, res) => {
         let charge = Buffer.from([received[1]])
         let param = Buffer.from([received[2]])
         res.json({
-            "header": header.readUInt16BE(0),
-            "charge": charge.readUInt16BE(0),
-            "param ": param.readUInt16BE(0)
+            "header": header,
+            "charge": charge,
+            "param ": param
         })
         serialPort.close()
         res.end()
