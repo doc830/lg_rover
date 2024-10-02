@@ -11,9 +11,37 @@ router.get('/raw_command', (req, res) => {
     let command
     command = req.query.c
     res.json({
-        "answer": command
+        "command": command
     })
     res.end()
+    let port = "/dev/ttyS1"
+    let received = Buffer.alloc(0)
+    let serialPort = new SerialPort({
+        path: port,
+        dataBits: 8,
+        baudRate: 115200,
+        stopBits: 1,
+        parity: "even"
+    })
+    serialPort.write(Buffer.from(command.toString(), 'hex'))
+    let timeout = setTimeout(()=>{
+        res.json("COM port is unavailable")
+        serialPort.close()
+        res.end()
+    }, 1000)
+    serialPort.on('data', (data)=> {
+        clearTimeout(timeout)
+        received = Buffer.concat([received,  Buffer.from(data, 'hex')])
+        res.json({
+            "COM message": received,
+        })
+        serialPort.close()
+        res.end()
+    })
+    serialPort.on('error', (err) => {
+        res.json(err)
+        res.end()
+    })
 })
 router.get('/battery', (req, res) => {
     let port = "/dev/ttyS1"
@@ -44,4 +72,5 @@ router.get('/battery', (req, res) => {
         res.end()
     })
 })
+
 module.exports = router
