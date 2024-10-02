@@ -21,8 +21,8 @@ router.get('/battery', (req, res) => {
     serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         let header = Buffer.from([received[0]]).readUInt8(0)
-        let charge = Buffer.from([received[1]])
-        let param = Buffer.from([received[2]])
+        let charge = Buffer.from([received[1]]).readUInt8(0)
+        let param = Buffer.from([received[2]]).readUInt8(0)
         res.json({
             "header": header,
             "charge": charge,
