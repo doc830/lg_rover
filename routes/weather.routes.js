@@ -2,6 +2,7 @@ const {Router} = require('express')
 const {SerialPort} = require("serialport")
 const router = Router()
 let serialPort
+let status = false
 router.get('/info', async (req, res) => {
     let port = "/dev/ttyUSB1"
     let received = Buffer.alloc(0)
@@ -19,6 +20,10 @@ router.get('/info', async (req, res) => {
     }
     serialPort.on('open', ()=>{
           serialPort.write(Buffer.from('010300000031841E', 'hex'))
+        if (!timeout()) {
+            res.json("Weather station is unavailable!")
+            res.end()
+        }
     })
     serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
@@ -54,5 +59,11 @@ function checkPort() {
     if (serialPort) {
         return serialPort.isOpen
     }
+}
+function timeout() {
+    setInterval(()=> {
+        return status;
+        }, 2000
+    )
 }
 module.exports = router
