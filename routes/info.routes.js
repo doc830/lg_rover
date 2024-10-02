@@ -7,6 +7,14 @@ router.get('/devices', (req, res) => {
     })
     res.end()
 })
+router.get('/raw_command', (req, res) => {
+    let command
+    command = req.body.c
+        res.json({
+        "answer": command
+    })
+    res.end()
+})
 router.get('/battery', (req, res) => {
     let port = "/dev/ttyS1"
     let received = Buffer.alloc(0)
