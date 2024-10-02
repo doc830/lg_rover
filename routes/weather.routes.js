@@ -53,7 +53,7 @@ router.get('/info', async (req, res) => {
     })
     serialPort.on('error', (err) => {
         console.log(err)
-        res.status(500)
+        res.json("Weather station is unavailable")
         res.end()
     })
 })

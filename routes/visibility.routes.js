@@ -15,12 +15,17 @@ router.get('/info', async (req, res) => {
             parity: "even"
         })
     } else {
-        res.json("Visibility is unavailable")
+        res.json({
+            "err": "001",
+            "info": "Visibility is unavailable"
+        })
         res.end()
     }
     serialPort.on('open', ()=>{
         timeout = setTimeout(()=>{
-            res.json("Visibility is unavailable")
+            res.json({
+                "info": "Visibility is unavailable"
+            })
             serialPort.close()
             res.end()
         }, 3000)
@@ -43,7 +48,9 @@ router.get('/info', async (req, res) => {
     })
     serialPort.on('error', (err) => {
         console.log(err)
-        res.status(500)
+        res.json({
+            "info": "Visibility is unavailable"
+        })
         res.end()
     })
 })

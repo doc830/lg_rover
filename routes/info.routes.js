@@ -1,9 +1,36 @@
 const {Router} = require('express')
+const {SerialPort} = require("serialport");
 const router = Router()
-router.get('/battery', (req, res) => {
+router.get('/devices', (req, res) => {
     res.json({
         "answer": "ok"
     })
     res.end()
+})
+router.get('/battery', (req, res) => {
+    let port = "/dev/ttyS1"
+    let received = Buffer.alloc(0)
+    let serialPort = new SerialPort({
+        path: port,
+        dataBits: 8,
+        baudRate: 9600,
+        stopBits: 1,
+        parity: "even"
+    })
+    serialPort.write(Buffer.from('A60100', 'hex'))
+    serialPort.on('data', (data)=> {
+        received = Buffer.concat([received,  Buffer.from(data, 'hex')])
+        let header = Buffer.from([received[0],received[0]])
+        let charge = Buffer.from([received[1],received[1]])
+        let param = Buffer.from([received[2],received[2]])
+        res.json({
+            "header": header,
+            "charge": charge,
+            "param ": param
+        })
+        serialPort.close()
+        res.end()
+    })
+
 })
 module.exports = router

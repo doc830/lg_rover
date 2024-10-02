@@ -18,8 +18,10 @@ server.use(cors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization'
 }))
+server.use("/api/info", require("./routes/info.routes"))
 server.use("/api/traffic", require("./routes/traffic.routes"))
 server.use("/api/weather", require("./routes/weather.routes"))
 server.use("/api/visibility", require("./routes/visibility.routes"))
+
 
 
