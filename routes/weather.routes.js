@@ -20,10 +20,10 @@ router.get('/info', async (req, res) => {
     }
     serialPort.on('open', ()=>{
           serialPort.write(Buffer.from('010300000031841E', 'hex'))
-        if (!timeout()) {
-            res.json("Weather station is unavailable!")
-            res.end()
-        }
+        // if (!timeout()) {
+        //     res.json("Weather station is unavailable!")
+        //     res.end()
+        // }
     })
     serialPort.on('data', (data)=> {
         status = true
