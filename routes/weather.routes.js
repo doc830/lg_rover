@@ -26,6 +26,7 @@ router.get('/info', async (req, res) => {
         }
     })
     serialPort.on('data', (data)=> {
+        status = true
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
             let wind_direction = Buffer.from([received[5],received[6]])
@@ -45,6 +46,7 @@ router.get('/info', async (req, res) => {
                 'humidity': humidity,
                 'pressure': pressure
             })
+            status = false
             res.end()
             serialPort.close()
         }
