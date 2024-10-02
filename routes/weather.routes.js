@@ -22,6 +22,7 @@ router.get('/info', async (req, res) => {
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
         timeout = setTimeout(()=>{
             res.json("Weather station is unavailable")
+            serialPort.close()
             res.end()
         }, 2000)
     })
