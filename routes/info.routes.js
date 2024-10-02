@@ -20,13 +20,13 @@ router.get('/battery', (req, res) => {
     serialPort.write(Buffer.from('A60100', 'hex'))
     serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
-        let header = Buffer.from(received[0])
-        let charge = Buffer.from(received[1])
-        let param = Buffer.from(received[2])
+        let header = Buffer.from([received[0]])
+        let charge = Buffer.from([received[1]])
+        let param = Buffer.from([received[2]])
         res.json({
-            "header": header,
-            "charge": charge,
-            "param ": param
+            "header": header.readFloatBE(0),
+            "charge": charge.readFloatBE(0),
+            "param ": param.readFloatBE(0)
         })
         serialPort.close()
         res.end()
