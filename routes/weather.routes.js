@@ -4,8 +4,14 @@ const devices = require("../middleware/devices")
 const router = Router()
 let serialPort
 router.get('/info', async (req, res) => {
-    let port = await devices.setWeather(true)
-
+    await devices.setWeather(true).then().catch((err)=>{
+        res.json({
+            "err": err
+        })
+    })
+    devices.serialPort.on('open', ()=>{
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+    })
     // let port = "/dev/ttyUSB1"
      let received = Buffer.alloc(0)
     // let timeout
@@ -29,7 +35,7 @@ router.get('/info', async (req, res) => {
     //         res.end()
     //     }, 1000)
     // })
-    port.on('data', (data)=> {
+    devices.serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
             let wind_direction = Buffer.from([received[5],received[6]])
@@ -50,7 +56,7 @@ router.get('/info', async (req, res) => {
                 'pressure': pressure
             })
             res.end()
-            port.close()
+            devices.serialPort.close()
         }
     })
     // serialPort.on('error', (err) => {
