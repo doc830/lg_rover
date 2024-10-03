@@ -1,23 +1,23 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
 const router = Router()
-//const devices = require('../middleware/devices')
+const devices = require('../middleware/devices')
 router.get('/weather_on',  async (req, res) => {
     //1. Проверить не включен ли ДМДВ
     //2. Проверить не включена ли уже станция
-    // await devices.setWeather(true).then(()=>{
-    //     res.json ({
-    //         "err": "000",
-    //         "info": "Weather station turned on"
-    //     })
-    //     res.end()
-    // }).catch(err => {
-    //     res.json ({
-    //         "err": "001",
-    //         "info": err.message
-    //     })
-    //     res.end()
-    // })
+    await devices.setWeather(true).then(()=>{
+        res.json ({
+            "err": "000",
+            "info": "Погодная станция подключена"
+        })
+        res.end()
+    }).catch(err => {
+        res.json ({
+            "err": "001",
+            "info": err.message
+        })
+        res.end()
+    })
 })
 router.get('/weather_off', (req, res) => {
 

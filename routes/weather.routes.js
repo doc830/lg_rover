@@ -4,19 +4,22 @@ const devices = require("../middleware/devices")
 const router = Router()
 let serialPort
 router.get('/info', async (req, res) => {
-    await devices.setWeather(true).then(async ()=>{
-        await devices.sendMessage(Buffer.from('010300000031841E', 'hex')).then().catch((err)=>{
-            res.json({
-                "err": err.message
-            })
-            res.end()
-        })
-    }).catch((err)=>{
+    if (!devices.weather) {
         res.json({
-            "err": err.message
+            "err": "001",
+            "info": "Погодная станция не подключена"
+        })
+    }
+    await devices.sendMessage(Buffer.from('010300000031841E', 'hex'))
+        .then()
+        .catch((err)=>{
+        res.json({
+            "err": "001",
+            "info": err.message
         })
         res.end()
     })
+
 
     // let port = "/dev/ttyUSB1"
      let received = Buffer.alloc(0)
@@ -62,7 +65,7 @@ router.get('/info', async (req, res) => {
                 'pressure': pressure
             })
             res.end()
-            devices.serialPort.close()
+
         }
     })
     // serialPort.on('error', (err) => {
