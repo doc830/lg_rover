@@ -6,7 +6,7 @@ class Devices {
         this.serialPort = ""
         this.serialPort2 = ""
     }
-    setVisibility (status) {
+    async setVisibility (status) {
         return new Promise(async (resolve, reject) => {
             if (this.weather===true){
                 return  reject (new Error("Подключен ДМДВ!"))
