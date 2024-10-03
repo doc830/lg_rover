@@ -62,6 +62,7 @@ function listen() {
         let header = Buffer.from([received[0]]).readUInt8(0)
         let command = Buffer.from([received[1]]).readUInt8(0)
         let param = Buffer.from([received[2]]).readUInt8(0)
+        devices.serialPort2.close()
         return  ( {
             "header": header,
             "command": command,
