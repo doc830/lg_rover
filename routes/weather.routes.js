@@ -22,7 +22,6 @@ router.get('/info', async (req, res) => {
                 })
                 res.end()
             })
-        res.end()
     }).catch(err => {
         res.json ({
             "err": "001",
