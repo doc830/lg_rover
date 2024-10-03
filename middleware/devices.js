@@ -12,11 +12,11 @@ class Devices {
     async setWeather (status) {
         return new Promise(async (resolve, reject) => {
             switch (status) {
-                case !status:
+                case false:
                     this.serialPort.close()
                     return resolve("Погодная станция отключена")
-                // case status&&this.visibility:
-                //     return  reject (new Error("Подключен ДМДВ!"))
+                case status&&this.visibility:
+                    return  reject (new Error("Подключен ДМДВ!"))
                 case this.weather&&status:
                     return  reject (new Error("Погодная станция уже подключена!"))
                 case !this.weather&&status:
