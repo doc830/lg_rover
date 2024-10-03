@@ -65,7 +65,5 @@ async function turn(command) {
     })
 
 }
-async function turnOff() {
 
-}
 module.exports = router
