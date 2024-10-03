@@ -28,7 +28,6 @@ class Devices {
                         parity: "even"
                     }).then(() => {
                         this.weather = status
-
                         return resolve (port)
                     }).catch((err) => {
                         return  reject (err)

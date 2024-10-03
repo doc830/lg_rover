@@ -3,6 +3,9 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/info', async (req, res) => {
     let port = await devices.setWeather(true).then(()=>{
+        port.on('open', ()=> {
+            port.write(Buffer.from('010300000031841E', 'hex'))
+        })
     }).catch(err => {
         res.json ({
             "err": "001",
@@ -10,9 +13,7 @@ router.get('/info', async (req, res) => {
         })
         res.end()
     })
-    port.on('open', ()=> {
-        port.write(Buffer.from('010300000031841E', 'hex'))
-    })
+
     port.on('data', async (data)=> {
         let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
