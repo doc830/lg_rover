@@ -4,15 +4,20 @@ const devices = require("../middleware/devices")
 const router = Router()
 let serialPort
 router.get('/info', async (req, res) => {
-    await devices.setWeather(true).then().catch((err)=>{
-        res.json({
-            "err": err
+    await devices.setWeather(true).then(async ()=>{
+        await devices.sendMessage(Buffer.from('010300000031841E', 'hex')).then().catch((err)=>{
+            res.json({
+                "err": err.message
+            })
+            res.end()
         })
+    }).catch((err)=>{
+        res.json({
+            "err": err.message
+        })
+        res.end()
     })
-    devices.serialPort.on('open', ()=>{
-        console.log('here')
-        serialPort.write(Buffer.from('010300000031841E', 'hex'))
-    })
+
     // let port = "/dev/ttyUSB1"
      let received = Buffer.alloc(0)
     // let timeout
