@@ -15,7 +15,7 @@ router.get('/weather_on',  async (req, res) => {
         console.log(err)
         res.json ({
             "err": "001",
-            "info": err
+            "info": err.message
         })
         res.end()
     })
