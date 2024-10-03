@@ -5,22 +5,20 @@ const devices = require('../middleware/devices')
 router.get('/weather_on',  async (req, res) => {
     //1. Проверить не включен ли ДМДВ
     //2. Проверить не включена ли уже станция
-    try {
-        await devices.setWeather(true)
+    await devices.setWeather(true).then(()=>{
         res.json ({
             "err": "000",
             "info": "Weather station turned on"
         })
         res.end()
-    } catch (err) {
+    }).catch(err => {
         console.log(err)
         res.json ({
             "err": "001",
             "info": err
         })
         res.end()
-    }
-
+    })
 })
 router.get('/weather_off', (req, res) => {
 

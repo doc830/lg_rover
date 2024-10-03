@@ -9,15 +9,14 @@ class Devices {
         this.visibility = true
     }
     async setWeather (status) {
-        this.weather = status
-        if (status) {
-           await this.openPort(8).then(() => {
-               return true
+        return new Promise(async (resolve, reject) => {
+            await this.openPort(8).then(() => {
+                this.weather = status
+                return resolve (true)
             }).catch((err) => {
-
-               return new Error(err.message)
-           })
-        }
+                return  reject (err)
+            })
+        })
     }
     getVisibilityStatus () {
         return this.visibility
