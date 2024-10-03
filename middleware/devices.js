@@ -47,7 +47,7 @@ class Devices {
             if (this.weather===true&&status===false){
                 this.serialPort.close()
                 this.weather=false
-                return resolve("Погодная станция отключена")
+                return resolve("Погодная станция отключена!")
             }
             if (this.weather===true&&status===true){
                 return  reject (new Error("Погодная станция уже подключена!"))
