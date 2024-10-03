@@ -6,21 +6,48 @@ class Devices {
         this.serialPort = ""
         this.serialPort2 = ""
     }
-    setVisibility () {
-        this.visibility = true
+    setVisibility (status) {
+        return new Promise(async (resolve, reject) => {
+            switch (status) {
+                case this.visibility&&!status:
+                    this.serialPort.close()
+                    this.visibility=false
+                    return resolve("ДМДВ отключен")
+                case this.weather&&status:
+                    return  reject (new Error("Подключена погодная станция!"))
+                case this.visibility&&status:
+                    return  reject (new Error("ДМДВ уже подключен!"))
+                case !this.visibility??status:
+                    await this.openPort({
+                        path: "/dev/ttyUSB1",
+                        dataBits: 8,
+                        baudRate: 9600,
+                        stopBits: 1,
+                        parity: "even"
+                    }).then(() => {
+                        this.weather = true
+                        return resolve ()
+                    }).catch((err) => {
+                        return  reject (err)
+                    })
+                    return
+                default:
+                    return reject(new Error('Undefined argument'))
+            }
+        })
     }
     async setWeather (status) {
         return new Promise(async (resolve, reject) => {
             switch (status) {
-                case false:
+                case this.weather&&!status:
                     this.serialPort.close()
                     this.weather=false
                     return resolve("Погодная станция отключена")
-                case status&&this.visibility:
+                case this.visibility&&status:
                     return  reject (new Error("Подключен ДМДВ!"))
                 case this.weather&&status:
                     return  reject (new Error("Погодная станция уже подключена!"))
-                case true:
+                case !this.weather&&status:
                     await this.openPort({
                         path: "/dev/ttyUSB1",
                         dataBits: 8,
