@@ -1,9 +1,35 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
-router.get('/white', async (req, res) => {
+router.get('/light', async (req, res) => {
     let received = Buffer.alloc(0)
-    await turn("A60301").then(()=>{}).catch((err)=>{
+    let ligth
+    switch (req.query.s) {
+        case "white":
+            ligth = "A60301"
+            return
+        case "blue":
+            ligth = "A60302"
+            return
+        case "green":
+            ligth = "A60303"
+            return
+        case "yellow":
+            ligth = "A60304"
+            return
+        case "red":
+            ligth = "A60305"
+            return
+        default: ligth = "A60500"
+    }
+    await turn("A604FF").then(()=>{}).catch((err)=>{
+        res.json({
+            "err": "001",
+            "info": err.message
+        })
+        res.end()
+    })
+    await turn(ligth).then(()=>{}).catch((err)=>{
         res.json({
             "err": "001",
             "info": err.message
@@ -13,41 +39,18 @@ router.get('/white', async (req, res) => {
     devices.serialPort2.on('data', (data)=> {
         received = Buffer.concat([received, Buffer.from(data, 'hex')])
         let header = Buffer.from([received[0]]).readUInt8(0)
-        let charge = Buffer.from([received[1]]).readUInt8(0)
+        let code = Buffer.from([received[1]]).readUInt8(0)
         let param = Buffer.from([received[2]]).readUInt8(0)
         res.json({
             "header": header,
-            "charge": charge,
-            "param ": param
+            "code": code,
+            "light ": param
         })
         devices.serialPort2.close()
         res.end()
     })
 })
-router.get('/blue', (req, res) => {
-    res.json({
-        "answer": "ok"
-    })
-    res.end()
-})
-router.get('/green', (req, res) => {
-    res.json({
-        "answer": "ok"
-    })
-    res.end()
-})
-router.get('/yellow', (req, res) => {
-    res.json({
-        "answer": "ok"
-    })
-    res.end()
-})
-router.get('/red', (req, res) => {
-    res.json({
-        "answer": "ok"
-    })
-    res.end()
-})
+
 async function turn(command) {
     await new Promise(async (resolve, reject) => {
         await devices.openPort({
@@ -64,5 +67,4 @@ async function turn(command) {
         })
     })
 }
-
 module.exports = router
