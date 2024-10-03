@@ -62,6 +62,7 @@ router.get('/visibility_off', async (req, res) => {
         res.end()
     })
 })
+
 router.get('/raw_command', (req, res) => {
     let command
     command = req.query.c
@@ -94,18 +95,24 @@ router.get('/raw_command', (req, res) => {
         res.end()
     })
 })
-router.get('/battery', (req, res) => {
-    let port = "/dev/ttyS1"
+router.get('/battery', async (req, res) => {
     let received = Buffer.alloc(0)
-    let serialPort = new SerialPort({
-        path: port,
-        dataBits: 8,
-        baudRate: 115200,
-        stopBits: 1,
-        parity: "even"
+    await devices.openPort({
+            path: "/dev/ttyS1",
+            dataBits: 8,
+            baudRate: 115200,
+            stopBits: 1,
+            parity: "even"
+    },2).then(async ()=>{
+        await devices.sendMessage(Buffer.from('A60100', 'hex'), devices.serialPort2)
+    }).catch(err => {
+        res.json({
+            "err": "001",
+            "info": err.message
+        })
+        res.end()
     })
-    serialPort.write(Buffer.from('A60100', 'hex'))
-    serialPort.on('data', (data)=> {
+    devices.serialPort2.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         let header = Buffer.from([received[0]]).readUInt8(0)
         let charge = Buffer.from([received[1]]).readUInt8(0)
@@ -115,11 +122,7 @@ router.get('/battery', (req, res) => {
             "charge": charge,
             "param ": param
         })
-        serialPort.close()
-        res.end()
-    })
-    serialPort.on('error', (err) => {
-        res.json(err)
+        devices.serialPort2.close()
         res.end()
     })
 })

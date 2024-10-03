@@ -39,7 +39,6 @@ router.get('/info', async (req, res) => {
                     'humidity': humidity,
                     'pressure': pressure
                 })
-                //devices.setWeather(false)
                 res.end()
             }
 
