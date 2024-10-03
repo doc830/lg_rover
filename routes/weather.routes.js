@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices")
 const router = Router()
-router.get('/info', async (req, res) => {
+router.get('/data', async (req, res) => {
     let received = Buffer.alloc(0)
     if (!devices.weather) {
         res.json({
