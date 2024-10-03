@@ -2,7 +2,7 @@ const {SerialPort} = require("serialport");
 class Devices {
     constructor() {
         this.weather = false
-        this.visibility = false
+        this.visibility = true
         this.serialPort = ""
     }
     setVisibility () {
@@ -10,6 +10,9 @@ class Devices {
     }
     async setWeather (status) {
         return new Promise(async (resolve, reject) => {
+            if (this.visibility) {
+                return  reject (new Error("Подключен ДМДВ!"))
+            }
             await this.openPort(8).then(() => {
                 this.weather = status
                 return resolve (true)
