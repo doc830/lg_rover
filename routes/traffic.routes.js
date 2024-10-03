@@ -23,6 +23,7 @@ router.get('/light', async (req, res) => {
             return
         default: light = "A60500"
     }
+    console.log(light)
     await turn("A604FF").then(()=>{}).catch((err)=>{
         res.json({
             "err": "001",
