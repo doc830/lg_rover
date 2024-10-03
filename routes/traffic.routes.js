@@ -1,21 +1,9 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
-router.get('/light', async (req, res) => {
+router.get('/white', async (req, res) => {
     let received = Buffer.alloc(0)
-    let light
-    if (req.query.s === "white") {
-        light = "A60301"
-    }
-    console.log(light)
-    await turn("A604FF").then(()=>{}).catch((err)=>{
-        res.json({
-            "err": "001",
-            "info": err.message
-        })
-        res.end()
-    })
-    await turn(light).then(()=>{}).catch((err)=>{
+    await turn("A60301").then(()=>{}).catch((err)=>{
         res.json({
             "err": "001",
             "info": err.message
