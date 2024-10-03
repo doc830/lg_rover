@@ -1,23 +1,35 @@
 const {Router} = require('express')
-const devices = require("../middleware/devices");
+const {SerialPort} = require("serialport")
 const router = Router()
+let serialPort
 router.get('/info', async (req, res) => {
-    let port = await devices.setWeather(true).then(()=>{
-        port.on('open', ()=> {
-            port.write(Buffer.from('010300000031841E', 'hex'))
+    let port = "/dev/ttyUSB1"
+    let received = Buffer.alloc(0)
+    let timeout
+    if (!checkPort()) {
+        serialPort = new SerialPort({
+            path: port,
+            dataBits: 8,
+            baudRate: 9600,
+            stopBits: 1,
+            parity: "even"
         })
-    }).catch(err => {
-        res.json ({
-            "err": "001",
-            "info": err.message
-        })
+    } else {
+        res.json("Weather station is unavailable")
         res.end()
+    }
+    serialPort.on('open', ()=>{
+        serialPort.write(Buffer.from('010300000031841E', 'hex'))
+        timeout = setTimeout(()=>{
+            res.json("Weather station is unavailable")
+            serialPort.close()
+            res.end()
+        }, 1000)
     })
-
-    port.on('data', async (data)=> {
-        let received = Buffer.alloc(0)
+    serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
+            clearTimeout(timeout)
             let wind_direction = Buffer.from([received[5],received[6]])
             wind_direction = wind_direction.readUInt16BE(0)
             let wind_speed = Buffer.from([received[9],received[10],received[7],received[8]])
@@ -29,7 +41,6 @@ router.get('/info', async (req, res) => {
             let pressure = Buffer.from([received[21],received[22],received[19],received[20]])
             pressure = pressure.readFloatBE(0)
             res.json({
-                'err':'000',
                 'wind_direction': wind_direction,
                 'wind_speed': wind_speed,
                 'temperature': temperature,
@@ -37,8 +48,17 @@ router.get('/info', async (req, res) => {
                 'pressure': pressure
             })
             res.end()
-            port.close()
+            serialPort.close()
         }
     })
+    serialPort.on('error', (err) => {
+        console.log(err)
+        res.json("Weather station is unavailable")
+        res.end()
+    })
 })
+function checkPort() {
+    if (serialPort) {
+        return serialPort.isOpen    }
+}
 module.exports = router
