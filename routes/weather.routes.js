@@ -54,6 +54,7 @@ router.get('/info', async (req, res) => {
             })
             res.end()
         }
+        devices.setWeather(false)
     })
 })
 module.exports = router
