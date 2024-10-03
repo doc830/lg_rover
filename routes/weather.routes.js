@@ -1,6 +1,5 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices")
-const {SerialPort} = require("serialport")
 const router = Router()
 router.get('/info', async (req, res) => {
     let received = Buffer.alloc(0)
