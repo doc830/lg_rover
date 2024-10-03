@@ -24,15 +24,15 @@ router.get('/weather_on', (req, res) => {
                 "err": "000",
                 "info": "ok"
             })
+            res.end()
         }).catch((err)=>{
             res.json({
                 "err": "001",
                 "info": err
             })
+            res.end()
         })
-        res.end()
     }
-
 })
 router.get('/weather_off', (req, res) => {
 
