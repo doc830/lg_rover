@@ -29,8 +29,8 @@ router.get('/info', async (req, res) => {
         })
         res.end()
     })
+    let received = Buffer.alloc(0)
     devices.serialPort.on('data', (data)=> {
-        let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
             let wind_direction = Buffer.from([received[5],received[6]])
