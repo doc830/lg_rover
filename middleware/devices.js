@@ -63,12 +63,6 @@ class Devices {
             })
         })
     }
-    getVisibilityStatus () {
-        return this.visibility
-    }
-    getWeatherStatus () {
-        return this.weather
-    }
 
 }
 const devices = new Devices()
