@@ -20,7 +20,7 @@ class Devices {
                 case this.weather&&status:
                     return  reject (new Error("Погодная станция уже подключена!"))
                 case true:
-                    let port = await this.openPort({
+                    const port = await this.openPort({
                         path: "/dev/ttyUSB1",
                         dataBits: 8,
                         baudRate: 9600,
@@ -40,10 +40,13 @@ class Devices {
     }
     openPort (config) {
         return new Promise((resolve, reject)=> {
-            let port = new SerialPort(config, (err) => {
+            const port = new SerialPort(config, (err) => {
                 if (err) {
                     return reject (err)
                 }
+                port.on('open', ()=>{
+                    port.write(Buffer.from('010300000031841E', 'hex'))
+                })
                 resolve (port)
             })
         })
@@ -64,7 +67,6 @@ class Devices {
     getWeatherStatus () {
         return this.weather
     }
-
 
 }
 const devices = new Devices()
