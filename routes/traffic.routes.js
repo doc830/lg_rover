@@ -3,7 +3,7 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', async (req, res) => {
     await turn("A60301").then((response)=>{
-        res.json(response)
+        res.json({response})
     }).catch((err)=>{
         res.json({
             "err": "001",
@@ -11,7 +11,6 @@ router.get('/white', async (req, res) => {
         })
         res.end()
     })
-
 })
 router.get('/blue', (req, res) => {
     res.json({
