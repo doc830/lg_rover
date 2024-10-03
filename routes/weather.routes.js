@@ -10,6 +10,7 @@ router.get('/info', async (req, res) => {
         })
     })
     devices.serialPort.on('open', ()=>{
+        console.log('here')
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
     })
     // let port = "/dev/ttyUSB1"
