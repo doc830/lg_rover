@@ -32,11 +32,7 @@ router.get('/weather_on', (req, res) => {
         })
         res.end()
     }
-    res.json({
-        "err": "500",
-        "info": "Internal device error"
-    })
-    res.end()
+
 })
 router.get('/weather_off', (req, res) => {
 
