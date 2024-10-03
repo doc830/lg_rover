@@ -4,6 +4,7 @@ const router = Router()
 router.get('/white', async (req, res) => {
     await turn("A60301").then((response)=>{
         res.json({response})
+        devices.serialPort2.close()
     }).catch((err)=>{
         res.json({
             "err": "001",
@@ -52,7 +53,6 @@ async function turn(command) {
                 let header = Buffer.from([received[0]]).readUInt8(0)
                 let command = Buffer.from([received[1]]).readUInt8(0)
                 let param = Buffer.from([received[2]]).readUInt8(0)
-                devices.serialPort2.close()
                 let response = {
                     "header": header,
                     "command": command,
