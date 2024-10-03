@@ -3,12 +3,10 @@ const {SerialPort} = require("serialport")
 const router = Router()
 const devices = require('../middleware/devices')
 router.get('/weather_on',  async (req, res) => {
-    //1. Проверить не включен ли ДМДВ
-    //2. Проверить не включена ли уже станция
     await devices.setWeather(true).then(()=>{
         res.json ({
             "err": "000",
-            "info": "Погодная станция подключена"
+            "info": "Погодная станция подключена!"
         })
         res.end()
     }).catch(err => {
@@ -23,7 +21,7 @@ router.get('/weather_off', async (req, res) => {
     await devices.setWeather(false).then(()=>{
         res.json ({
             "err": "000",
-            "info": "Погодная станция отключена"
+            "info": "Погодная станция отключена!"
         })
         res.end()
     }).catch(err => {
@@ -34,19 +32,35 @@ router.get('/weather_off', async (req, res) => {
         res.end()
     })
 })
-router.get('/visibility_on', (req, res) => {
-
-    res.json({
-        "answer": "ok"
+router.get('/visibility_on', async (req, res) => {
+    await devices.setVisibility(true).then(()=>{
+        res.json ({
+            "err": "000",
+            "info": "ДМДВ подключен!"
+        })
+        res.end()
+    }).catch(err => {
+        res.json ({
+            "err": "001",
+            "info": err.message
+        })
+        res.end()
     })
-    res.end()
 })
-router.get('/visibility_off', (req, res) => {
-
-    res.json({
-        "answer": "ok"
+router.get('/visibility_off', async (req, res) => {
+    await devices.setVisibility(false).then(()=>{
+        res.json ({
+            "err": "000",
+            "info": "ДМДВ отключен!"
+        })
+        res.end()
+    }).catch(err => {
+        res.json ({
+            "err": "001",
+            "info": err.message
+        })
+        res.end()
     })
-    res.end()
 })
 router.get('/raw_command', (req, res) => {
     let command

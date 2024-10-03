@@ -8,37 +8,39 @@ class Devices {
     }
     setVisibility (status) {
         return new Promise(async (resolve, reject) => {
-            switch (status) {
-                case this.visibility&&!status:
-                    this.serialPort.close()
-                    this.visibility=false
-                    return resolve("ДМДВ отключен")
-                case this.weather&&status:
-                    return  reject (new Error("Подключена погодная станция!"))
-                case this.visibility&&status:
-                    return  reject (new Error("ДМДВ уже подключен!"))
-                case !this.visibility??status:
-                    await this.openPort({
-                        path: "/dev/ttyUSB1",
-                        dataBits: 8,
-                        baudRate: 9600,
-                        stopBits: 1,
-                        parity: "even"
-                    }).then(() => {
-                        this.weather = true
-                        return resolve ()
-                    }).catch((err) => {
-                        return  reject (err)
-                    })
-                    return
-                default:
-                    return reject(new Error('Undefined argument'))
+            if (this.weather===true){
+                return  reject (new Error("Подключен ДМДВ!"))
+            }
+            if (this.visibility===false&&status===false){
+                return reject(new Error("ДМДВ уже отключен!"))
+            }
+            if (this.visibility===true&&status===false){
+                this.serialPort.close()
+                this.visibility=false
+                return resolve()
+            }
+            if (this.visibility===true&&status===true){
+                return  reject (new Error("Уже уже подключен!"))
+            }
+            if (this.weather===false&&status===true){
+                await this.openPort({
+                    path: "/dev/ttyUSB1",
+                    dataBits: 7,
+                    baudRate: 9600,
+                    stopBits: 1,
+                    parity: "even"
+                }).then(() => {
+                    this.visibility = true
+                    return resolve ()
+                }).catch((err) => {
+                    return  reject (err)
+                })
             }
         })
     }
     async setWeather (status) {
         return new Promise(async (resolve, reject) => {
-            if (this.visibility===true&&status===true){
+            if (this.visibility===true){
                 return  reject (new Error("Подключен ДМДВ!"))
             }
             if (this.weather===false&&status===false){
