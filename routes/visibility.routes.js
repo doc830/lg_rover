@@ -17,18 +17,19 @@ router.get('/info', async (req, res) => {
     } else {
         res.json({
             "err": "001",
-            "info": "Visibility is unavailable"
+            "info": "COM port is unavailable"
         })
         res.end()
     }
     serialPort.on('open', ()=>{
         timeout = setTimeout(()=>{
             res.json({
+                "err": "001",
                 "info": "Visibility is unavailable"
             })
             serialPort.close()
             res.end()
-        }, 3000)
+        }, 5000)
     })
     let parser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
     parser.on('data', async (data)=>{
@@ -40,6 +41,7 @@ router.get('/info', async (req, res) => {
         let formattedTime = `${hours}:${minutes}:${seconds}`
         data = data.split(' ')
         res.json({
+            "err": "000",
             "visibility": data[5],
             "time": formattedTime
         })
@@ -49,7 +51,8 @@ router.get('/info', async (req, res) => {
     serialPort.on('error', (err) => {
         console.log(err)
         res.json({
-            "info": "Visibility is unavailable"
+            "err": "001",
+            "info": "COM port is unavailable"
         })
         res.end()
     })

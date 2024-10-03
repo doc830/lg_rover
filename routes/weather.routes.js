@@ -15,13 +15,19 @@ router.get('/info', async (req, res) => {
             parity: "even"
         })
     } else {
-        res.json("Weather station is unavailable")
+        res.json({
+            "err": "001",
+            "info": "COM port is unavailable"
+        })
         res.end()
     }
     serialPort.on('open', ()=>{
         serialPort.write(Buffer.from('010300000031841E', 'hex'))
         timeout = setTimeout(()=>{
-            res.json("Weather station is unavailable")
+            res.json({
+                "err": "001",
+                "info": "Weather station is unavailable"
+            })
             serialPort.close()
             res.end()
         }, 1000)
@@ -41,6 +47,7 @@ router.get('/info', async (req, res) => {
             let pressure = Buffer.from([received[21],received[22],received[19],received[20]])
             pressure = pressure.readFloatBE(0)
             res.json({
+                'err':'000',
                 'wind_direction': wind_direction,
                 'wind_speed': wind_speed,
                 'temperature': temperature,
@@ -53,7 +60,10 @@ router.get('/info', async (req, res) => {
     })
     serialPort.on('error', (err) => {
         console.log(err)
-        res.json("Weather station is unavailable")
+        res.json({
+            "err": "001",
+            "info": "COM port is unavailable"
+        })
         res.end()
     })
 })

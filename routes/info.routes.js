@@ -1,7 +1,59 @@
 const {Router} = require('express')
-const {SerialPort} = require("serialport");
+const {SerialPort} = require("serialport")
 const router = Router()
-router.get('/devices', (req, res) => {
+const devices = require('../middleware/devices')
+router.get('/weather_on', (req, res) => {
+    //1. Проверить не включен ли ДМДВ
+    //2. Проверить не включена ли уже станция
+    if (devices.getVisibilityStatus()) {
+        res.json({
+            "err": "001",
+            "info": "Подвключен ДМДВ"
+        })
+        res.end()
+    }
+    if (devices.getWeatherStatus()) {
+        res.json({
+            "err": "001",
+            "info": "Погодная уже станция подключена"
+        })
+        res.end()
+    } else {
+        devices.setWeather(true).then(()=>{
+            res.json({
+                "err": "000",
+                "info": "ok"
+            })
+        }).catch((err)=>{
+            res.json({
+                "err": "001",
+                "info": err
+            })
+        })
+        res.end()
+    }
+    res.json({
+        "err": "500",
+        "info": "Internal device error"
+    })
+    res.end()
+})
+router.get('/weather_off', (req, res) => {
+
+    res.json({
+        "answer": "ok"
+    })
+    res.end()
+})
+router.get('/visibility_on', (req, res) => {
+
+    res.json({
+        "answer": "ok"
+    })
+    res.end()
+})
+router.get('/visibility_off', (req, res) => {
+
     res.json({
         "answer": "ok"
     })
