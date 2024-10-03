@@ -9,7 +9,7 @@ class Devices {
     async setVisibility (status) {
         return new Promise(async (resolve, reject) => {
             if (this.weather===true){
-                return  reject (new Error("Подключен ДМДВ!"))
+                return  reject (new Error("Подключена погодная станция!"))
             }
             if (this.visibility===false&&status===false){
                 return reject(new Error("ДМДВ уже отключен!"))
