@@ -3,7 +3,7 @@ class Devices {
     constructor() {
         this.weather = false
         this.visibility = false
-        this.serialPort = {}
+        this.serialPort = ""
         this.serialPort2 = ""
     }
     setVisibility () {
