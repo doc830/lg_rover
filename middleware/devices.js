@@ -70,15 +70,28 @@ class Devices {
             }
         })
     }
-    openPort (config) {
-        return new Promise((resolve, reject)=> {
-            this.serialPort = new SerialPort(config, (err) => {
-                if (err) {
-                    return reject (err)
-                }
-                resolve ()
-            })
-        })
+    openPort (config, port) {
+        switch (port) {
+            case 1:
+                return new Promise((resolve, reject)=> {
+                    this.serialPort = new SerialPort(config, (err) => {
+                        if (err) {
+                            return reject (err)
+                        }
+                        resolve ()
+                    })
+                })
+            case 2:
+                return new Promise((resolve, reject)=> {
+                    this.serialPort2 = new SerialPort(config, (err) => {
+                        if (err) {
+                            return reject (err)
+                        }
+                        resolve ()
+                    })
+                })
+        }
+
     }
     async sendMessage (message, port) {
         await new Promise((resolve, reject) => {
