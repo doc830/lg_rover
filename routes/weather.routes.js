@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
-const devices = require("/middleware/devices")
+const devices = require("../middleware/devices")
 const router = Router()
 let serialPort
 router.get('/info', async (req, res) => {
