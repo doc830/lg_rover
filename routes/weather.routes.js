@@ -2,17 +2,10 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/info', async (req, res) => {
-    await devices.setWeather(true).then( async ()=>{
-        await devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort).then(()=>{
-            devices.setWeather(false)
-            res.end()
-        }).catch(err => {
-            res.json ({
-                "err": "001",
-                "info": err.message
-            })
-            res.end()
-        })
+    await devices.setWeather(true).then(()=>{
+       devices.serialPort.on('open', ()=> {
+           devices.serialPort.write(Buffer.from('010300000031841E', 'hex'))
+       })
     }).catch(err => {
         res.json ({
             "err": "001",
