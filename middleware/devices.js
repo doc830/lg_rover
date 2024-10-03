@@ -1,7 +1,7 @@
 const {SerialPort} = require("serialport");
 class Devices {
     constructor() {
-        this.weather = true
+        this.weather = false
         this.visibility = false
         this.serialPort = {}
         this.serialPort2 = ""
