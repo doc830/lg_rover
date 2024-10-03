@@ -3,24 +3,25 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/light', async (req, res) => {
     let received = Buffer.alloc(0)
-    let ligth
+    let light
+    console.log(req.query.s)
     switch (req.query.s) {
         case "white":
-            ligth = "A60301"
+            light = "A60301"
             return
         case "blue":
-            ligth = "A60302"
+            light = "A60302"
             return
         case "green":
-            ligth = "A60303"
+            light = "A60303"
             return
         case "yellow":
-            ligth = "A60304"
+            light = "A60304"
             return
         case "red":
-            ligth = "A60305"
+            light = "A60305"
             return
-        default: ligth = "A60500"
+        default: light = "A60500"
     }
     await turn("A604FF").then(()=>{}).catch((err)=>{
         res.json({
@@ -29,7 +30,7 @@ router.get('/light', async (req, res) => {
         })
         res.end()
     })
-    await turn(ligth).then(()=>{}).catch((err)=>{
+    await turn(light).then(()=>{}).catch((err)=>{
         res.json({
             "err": "001",
             "info": err.message
@@ -41,12 +42,12 @@ router.get('/light', async (req, res) => {
         let header = Buffer.from([received[0]]).readUInt8(0)
         let code = Buffer.from([received[1]]).readUInt8(0)
         let param = Buffer.from([received[2]]).readUInt8(0)
+        devices.serialPort2.close()
         res.json({
             "header": header,
             "code": code,
             "light ": param
         })
-        devices.serialPort2.close()
         res.end()
     })
 })
