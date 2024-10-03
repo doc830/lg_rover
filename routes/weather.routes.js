@@ -14,7 +14,7 @@ router.get('/info', async (req, res) => {
     //
     // }
     await devices.setWeather(true).then(async ()=>{
-        await devices.sendMessage(Buffer.from('010300000031841E', 'hex'))
+        await devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort)
             .then()
             .catch((err)=>{
                 res.json({

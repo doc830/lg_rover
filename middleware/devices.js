@@ -49,13 +49,13 @@ class Devices {
             })
         })
     }
-    async sendMessage (message) {
+    async sendMessage (message, port) {
         await new Promise((resolve, reject) => {
-            this.serialPort.write(message, err => {
+            port.write(message, err => {
                 if (err) {
                     return reject (new Error(err.message))
                 }
-                this.serialPort.drain((err) =>{
+                port.drain((err) =>{
                     if (err) {
                         return reject (new Error(err.message))
                     }
