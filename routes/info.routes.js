@@ -13,6 +13,7 @@ router.get('/weather_on',  async (req, res) => {
         })
         res.end()
     } catch (err) {
+        console.log(err)
         res.json ({
             "err": "001",
             "info": err

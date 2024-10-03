@@ -14,7 +14,7 @@ class Devices {
            await this.openPort(8).then(() => {
                return true
             }).catch((err) => {
-               console.log(err)
+
                return new Error(err.message)
            })
         }
