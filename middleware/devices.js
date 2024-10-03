@@ -61,7 +61,7 @@ class Devices {
                     baudRate: 9600,
                     stopBits: 1,
                     parity: "even"
-                }).then(() => {
+                }, this.serialPort).then(() => {
                     this.weather = true
                     return resolve ()
                 }).catch((err) => {
@@ -70,9 +70,9 @@ class Devices {
             }
         })
     }
-    openPort (config) {
+    openPort (config, port) {
         return new Promise((resolve, reject)=> {
-            this.serialPort = new SerialPort(config, (err) => {
+            port = new SerialPort(config, (err) => {
                 if (err) {
                     return reject (err)
                 }
