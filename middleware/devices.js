@@ -38,33 +38,33 @@ class Devices {
     }
     async setWeather (status) {
         return new Promise(async (resolve, reject) => {
-            switch (status) {
-                case !this.weather&&!status:
-                    return resolve("Погодная станция уже отключена")
-                case this.weather&&!status:
-                    this.serialPort.close()
-                    this.weather=false
-                    return resolve("Погодная станция отключена")
-                case this.visibility&&status:
-                    return  reject (new Error("Подключен ДМДВ!"))
-                case this.weather&&status:
-                    return  reject (new Error("Погодная станция уже подключена!"))
-                case true:
-                    await this.openPort({
-                        path: "/dev/ttyUSB1",
-                        dataBits: 8,
-                        baudRate: 9600,
-                        stopBits: 1,
-                        parity: "even"
-                    }).then(() => {
-                        this.weather = true
-                        return resolve ()
-                    }).catch((err) => {
-                        return  reject (err)
-                    })
-                    return
-                default:
-                    return reject(new Error('Undefined argument'))
+            if (this.visibility===true&&status===true){
+                return  reject (new Error("Подключен ДМДВ!"))
+            }
+            if (this.weather===false&&status===false){
+                return resolve("Погодная станция уже отключена")
+            }
+            if (this.weather===true&&status===false){
+                this.serialPort.close()
+                this.weather=false
+                return resolve("Погодная станция отключена")
+            }
+            if (this.weather===true&&status===true){
+                return  reject (new Error("Погодная станция уже подключена!"))
+            }
+            if (this.weather===false&&status===true){
+                await this.openPort({
+                    path: "/dev/ttyUSB1",
+                    dataBits: 8,
+                    baudRate: 9600,
+                    stopBits: 1,
+                    parity: "even"
+                }).then(() => {
+                    this.weather = true
+                    return resolve ()
+                }).catch((err) => {
+                    return  reject (err)
+                })
             }
         })
     }
