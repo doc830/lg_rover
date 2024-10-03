@@ -3,7 +3,7 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', async (req, res) => {
     let received = Buffer.alloc(0)
-    await turn().catch((err)=>{
+    await turn("A60301").catch((err)=>{
         res.json({
             "err": "001",
             "info": err.message
