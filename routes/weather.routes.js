@@ -3,6 +3,7 @@ const devices = require("../middleware/devices")
 const {SerialPort} = require("serialport")
 const router = Router()
 router.get('/info', async (req, res) => {
+    let received = Buffer.alloc(0)
     // if (!devices.weather) {
     //     res.json({
     //         "err": "001",
@@ -29,7 +30,6 @@ router.get('/info', async (req, res) => {
         })
         res.end()
     })
-    let received = Buffer.alloc(0)
     devices.serialPort.on('data', (data)=> {
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {

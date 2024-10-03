@@ -14,6 +14,7 @@ class Devices {
             switch (status) {
                 case false:
                     this.serialPort.close()
+                    this.weather=false
                     return resolve("Погодная станция отключена")
                 case status&&this.visibility:
                     return  reject (new Error("Подключен ДМДВ!"))
