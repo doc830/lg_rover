@@ -12,7 +12,7 @@ router.get('/weather_on', (req, res) => {
         })
         res.end()
     }
-    if (!devices.getWeatherStatus()) {
+    if (false) {
         res.json({
             "err": "001",
             "info": "Погодная уже станция подключена"
