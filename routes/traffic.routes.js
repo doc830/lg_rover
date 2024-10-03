@@ -4,7 +4,6 @@ const router = Router()
 router.get('/light', async (req, res) => {
     let received = Buffer.alloc(0)
     let light
-    console.log(req.query.s)
     switch (req.query.s) {
         case "white":
             light = "A60301"
