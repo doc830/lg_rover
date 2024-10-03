@@ -1,7 +1,26 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
+const devices = require("../middleware/devices");
 const router = Router()
 let serialPort
+router.get('/on', async (req,res) => {
+    await devices.setWeather(true).then(()=>{
+        res.json ({
+            "err": "000",
+            "info": "Weather station turned on"
+        })
+        res.end()
+    }).catch(err => {
+        res.json ({
+            "err": "001",
+            "info": err.message
+        })
+        res.end()
+    })
+})
+router.get('/off', async (req,res) => {
+
+})
 router.get('/info', async (req, res) => {
     let port = "/dev/ttyUSB1"
     let received = Buffer.alloc(0)
