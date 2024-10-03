@@ -28,7 +28,7 @@ class Devices {
                         parity: "even"
                     }).then(() => {
                         this.weather = status
-                        return resolve (port)
+                        return resolve ()
                     }).catch((err) => {
                         return  reject (err)
                     })
@@ -47,6 +47,7 @@ class Devices {
                 port.on('open', ()=>{
                     port.write(Buffer.from('010300000031841E', 'hex'))
                 })
+
                 resolve (port)
             })
         })
