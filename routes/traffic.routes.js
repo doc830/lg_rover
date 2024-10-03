@@ -4,23 +4,8 @@ const router = Router()
 router.get('/light', async (req, res) => {
     let received = Buffer.alloc(0)
     let light
-    switch (req.query.s.toString()) {
-        case "white":
-            light = "A60301"
-            return
-        case "blue":
-            light = "A60302"
-            return
-        case "green":
-            light = "A60303"
-            return
-        case "yellow":
-            light = "A60304"
-            return
-        case "red":
-            light = "A60305"
-            return
-        default: light = "A60500"
+    if (req.query.s === "white") {
+        light = "A60301"
     }
     console.log(light)
     await turn("A604FF").then(()=>{}).catch((err)=>{
