@@ -29,7 +29,7 @@ class Devices {
                     baudRate: 9600,
                     stopBits: 1,
                     parity: "even"
-                }).then(() => {
+                }, 1).then(() => {
                     this.visibility = true
                     return resolve ()
                 }).catch((err) => {
@@ -61,7 +61,7 @@ class Devices {
                     baudRate: 9600,
                     stopBits: 1,
                     parity: "even"
-                }).then(() => {
+                }, 1).then(() => {
                     this.weather = true
                     return resolve ()
                 }).catch((err) => {
