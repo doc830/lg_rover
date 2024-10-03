@@ -1,15 +1,12 @@
 const {Router} = require('express')
-const {SerialPort} = require("serialport")
 const devices = require("../middleware/devices");
 const router = Router()
-let serialPort
-router.get('/on', async (req,res) => {
-    await devices.setWeather(true).then(()=>{
-        res.json ({
-            "err": "000",
-            "info": "Weather station turned on"
+router.get('/info', async (req, res) => {
+    await devices.setWeather(true).then( async ()=>{
+        await devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort).then(()=>{
+            devices.serialPort.close()
+            res.end()
         })
-        res.end()
     }).catch(err => {
         res.json ({
             "err": "001",
@@ -17,44 +14,10 @@ router.get('/on', async (req,res) => {
         })
         res.end()
     })
-})
-router.get('/off', async (req,res) => {
-
-})
-router.get('/info', async (req, res) => {
-    let port = "/dev/ttyUSB1"
-    let received = Buffer.alloc(0)
-    let timeout
-    if (!checkPort()) {
-        serialPort = new SerialPort({
-            path: port,
-            dataBits: 8,
-            baudRate: 9600,
-            stopBits: 1,
-            parity: "even"
-        })
-    } else {
-        res.json({
-            "err": "001",
-            "info": "COM port is unavailable"
-        })
-        res.end()
-    }
-    serialPort.on('open', ()=>{
-        serialPort.write(Buffer.from('010300000031841E', 'hex'))
-        timeout = setTimeout(()=>{
-            res.json({
-                "err": "001",
-                "info": "Weather station is unavailable"
-            })
-            serialPort.close()
-            res.end()
-        }, 1000)
-    })
-    serialPort.on('data', (data)=> {
+    devices.serialPort.on('data', (data)=> {
+        let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
         if (received.length ===  103) {
-            clearTimeout(timeout)
             let wind_direction = Buffer.from([received[5],received[6]])
             wind_direction = wind_direction.readUInt16BE(0)
             let wind_speed = Buffer.from([received[9],received[10],received[7],received[8]])
@@ -74,21 +37,7 @@ router.get('/info', async (req, res) => {
                 'pressure': pressure
             })
             res.end()
-            serialPort.close()
         }
     })
-    serialPort.on('error', (err) => {
-        console.log(err)
-        res.json({
-            "err": "001",
-            "info": "COM port is unavailable"
-        })
-        res.end()
-    })
 })
-function checkPort() {
-    if (serialPort) {
-        return serialPort.isOpen
-    }
-}
 module.exports = router

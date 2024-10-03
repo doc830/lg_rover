@@ -50,27 +50,12 @@ class Devices {
     }
     async sendMessage (message, port) {
         await new Promise((resolve, reject) => {
-            switch (port) {
-                case 1:
-                    this.serialPort.write(message, err => {
-                        if (err) {
-                            return reject (new Error(err.message))
-                        }
-                        resolve()
-                    })
-                    return
-                case 2:
-                    this.serialPort2.write(message, err => {
-                        if (err) {
-                            return reject (new Error(err.message))
-                        }
-                        resolve()
-                    })
-                    return
-                default:
-                    return reject (new Error("Unavailable port"))
-            }
-
+            port.write(message, err => {
+                if (err) {
+                    return reject (new Error(err.message))
+                }
+                resolve()
+            })
         })
     }
     getVisibilityStatus () {
@@ -79,6 +64,7 @@ class Devices {
     getWeatherStatus () {
         return this.weather
     }
+
 }
 const devices = new Devices()
 module.exports = devices
