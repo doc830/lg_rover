@@ -3,7 +3,7 @@ class Devices {
     constructor() {
         this.weather = true
         this.visibility = false
-        this.serialPort = ""
+        this.serialPort = {}
         this.serialPort2 = ""
     }
     setVisibility () {
@@ -14,7 +14,6 @@ class Devices {
             switch (status) {
                 case false:
                     this.serialPort.close()
-
                     return resolve("Погодная станция отключена")
                 case status&&this.visibility:
                     return  reject (new Error("Подключен ДМДВ!"))
@@ -28,7 +27,7 @@ class Devices {
                         stopBits: 1,
                         parity: "even"
                     }).then(() => {
-                        this.weather = status
+                        this.weather = true
                         return resolve ()
                     }).catch((err) => {
                         return  reject (err)
