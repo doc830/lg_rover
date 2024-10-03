@@ -42,12 +42,12 @@ class Devices {
                 return  reject (new Error("Подключен ДМДВ!"))
             }
             if (this.weather===false&&status===false){
-                return resolve("Погодная станция уже отключена")
+                return reject(new Error("Погодная станция уже отключена!"))
             }
             if (this.weather===true&&status===false){
                 this.serialPort.close()
                 this.weather=false
-                return resolve("Погодная станция отключена!")
+                return resolve()
             }
             if (this.weather===true&&status===true){
                 return  reject (new Error("Погодная станция уже подключена!"))
