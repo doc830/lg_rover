@@ -2,11 +2,20 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', async (req, res) => {
+    let received = Buffer.alloc(0)
     await turn("A60301").then(()=>{
-        let a = listen()
-        res.json({
-            a
-        })
+        devices.serialPort2.on('data', (data)=> {
+            received = Buffer.concat([received,  Buffer.from(data, 'hex')])
+            let header = Buffer.from([received[0]]).readUInt8(0)
+            let charge = Buffer.from([received[1]]).readUInt8(0)
+            let param = Buffer.from([received[2]]).readUInt8(0)
+            res.json({
+                "header": header,
+                "charge": charge,
+                "param ": param
+            })
+            devices.serialPort2.close()
+            res.end()
     }).catch((err)=>{
         res.json({
             "err": "001",
@@ -56,18 +65,6 @@ async function turn(command) {
     })
 }
 function listen() {
-    let received = Buffer.alloc(0)
-    devices.serialPort2.on('data', (data)=> {
-        received = Buffer.concat([received,  Buffer.from(data, 'hex')])
-        let header = Buffer.from([received[0]]).readUInt8(0)
-        let command = Buffer.from([received[1]]).readUInt8(0)
-        let param = Buffer.from([received[2]]).readUInt8(0)
-        devices.serialPort2.close()
-        return  ( {
-            "header": header,
-            "command": command,
-            "light": param
-        })
-    })
+
 }
 module.exports = router
