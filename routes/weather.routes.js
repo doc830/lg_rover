@@ -12,15 +12,25 @@ router.get('/info', async (req, res) => {
     // } else {
     //
     // }
-    await devices.sendMessage(Buffer.from('010300000031841E', 'hex'))
-        .then()
-        .catch((err)=>{
-            res.json({
-                "err": "001",
-                "info": err.message
+    await devices.setWeather(true).then(async ()=>{
+        await devices.sendMessage(Buffer.from('010300000031841E', 'hex'))
+            .then()
+            .catch((err)=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+                res.end()
             })
-            res.end()
+        res.end()
+    }).catch(err => {
+        res.json ({
+            "err": "001",
+            "info": err.message
         })
+        res.end()
+    })
+
     devices.serialPort.on('data', (data)=> {
         let received = Buffer.alloc(0)
         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
