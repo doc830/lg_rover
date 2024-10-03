@@ -5,6 +5,7 @@ router.get('/info', async (req, res) => {
     await devices.setWeather(true).then(()=>{
        devices.serialPort.on('open', ()=> {
            devices.serialPort.write(Buffer.from('010300000031841E', 'hex'))
+
        })
     }).catch(err => {
         res.json ({
@@ -35,6 +36,7 @@ router.get('/info', async (req, res) => {
                 'humidity': humidity,
                 'pressure': pressure
             })
+            devices.serialPort.close()
             res.end()
         }
     })

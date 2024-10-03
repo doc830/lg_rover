@@ -19,7 +19,7 @@ class Devices {
                     return  reject (new Error("Подключен ДМДВ!"))
                 case this.weather&&status:
                     return  reject (new Error("Погодная станция уже подключена!"))
-                case !this.weather&&status:
+                case true:
                     await this.openPort({
                         path: "/dev/ttyUSB1",
                         dataBits: 8,
