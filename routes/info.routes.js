@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const {SerialPort} = require("serialport")
 const router = Router()
-const devices = require('../middleware/devices')
+//const devices = require('../middleware/devices')
 router.get('/weather_on',  async (req, res) => {
     //1. Проверить не включен ли ДМДВ
     //2. Проверить не включена ли уже станция
