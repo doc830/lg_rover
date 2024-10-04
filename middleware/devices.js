@@ -6,7 +6,7 @@ class Devices {
         this.serialPort = ""
         this.serialPort2 = ""
     }
-    async setVisibility (status) {
+     setVisibility (status) {
         return new Promise(async (resolve, reject) => {
             if (this.weather===true){
                 return  reject (new Error("Подключена погодная станция!"))
@@ -23,7 +23,7 @@ class Devices {
                 return  reject (new Error("Уже уже подключен!"))
             }
             if (this.weather===false&&status===true){
-                await this.openPort({
+                 this.openPort({
                     path: "/dev/ttyUSB1",
                     dataBits: 7,
                     baudRate: 9600,
