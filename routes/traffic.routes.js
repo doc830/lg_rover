@@ -30,10 +30,10 @@ router.get('/white', (req, res) => {
         res.end()
     })
 })
-async function turn(command) {
+function turn(command) {
     let received = Buffer.alloc(0)
-    return new Promise(async (resolve, reject) => {
-        await devices.openPort({
+    return new Promise( (resolve, reject) => {
+         devices.openPort({
             path: "/dev/ttyS1",
             dataBits: 8,
             baudRate: 115200,
