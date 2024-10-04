@@ -1,10 +1,10 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
-router.get('/white', async (req, res) => {
+router.get('/white', (req, res) => {
     //1. Отправить команду
     //2. Прослушать
-    await turn("A604FF").then( (result)=>{
+    turn("A604FF").then((result)=>{
         res.json(result)
         res.end()
     }).catch((err)=>{
@@ -14,29 +14,10 @@ router.get('/white', async (req, res) => {
         })
         res.end()
     })
-
 })
-async function listen(res) {
-    let received = Buffer.alloc(0)
-    await new Promise((resolve) => {
-        devices.serialPort2.on('data', (data)=> {
-            received = Buffer.concat([received, Buffer.from(data, 'hex')])
-            let header = Buffer.from([received[0]]).readUInt8(0)
-            let code = Buffer.from([received[1]]).readUInt8(0)
-            let param = Buffer.from([received[2]]).readUInt8(0)
-            res.json({
-                "header": header,
-                "code": code,
-                "light ": param
-            })
-            res.end()
-            resolve()
-        })
-    })
-}
 async function turn(command) {
     let received = Buffer.alloc(0)
-    return await new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         await devices.openPort({
             path: "/dev/ttyS1",
             dataBits: 8,
@@ -54,7 +35,6 @@ async function turn(command) {
                 }
                 devices.serialPort2.close()
                 resolve(received)
-                console.log(received)
             })
         }).catch(err => {
             reject (new Error(err))
