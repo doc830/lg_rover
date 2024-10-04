@@ -2,8 +2,8 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
-    turn("A60304").then(()=>{
-
+    turn("A60304").then((received)=>{
+        res.json(received)
         res.end()
     }).catch((err)=>{
         res.json({
@@ -25,9 +25,9 @@ function turn(command) {
         },2).then(()=>{
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
                  devices.serialPort2.on('data', (data)=>{
-                     console.log(data)
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
                      if (received.length === 3 ) {
+                         console.log(received)
                          received = {
                              "header": Buffer.from([received[0]]).readUInt8(0),
                              "code": Buffer.from([received[1]]).readUInt8(0),
