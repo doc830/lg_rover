@@ -2,7 +2,7 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
-    turn("A60301").then(()=>{
+    turn("A60304").then(()=>{
         res.end()
     }).catch((err)=>{
         res.json({
@@ -33,7 +33,6 @@ function turn(command) {
                      }
                      devices.serialPort2.close()
                      resolve(received)
-
                  })
              })
         }).catch(err => {
