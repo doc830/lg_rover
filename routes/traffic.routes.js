@@ -4,15 +4,14 @@ const router = Router()
 router.get('/white', async (req, res) => {
     //1. Отправить команду
     //2. Прослушать
-    await turn("A604FF").then(async (value)=>{
-        res.json(value)
+    res.json(await turn("A604FF").then(async ()=>{
     }).catch((err)=>{
         res.json({
             "err": "001",
             "info": err.message
         })
         res.end()
-    })
+    }))
 })
 async function listen(res) {
     let received = Buffer.alloc(0)
@@ -45,11 +44,16 @@ async function turn(command) {
             await devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2)
             devices.serialPort2.on('data', (data)=> {
                 received = Buffer.concat([received, Buffer.from(data, 'hex')])
-                let header = Buffer.from([received[0]]).readUInt8(0)
-                let code = Buffer.from([received[1]]).readUInt8(0)
-                let param = Buffer.from([received[2]]).readUInt8(0)
+                received = {
+                    "header": Buffer.from([received[0]]).readUInt8(0),
+                    "code": Buffer.from([received[1]]).readUInt8(0),
+                    "param": Buffer.from([received[2]]).readUInt8(0)
+                }
+                // let header = Buffer.from([received[0]]).readUInt8(0)
+                // let code = Buffer.from([received[1]]).readUInt8(0)
+                // let param = Buffer.from([received[2]]).readUInt8(0)
                 devices.serialPort2.close()
-                return resolve(param)
+                return resolve(received)
             })
         }).catch(err => {
             reject (new Error(err))
