@@ -107,6 +107,28 @@ class Devices {
                 })
         }
     }
+    closePort (port) {
+        switch (port) {
+            case 1:
+                return new Promise((resolve, reject)=> {
+                    this.serialPort.close((err)=>{
+                        if (err) {
+                            return reject (err)
+                        }
+                        resolve()
+                    })
+                })
+            case 2:
+                return new Promise((resolve, reject)=> {
+                    this.serialPort2.close((err)=>{
+                        if (err) {
+                            return reject (err)
+                        }
+                        resolve()
+                    })
+                })
+        }
+    }
 }
 const devices = new Devices()
 module.exports = devices

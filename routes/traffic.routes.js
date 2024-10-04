@@ -3,6 +3,7 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
     turn("A60304").then(()=>{
+
         res.end()
     }).catch((err)=>{
         res.json({
@@ -21,18 +22,21 @@ function turn(command) {
             baudRate: 115200,
             stopBits: 1,
             parity: "even"
-        },2).then( ()=>{
+        },2).then(()=>{
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
                  devices.serialPort2.on('data', (data)=>{
                      console.log(data)
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
-                     received = {
-                         "header": Buffer.from([received[0]]).readUInt8(0),
-                         "code": Buffer.from([received[1]]).readUInt8(0),
-                         "param": Buffer.from([received[2]]).readUInt8(0)
+                     if (received.length === 3 ) {
+                         received = {
+                             "header": Buffer.from([received[0]]).readUInt8(0),
+                             "code": Buffer.from([received[1]]).readUInt8(0),
+                             "param": Buffer.from([received[2]]).readUInt8(0)
+                         }
+                         devices.closePort(2).then(()=>{
+                             resolve(received)
+                         })
                      }
-                     devices.serialPort2.close()
-                     resolve(received)
                  })
              })
         }).catch(err => {
