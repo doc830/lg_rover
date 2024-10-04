@@ -35,8 +35,8 @@ router.get('/weather_off',  (req, res) => {
         res.end()
     })
 })
-router.get('/visibility_on', async (req, res) => {
-    await devices.setVisibility(true).then(()=>{
+router.get('/visibility_on',  (req, res) => {
+     devices.setVisibility(true).then(()=>{
         res.json ({
             "err": "000",
             "info": "ДМДВ подключен!"
@@ -50,14 +50,14 @@ router.get('/visibility_on', async (req, res) => {
         res.end()
     })
     let parser = devices.serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
-    parser.on('data', async (data)=>{
+    parser.on('data',  (data)=>{
         let currentDate = new Date();
         let hours = currentDate.getHours();
         let minutes = currentDate.getMinutes();
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
         data = data.split(' ')
-        await axios.post(config.get('gw') + "/api/rover/visibility", {
+        axios.post(config.get('gw') + "/api/rover/visibility", {
             "type": "visibility",
             "meters": data[5],
             "time": formattedTime
@@ -66,8 +66,8 @@ router.get('/visibility_on', async (req, res) => {
         })
     })
 })
-router.get('/visibility_off', async (req, res) => {
-    await devices.setVisibility(false).then(()=>{
+router.get('/visibility_off',  (req, res) => {
+     devices.setVisibility(false).then(()=>{
         res.json ({
             "err": "000",
             "info": "ДМДВ отключен!"
@@ -81,16 +81,27 @@ router.get('/visibility_off', async (req, res) => {
         res.end()
     })
 })
-router.get('/battery', async (req, res) => {
+router.get('/battery',  (req, res) => {
     let received = Buffer.alloc(0)
-    await devices.openPort({
+     devices.openPort({
             path: "/dev/ttyS1",
             dataBits: 8,
             baudRate: 115200,
             stopBits: 1,
             parity: "even"
-    },2).then(async ()=>{
-        await devices.sendMessage(Buffer.from('A60100', 'hex'), devices.serialPort2)
+    },2).then(()=>{
+        devices.sendMessage(Buffer.from('A60100', 'hex'), devices.serialPort2).then(() => {
+            devices.serialPort2.on('data', (data)=> {
+                received = Buffer.concat([received,  Buffer.from(data, 'hex')])
+                received = {
+                    "header": Buffer.from([received[0]]).readUInt8(0),
+                    "charge": Buffer.from([received[1]]).readUInt8(0),
+                    "param": Buffer.from([received[2]]).readUInt8(0)
+                }
+                res.json(received)
+                devices.serialPort2.close()
+                res.end()
+        })
     }).catch(err => {
         res.json({
             "err": "001",
@@ -98,18 +109,7 @@ router.get('/battery', async (req, res) => {
         })
         res.end()
     })
-    devices.serialPort2.on('data', (data)=> {
-        received = Buffer.concat([received,  Buffer.from(data, 'hex')])
-        let header = Buffer.from([received[0]]).readUInt8(0)
-        let charge = Buffer.from([received[1]]).readUInt8(0)
-        let param = Buffer.from([received[2]]).readUInt8(0)
-        res.json({
-            "header": header,
-            "charge": charge,
-            "param ": param
-        })
-        devices.serialPort2.close()
-        res.end()
+
     })
 })
 router.get('/raw_command', (req, res) => {

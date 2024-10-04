@@ -2,8 +2,6 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
-    //1. Отправить команду
-    //2. Прослушать
     turn("A604FF").then(()=>{
         turn("A60301").then((result)=> {
             res.json(result)
@@ -35,9 +33,9 @@ function turn(command) {
                          "code": Buffer.from([received[1]]).readUInt8(0),
                          "param": Buffer.from([received[2]]).readUInt8(0)
                      }
-                     devices.serialPort2.close(()=>{
-                         resolve(received)
-                     })
+                     console.log(received)
+                     devices.serialPort2.close()
+                     resolve(received)
                  })
              })
         }).catch(err => {
