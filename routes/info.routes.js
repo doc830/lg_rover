@@ -48,11 +48,9 @@ router.get('/visibility_on', async (req, res) => {
             "info": err.message
         })
         res.end()
-        return
     })
     let parser = devices.serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
     parser.on('data', async (data)=>{
-        console.log(data)
         let currentDate = new Date();
         let hours = currentDate.getHours();
         let minutes = currentDate.getMinutes();
