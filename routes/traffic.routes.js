@@ -2,11 +2,8 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
-    turn("A604FF").then(()=>{
-        turn("A60301").then((result)=> {
-            res.json(result)
-            res.end()
-        })
+    turn("A60301").then(()=>{
+
     }).catch((err)=>{
         res.json({
             "err": "001",
