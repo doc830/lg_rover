@@ -5,8 +5,8 @@ const devices = require('../middleware/devices')
 const {ReadlineParser} = require("@serialport/parser-readline");
 const axios = require("axios");
 const config = require("config");
-router.get('/weather_on',  async (req, res) => {
-    await devices.setWeather(true).then(()=>{
+router.get('/weather_on',   (req, res) => {
+     devices.setWeather(true).then(()=>{
         res.json ({
             "err": "000",
             "info": "Погодная станция подключена!"
@@ -20,8 +20,8 @@ router.get('/weather_on',  async (req, res) => {
         res.end()
     })
 })
-router.get('/weather_off', async (req, res) => {
-    await devices.setWeather(false).then(()=>{
+router.get('/weather_off',  (req, res) => {
+     devices.setWeather(false).then(()=>{
         res.json ({
             "err": "000",
             "info": "Погодная станция отключена!"

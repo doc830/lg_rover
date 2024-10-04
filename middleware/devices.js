@@ -38,8 +38,8 @@ class Devices {
             }
         })
     }
-    async setWeather (status) {
-        return new Promise(async (resolve, reject) => {
+     setWeather (status) {
+        return new Promise( (resolve, reject) => {
             if (this.visibility===true){
                 return  reject (new Error("Подключен ДМДВ!"))
             }
@@ -55,7 +55,7 @@ class Devices {
                 return  reject (new Error("Погодная станция уже подключена!"))
             }
             if (this.weather===false&&status===true){
-                await this.openPort({
+                this.openPort({
                     path: "/dev/ttyUSB1",
                     dataBits: 8,
                     baudRate: 9600,
