@@ -14,6 +14,12 @@ router.get('/white', (req, res) => {
             turn("A60301").then((result)=>{
                 res.json(result)
                 res.end()
+            }).catch(err=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+                res.end()
             })
         }
     }).catch((err)=>{
