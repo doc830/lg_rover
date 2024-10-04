@@ -3,6 +3,7 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
     turn("A604FF").then((received)=>{
+        console.log(received.param)
         if (received.param === "FF") {
             console.log(received.param)
             turn("A60301").then((received)=>{
@@ -36,7 +37,6 @@ function turn(command) {
                  devices.serialPort2.on('data', (data)=>{
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
                      if (received.length === 3 ) {
-                         console.log(received)
                          received = {
                              "header": Buffer.from([received[0]]).readUInt8(0),
                              "code": Buffer.from([received[1]]).readUInt8(0),
