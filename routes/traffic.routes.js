@@ -16,8 +16,6 @@ router.get('/white', (req, res) => {
                 res.end()
             })
         }
-        res.json(result)
-        res.end()
     }).catch((err)=>{
         res.json({
             "err": "001",
