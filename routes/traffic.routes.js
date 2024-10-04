@@ -5,6 +5,17 @@ router.get('/white', (req, res) => {
     //1. Отправить команду
     //2. Прослушать
     turn("A604FF").then((result)=>{
+        if (result.param === "FF") {
+            res.json({
+                "err": "001",
+                "info": "Ошибка отключения сигналов светофора"
+            })
+        } else {
+            turn("A60301").then((result)=>{
+                res.json(result)
+                res.end()
+            })
+        }
         res.json(result)
         res.end()
     }).catch((err)=>{

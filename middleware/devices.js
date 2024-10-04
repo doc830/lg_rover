@@ -7,7 +7,7 @@ class Devices {
         this.serialPort2 = ""
     }
      setVisibility (status) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise( (resolve, reject) => {
             if (this.weather===true){
                 return  reject (new Error("Подключена погодная станция!"))
             }
