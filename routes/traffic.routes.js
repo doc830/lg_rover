@@ -26,18 +26,20 @@ function turn(command) {
             baudRate: 115200,
             stopBits: 1,
             parity: "even"
-        },2).then(async ()=>{
-            await devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2)
-            devices.serialPort2.on('data', (data)=> {
-                received = Buffer.concat([received, Buffer.from(data, 'hex')])
-                received = {
-                    "header": Buffer.from([received[0]]).readUInt8(0),
-                    "code": Buffer.from([received[1]]).readUInt8(0),
-                    "param": Buffer.from([received[2]]).readUInt8(0)
-                }
-                devices.serialPort2.close()
-                resolve(received)
-            })
+        },2).then( ()=>{
+             devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
+                 devices.serialPort2.on('data', (data)=> {
+                     received = Buffer.concat([received, Buffer.from(data, 'hex')])
+                     received = {
+                         "header": Buffer.from([received[0]]).readUInt8(0),
+                         "code": Buffer.from([received[1]]).readUInt8(0),
+                         "param": Buffer.from([received[2]]).readUInt8(0)
+                     }
+                     devices.serialPort2.close(()=>{
+                         resolve(received)
+                     })
+                 })
+             })
         }).catch(err => {
             reject (new Error(err))
         })
