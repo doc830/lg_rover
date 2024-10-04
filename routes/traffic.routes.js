@@ -4,7 +4,6 @@ const router = Router()
 router.get('/white', (req, res) => {
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
-            console.log(received.param)
             turn("A60301").then((received)=>{
                 res.json(received)
                 res.end()
@@ -17,7 +16,7 @@ router.get('/white', (req, res) => {
         }
     }).catch((err)=>{
         res.json({
-            "err": "001",
+            "err": "002",
             "info": err.message
         })
     })
