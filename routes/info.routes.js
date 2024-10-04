@@ -98,8 +98,8 @@ router.get('/battery',  (req, res) => {
                     "charge": Buffer.from([received[1]]).readUInt8(0),
                     "param": Buffer.from([received[2]]).readUInt8(0)
                 }
-                res.json(received)
                 devices.serialPort2.close()
+                res.json(received)
                 res.end()
         })
     }).catch(err => {
