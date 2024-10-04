@@ -49,7 +49,7 @@ async function turn(command) {
                 let code = Buffer.from([received[1]]).readUInt8(0)
                 let param = Buffer.from([received[2]]).readUInt8(0)
                 devices.serialPort2.close()
-                resolve(param)
+                return resolve(param)
             })
         }).catch(err => {
             reject (new Error(err))
