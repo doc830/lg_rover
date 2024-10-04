@@ -2,8 +2,12 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', async (req, res) => {
+    //1. Отправить команду
+    //2. Прослушать
     await turn("A60301").then(async ()=>{
-        await listen(res).then().catch((err)=>{
+        await listen(res).then(()=>{
+            devices.serialPort2.close()
+        }).catch((err)=>{
             res.json({
                 "err": "001",
                 "info": err.message
@@ -16,17 +20,15 @@ router.get('/white', async (req, res) => {
         })
         res.end()
     })
-
 })
 async function listen(res) {
     let received = Buffer.alloc(0)
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
         devices.serialPort2.on('data', (data)=> {
             received = Buffer.concat([received, Buffer.from(data, 'hex')])
             let header = Buffer.from([received[0]]).readUInt8(0)
             let code = Buffer.from([received[1]]).readUInt8(0)
             let param = Buffer.from([received[2]]).readUInt8(0)
-            devices.serialPort2.close()
             res.json({
                 "header": header,
                 "code": code,

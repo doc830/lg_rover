@@ -70,6 +70,21 @@ class Devices {
             }
         })
     }
+    async sendMessage (message, port) {
+        await new Promise((resolve, reject) => {
+            port.write(message, err => {
+                if (err) {
+                    return reject (new Error(err.message))
+                }
+                port.drain((err) =>{
+                    if (err) {
+                        return reject (new Error(err.message))
+                    }
+                })
+                resolve()
+            })
+        })
+    }
     openPort (config, port) {
         switch (port) {
             case 1:
@@ -91,24 +106,7 @@ class Devices {
                     })
                 })
         }
-
     }
-    async sendMessage (message, port) {
-        await new Promise((resolve, reject) => {
-            port.write(message, err => {
-                if (err) {
-                    return reject (new Error(err.message))
-                }
-                port.drain((err) =>{
-                    if (err) {
-                        return reject (new Error(err.message))
-                    }
-                })
-                resolve()
-            })
-        })
-    }
-
 }
 const devices = new Devices()
 module.exports = devices
