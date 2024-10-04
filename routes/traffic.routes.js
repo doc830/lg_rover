@@ -21,6 +21,86 @@ router.get('/white', (req, res) => {
         })
     })
 })
+router.get('/blue', (req, res) => {
+    turn("A604FF").then((received)=>{
+        if (received.param === 255) {
+            turn("A60302").then((received)=>{
+                res.json(received)
+                res.end()
+            }).catch((err)=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+            })
+        }
+    }).catch((err)=>{
+        res.json({
+            "err": "002",
+            "info": err.message
+        })
+    })
+})
+router.get('/green', (req, res) => {
+    turn("A604FF").then((received)=>{
+        if (received.param === 255) {
+            turn("A60303").then((received)=>{
+                res.json(received)
+                res.end()
+            }).catch((err)=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+            })
+        }
+    }).catch((err)=>{
+        res.json({
+            "err": "002",
+            "info": err.message
+        })
+    })
+})
+router.get('/yellow', (req, res) => {
+    turn("A604FF").then((received)=>{
+        if (received.param === 255) {
+            turn("A60304").then((received)=>{
+                res.json(received)
+                res.end()
+            }).catch((err)=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+            })
+        }
+    }).catch((err)=>{
+        res.json({
+            "err": "002",
+            "info": err.message
+        })
+    })
+})
+router.get('/red', (req, res) => {
+    turn("A604FF").then((received)=>{
+        if (received.param === 255) {
+            turn("4").then((received)=>{
+                res.json(received)
+                res.end()
+            }).catch((err)=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+            })
+        }
+    }).catch((err)=>{
+        res.json({
+            "err": "002",
+            "info": err.message
+        })
+    })
+})
 function turn(command) {
     let received = Buffer.alloc(0)
     return new Promise( (resolve, reject) => {
