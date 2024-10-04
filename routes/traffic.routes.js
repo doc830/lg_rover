@@ -34,8 +34,6 @@ async function listen(res) {
             })
             res.end()
             resolve()
-        }).catch(err=>{
-            reject (new Error(err))
         })
     })
 }
