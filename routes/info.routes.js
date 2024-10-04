@@ -48,6 +48,7 @@ router.get('/visibility_on', async (req, res) => {
             "info": err.message
         })
         res.end()
+        return
     })
     let parser = devices.serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
     parser.on('data', async (data)=>{
@@ -57,7 +58,7 @@ router.get('/visibility_on', async (req, res) => {
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
         data = data.split(' ')
-        await axios.post(config.get('gw') + "/api/visibility/data", {
+        await axios.post(config.get('gw') + "/api/rover/visibility", {
             "visibility": data[5],
             "time": formattedTime
         }).then(() => {}).catch(() => {
