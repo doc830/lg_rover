@@ -70,8 +70,8 @@ class Devices {
             }
         })
     }
-    async sendMessage (message, port) {
-        await new Promise((resolve, reject) => {
+     sendMessage (message, port) {
+       return new Promise((resolve, reject) => {
             port.write(message, err => {
                 if (err) {
                     return reject (new Error(err.message))

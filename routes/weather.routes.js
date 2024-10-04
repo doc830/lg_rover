@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices")
 const router = Router()
-router.get('/data', async (req, res) => {
+router.get('/data',  (req, res) => {
     let received = Buffer.alloc(0)
     if (!devices.weather) {
         res.json({
@@ -10,7 +10,7 @@ router.get('/data', async (req, res) => {
         })
         res.end()
     } else {
-        await devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort)
+        devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort)
             .then(()=>{
                 devices.serialPort.on('data', (data)=> {
                     received = Buffer.concat([received,  Buffer.from(data, 'hex')])
