@@ -3,9 +3,11 @@ const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
     turn("A604FF").then((received)=>{
+        console.log(received[2])
         if (received[2] === "FF") {
             turn("A60301").then(()=>{
                 res.json(received)
+                res.end()
             })
         }
     }).catch((err)=>{
