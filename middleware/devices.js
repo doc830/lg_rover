@@ -111,6 +111,9 @@ class Devices {
         switch (port) {
             case 1:
                 return new Promise((resolve, reject)=> {
+                    if (!this.serialPort.open()){
+                        return reject ()
+                    }
                     this.serialPort.close((err)=>{
                         if (err) {
                             return reject (err)
@@ -120,6 +123,9 @@ class Devices {
                 })
             case 2:
                 return new Promise((resolve, reject)=> {
+                    if (!this.serialPort.open()){
+                        return reject ()
+                    }
                     this.serialPort2.close((err)=>{
                         if (err) {
                             return reject (err)
