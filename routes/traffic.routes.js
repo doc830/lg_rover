@@ -24,13 +24,14 @@ function turn(command) {
         },2).then( ()=>{
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
                  devices.serialPort2.on('data', (data)=>{
+                     console.log(data)
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
                      received = {
                          "header": Buffer.from([received[0]]).readUInt8(0),
                          "code": Buffer.from([received[1]]).readUInt8(0),
                          "param": Buffer.from([received[2]]).readUInt8(0)
                      }
-                     console.log(received)
+
                      devices.serialPort2.close(()=>{
                          resolve(received)
                      })
