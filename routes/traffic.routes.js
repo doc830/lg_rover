@@ -4,14 +4,15 @@ const router = Router()
 router.get('/white', async (req, res) => {
     //1. Отправить команду
     //2. Прослушать
-    res.json(await turn("A604FF").then(async ()=>{
+    let anwser = await turn("A604FF").then(async ()=>{
     }).catch((err)=>{
         res.json({
             "err": "001",
             "info": err.message
         })
         res.end()
-    }))
+    })
+    res.json(anwser)
 })
 async function listen(res) {
     let received = Buffer.alloc(0)
