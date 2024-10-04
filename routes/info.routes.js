@@ -61,7 +61,7 @@ router.get('/visibility_on', async (req, res) => {
         data = data.split(' ')
         await axios.post(config.get('gw') + "/api/rover/visibility", {
             "type": "visibility",
-            "visibility": data[5],
+            "meters": data[5],
             "time": formattedTime
         }).then(() => {}).catch(() => {
             console.error('Visibility POST request error:')
