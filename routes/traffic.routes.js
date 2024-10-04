@@ -35,6 +35,8 @@ function turn(command) {
                          }
                          devices.closePort(2).then(()=>{
                              resolve(received)
+                         }).catch(err => {
+                             reject (new Error(err))
                          })
                      }
                  })
