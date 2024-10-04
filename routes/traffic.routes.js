@@ -15,7 +15,6 @@ router.get('/white', (req, res) => {
             })
         }
     }).catch((err)=>{
-        devices.closePort(2).then()
         res.json({
             "err": "002",
             "info": err.message
