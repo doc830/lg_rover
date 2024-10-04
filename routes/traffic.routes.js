@@ -4,7 +4,9 @@ const router = Router()
 router.get('/white', async (req, res) => {
     //1. Отправить команду
     //2. Прослушать
-    let anwser = await turn("A604FF").then(async ()=>{
+    await turn("A604FF").then(async (result)=>{
+        console.log(result)
+        res.end()
     }).catch((err)=>{
         res.json({
             "err": "001",
@@ -12,7 +14,7 @@ router.get('/white', async (req, res) => {
         })
         res.end()
     })
-    res.json(anwser)
+
 })
 async function listen(res) {
     let received = Buffer.alloc(0)
@@ -54,7 +56,7 @@ async function turn(command) {
                 // let code = Buffer.from([received[1]]).readUInt8(0)
                 // let param = Buffer.from([received[2]]).readUInt8(0)
                 devices.serialPort2.close()
-                return resolve(received)
+                resolve(received)
             })
         }).catch(err => {
             reject (new Error(err))
