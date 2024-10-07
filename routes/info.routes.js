@@ -82,36 +82,36 @@ router.get('/battery',  (req, res) => {
             parity: "even"
     },2).then(()=>{
         devices.sendMessage(Buffer.from('A60100', 'hex'), devices.serialPort2).then(() => {
-            devices.serialPort2.on('data', (data)=> {
-                received = Buffer.concat([received,  Buffer.from(data, 'hex')])
-                received = {
-                    "header": Buffer.from([received[0]]).readUInt8(0),
-                    "charge": Buffer.from([received[1]]).readUInt8(0),
-                    "param": Buffer.from([received[2]]).readUInt8(0)
-                }
-                devices.closePort(2).then(()=>{
-                    res.json(received)
-                }).catch(err => {
-                    res.json({
-                        "err": "001",
-                        "info": err.message
+            devices.serialPort2.on('data', (data)=>{
+                received = Buffer.concat([received, data])
+                if (received.length === 3) {
+                    received = {
+                        "header": received.readUInt8(0),
+                        "code": received.readUInt8(1),
+                        "charge": received.readUInt8(2)
+                    }
+                    devices.closePort(2).then(()=>{
+                        res.json(received)
+                    }).catch(err => {
+                        res.json({
+                            "err": "001",
+                            "info": err.message
+                        })
                     })
-                })
-
-        }).catch(err => {
-                devices.serialPort2(2)
-                res.json({
-                    "err": "001",
-                    "info": err.message
-                })
+                }
             })
+        }).catch(err => {
+            devices.serialPort2(2)
+            res.json({
+                "err": "001",
+                "info": err.message
+            })
+        })
     }).catch(err => {
         res.json({
             "err": "001",
             "info": err.message
         })
-    })
-
     })
 })
 // router.get('/raw_command', (req, res) => {
