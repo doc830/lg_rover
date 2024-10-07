@@ -8,7 +8,6 @@ router.get('/data',  (req, res) => {
             "err": "001",
             "info": "Погодная станция не подключена"
         })
-        res.end()
     } else {
         devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort)
             .then(()=>{
@@ -33,7 +32,6 @@ router.get('/data',  (req, res) => {
                             'humidity': humidity,
                             'pressure': pressure
                         })
-                        res.end()
                     }
                 })
             })
@@ -42,9 +40,7 @@ router.get('/data',  (req, res) => {
                     "err": "001",
                     "info": err.message
                 })
-                res.end()
             })
-
     }
 })
 module.exports = router

@@ -17,6 +17,9 @@ router.get('/yellow', (req, res) => {
 router.get('/red', (req, res) => {
     response(res, "A60305")
 })
+router.get('/off', (req, res) => {
+    response(res, "A604FF")
+})
 function response(res, command) {
     if (!portAvailable) {
         return res.json({

@@ -1,5 +1,4 @@
 const {Router} = require('express')
-const {SerialPort} = require("serialport")
 const router = Router()
 const devices = require('../middleware/devices')
 const {ReadlineParser} = require("@serialport/parser-readline");
@@ -11,13 +10,11 @@ router.get('/weather_on',   (req, res) => {
             "err": "000",
             "info": "Погодная станция подключена!"
         })
-        res.end()
     }).catch(err => {
         res.json ({
             "err": "001",
             "info": err.message
         })
-        res.end()
     })
 })
 router.get('/weather_off',  (req, res) => {
@@ -26,13 +23,11 @@ router.get('/weather_off',  (req, res) => {
             "err": "000",
             "info": "Погодная станция отключена!"
         })
-        res.end()
     }).catch(err => {
         res.json ({
             "err": "001",
             "info": err.message
         })
-        res.end()
     })
 })
 router.get('/visibility_on',  (req, res) => {
@@ -41,13 +36,11 @@ router.get('/visibility_on',  (req, res) => {
             "err": "000",
             "info": "ДМДВ подключен!"
         })
-        res.end()
     }).catch(err => {
         res.json ({
             "err": "001",
             "info": err.message
         })
-        res.end()
     })
     let parser = devices.serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
     parser.on('data',  (data)=>{
@@ -72,13 +65,11 @@ router.get('/visibility_off',  (req, res) => {
             "err": "000",
             "info": "ДМДВ отключен!"
         })
-        res.end()
     }).catch(err => {
         res.json ({
             "err": "001",
             "info": err.message
         })
-        res.end()
     })
 })
 router.get('/battery',  (req, res) => {
@@ -100,48 +91,49 @@ router.get('/battery',  (req, res) => {
                 }
                 devices.serialPort2.close()
                 res.json(received)
-                res.end()
-        })
+        }).catch(err => {
+                devices.serialPort2(2)
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
+            })
     }).catch(err => {
         res.json({
             "err": "001",
             "info": err.message
         })
-        res.end()
     })
 
     })
 })
-router.get('/raw_command', (req, res) => {
-    let command
-    command = req.query.c
-    let port = "/dev/ttyS1"
-    let received = Buffer.alloc(0)
-    let serialPort = new SerialPort({
-        path: port,
-        dataBits: 8,
-        baudRate: 115200,
-        stopBits: 1,
-        parity: "even"
-    })
-    serialPort.write(Buffer.from(command.toString(), 'hex'))
-    let timeout = setTimeout(()=>{
-        res.json("COM port message error")
-        serialPort.close()
-        res.end()
-    }, 1000)
-    serialPort.on('data', (data)=> {
-        clearTimeout(timeout)
-        received = Buffer.concat([received,  Buffer.from(data, 'hex')])
-        res.json({
-            "COM message": received,
-        })
-        serialPort.close()
-        res.end()
-    })
-    serialPort.on('error', (err) => {
-        res.json(err)
-        res.end()
-    })
-})
+// router.get('/raw_command', (req, res) => {
+//     let command
+//     command = req.query.c
+//     let port = "/dev/ttyS1"
+//     let received = Buffer.alloc(0)
+//     let serialPort = new SerialPort({
+//         path: port,
+//         dataBits: 8,
+//         baudRate: 115200,
+//         stopBits: 1,
+//         parity: "even"
+//     })
+//     serialPort.write(Buffer.from(command.toString(), 'hex'))
+//     let timeout = setTimeout(()=>{
+//         res.json("COM port message error")
+//         serialPort.close()
+//     }, 1000)
+//     serialPort.on('data', (data)=> {
+//         clearTimeout(timeout)
+//         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
+//         res.json({
+//             "COM message": received,
+//         })
+//         serialPort.close()
+//     })
+//     serialPort.on('error', (err) => {
+//         res.json(err)
+//     })
+// })
 module.exports = router
