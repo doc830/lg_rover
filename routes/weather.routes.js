@@ -13,8 +13,10 @@ router.get('/data',  (req, res) => {
             devices.serialPort.on('data', (data)=> {
                 received = Buffer.concat([received,  Buffer.from(data, 'hex')])
                 if (received.length ===  103) {
+                    console.log(data)
                     let wind_direction = Buffer.from([received[5],received[6]])
                     wind_direction = wind_direction.readUInt16BE(0)
+                    console.log(wind_direction)
                     let wind_speed = Buffer.from([received[9],received[10],received[7],received[8]])
                     wind_speed = wind_speed.readFloatBE(0)
                     let temperature = Buffer.from([received[13],received[14],received[11],received[12]])
