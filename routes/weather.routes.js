@@ -13,7 +13,7 @@ router.get('/data',  (req, res) => {
             devices.serialPort.on('data', (data)=> {
                 received = Buffer.concat([received,  Buffer.from(data, 'hex')])
                 if (received.length ===  103) {
-                    console.log(data)
+                    console.log(received)
                     let wind_direction = Buffer.from([received[5],received[6]])
                     wind_direction = wind_direction.readUInt16BE(0)
                     console.log(wind_direction)
