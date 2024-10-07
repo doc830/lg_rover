@@ -1,12 +1,14 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
+let portAvailable = true
 router.get('/white', (req, res) => {
-    if (devices.serialPort2.isOpen) {
+    if (!portAvailable) {
         res.json({
             "err": "001",
             "info": "COM порт занят!"
         })
+        res.end()
     } else {
         turn("A604FF").then((received)=>{
             if (received.param === 255) {
@@ -29,13 +31,15 @@ router.get('/white', (req, res) => {
     }
 })
 router.get('/blue', (req, res) => {
-    if (devices.serialPort2.isOpen) {
-        console.log(devices.serialPort2.isOpen)
+    if (!portAvailable) {
+        console.log(portAvailable)
         res.json({
             "err": "001",
             "info": "COM порт занят!"
         })
+        res.end()
     } else {
+        portAvailable = false
         turn("A604FF").then((received)=>{
             if (received.param === 255) {
                 turn("A60302").then((received)=>{
@@ -58,11 +62,12 @@ router.get('/blue', (req, res) => {
 
 })
 router.get('/green', (req, res) => {
-    if (devices.serialPort2.isOpen) {
+    if (!portAvailable) {
         res.json({
             "err": "001",
             "info": "COM порт занят!"
         })
+        res.end()
     } else {
         turn("A604FF").then((received)=>{
             if (received.param === 255) {
@@ -86,11 +91,12 @@ router.get('/green', (req, res) => {
 
 })
 router.get('/yellow', (req, res) => {
-    if (devices.serialPort2.isOpen) {
+    if (!portAvailable) {
         res.json({
             "err": "001",
             "info": "COM порт занят!"
         })
+        res.end()
     } else {
         turn("A604FF").then((received)=>{
             if (received.param === 255) {
@@ -115,11 +121,12 @@ router.get('/yellow', (req, res) => {
 
 })
 router.get('/red', (req, res) => {
-    if (devices.serialPort2.isOpen) {
+    if (!portAvailable) {
         res.json({
             "err": "001",
             "info": "COM порт занят!"
         })
+        res.end()
     } else {
         turn("A604FF").then((received)=>{
             if (received.param === 255) {
@@ -154,13 +161,14 @@ function turn(command) {
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
                  devices.serialPort2.on('data', (data)=>{
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
-                     if (received.length === 3 ) {
+                     if (received.length === 3) {
                          received = {
                              "header": Buffer.from([received[0]]).readUInt8(0),
                              "code": Buffer.from([received[1]]).readUInt8(0),
                              "param": Buffer.from([received[2]]).readUInt8(0)
                          }
                          devices.closePort(2).then(()=>{
+                             portAvailable = true
                              resolve(received)
                          }).catch(err => {
                              reject (new Error(err))
