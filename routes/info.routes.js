@@ -89,8 +89,15 @@ router.get('/battery',  (req, res) => {
                     "charge": Buffer.from([received[1]]).readUInt8(0),
                     "param": Buffer.from([received[2]]).readUInt8(0)
                 }
-                devices.serialPort2.close()
-                res.json(received)
+                devices.closePort(2).then(()=>{
+                    res.json(received)
+                }).catch(err => {
+                    res.json({
+                        "err": "001",
+                        "info": err.message
+                    })
+                })
+
         }).catch(err => {
                 devices.serialPort2(2)
                 res.json({
