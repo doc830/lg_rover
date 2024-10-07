@@ -3,44 +3,22 @@ const devices = require("../middleware/devices");
 const router = Router()
 let portAvailable = true
 router.get('/white', (req, res) => {
-    if (!portAvailable) {
-        console.log('Порт занят:', portAvailable)
-        return res.json({
-            "err": "001",
-            "info": "COM порт занят!"
-        })
-    }
-    portAvailable = false
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60301").then((received)=>{
-                res.json(received)
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
-                })
-            })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
-        })
-    }).finally(() => {
-        devices.closePort(2).then(()=>{
-            portAvailable = true
-        }).catch(err => {
-            res.json({
-                "err": "003",
-                "info": err.message
-            })
-        })
-    })
+    response(res, "A60301")
 })
 router.get('/blue', (req, res) => {
+    response(res, "A60302")
+})
+router.get('/green', (req, res) => {
+    response(res, "A60303")
+})
+router.get('/yellow', (req, res) => {
+    response(res, "A60304")
+})
+router.get('/red', (req, res) => {
+    response(res, "A60305")
+})
+function response(res, command) {
     if (!portAvailable) {
-        console.log(devices.serialPort2.isOpen)
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
@@ -49,7 +27,7 @@ router.get('/blue', (req, res) => {
     portAvailable = false
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
-            return turn("A60302")
+            return turn(command)
         } else {
             throw new Error("Ошибка низкоуровневой системы устройства")
         }
@@ -63,115 +41,7 @@ router.get('/blue', (req, res) => {
     }).finally(() => {
         portAvailable = true
     })
-})
-router.get('/green', (req, res) => {
-    if (!portAvailable) {
-        console.log('Порт занят:', portAvailable)
-        return res.json({
-            "err": "001",
-            "info": "COM порт занят!"
-        })
-    }
-    portAvailable = false
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60303").then((received)=>{
-                res.json(received)
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
-                })
-            })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
-        })
-    }).finally(() => {
-        devices.closePort(2).then(()=>{
-            portAvailable = true
-        }).catch(err => {
-            res.json({
-                "err": "003",
-                "info": err.message
-            })
-        })
-    })
-})
-router.get('/yellow', (req, res) => {
-    if (!portAvailable) {
-        console.log('Порт занят:', portAvailable)
-        return res.json({
-            "err": "001",
-            "info": "COM порт занят!"
-        })
-    }
-    portAvailable = false
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60304").then((received)=>{
-                res.json(received)
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
-                })
-            })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
-        })
-    }).finally(() => {
-        devices.closePort(2).then(()=>{
-            portAvailable = true
-        }).catch(err => {
-            res.json({
-                "err": "003",
-                "info": err.message
-            })
-        })
-    })
-})
-router.get('/red', (req, res) => {
-    if (!portAvailable) {
-        console.log('Порт занят:', portAvailable)
-        return res.json({
-            "err": "001",
-            "info": "COM порт занят!"
-        })
-    }
-    portAvailable = false
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60305").then((received)=>{
-                res.json(received)
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
-                })
-            })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
-        })
-    }).finally(() => {
-        devices.closePort(2).then(()=>{
-            portAvailable = true
-        }).catch(err => {
-            res.json({
-                "err": "003",
-                "info": err.message
-            })
-        })
-    })
-})
+}
 function turn(command) {
     let received = Buffer.alloc(0)
     return new Promise( (resolve, reject) => {
