@@ -7,26 +7,26 @@ router.get('/white', (req, res) => {
             "err": "001",
             "info": "COM порт занят!"
         })
-        return
-    }
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60301").then((received)=>{
-                res.json(received)
-                res.end()
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
+    } else {
+        turn("A604FF").then((received)=>{
+            if (received.param === 255) {
+                turn("A60301").then((received)=>{
+                    res.json(received)
+                    res.end()
+                }).catch((err)=>{
+                    res.json({
+                        "err": "001",
+                        "info": err.message
+                    })
                 })
+            }
+        }).catch((err)=>{
+            res.json({
+                "err": "002",
+                "info": err.message
             })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
         })
-    })
+    }
 })
 router.get('/blue', (req, res) => {
     if (devices.serialPort2.isOpen) {
@@ -34,26 +34,27 @@ router.get('/blue', (req, res) => {
             "err": "001",
             "info": "COM порт занят!"
         })
-        return
-    }
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60302").then((received)=>{
-                res.json(received)
-                res.end()
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
+    } else {
+        turn("A604FF").then((received)=>{
+            if (received.param === 255) {
+                turn("A60302").then((received)=>{
+                    res.json(received)
+                    res.end()
+                }).catch((err)=>{
+                    res.json({
+                        "err": "001",
+                        "info": err.message
+                    })
                 })
+            }
+        }).catch((err)=>{
+            res.json({
+                "err": "002",
+                "info": err.message
             })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
         })
-    })
+    }
+
 })
 router.get('/green', (req, res) => {
     if (devices.serialPort2.isOpen) {
@@ -61,26 +62,27 @@ router.get('/green', (req, res) => {
             "err": "001",
             "info": "COM порт занят!"
         })
-        return
-    }
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60303").then((received)=>{
-                res.json(received)
-                res.end()
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
+    } {
+        turn("A604FF").then((received)=>{
+            if (received.param === 255) {
+                turn("A60303").then((received)=>{
+                    res.json(received)
+                    res.end()
+                }).catch((err)=>{
+                    res.json({
+                        "err": "001",
+                        "info": err.message
+                    })
                 })
+            }
+        }).catch((err)=>{
+            res.json({
+                "err": "002",
+                "info": err.message
             })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
         })
-    })
+    }
+
 })
 router.get('/yellow', (req, res) => {
     if (devices.serialPort2.isOpen) {
@@ -88,26 +90,28 @@ router.get('/yellow', (req, res) => {
             "err": "001",
             "info": "COM порт занят!"
         })
-        return
-    }
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("A60304").then((received)=>{
-                res.json(received)
-                res.end()
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
+    } else {
+        turn("A604FF").then((received)=>{
+            if (received.param === 255) {
+                turn("A60304").then((received)=>{
+                    res.json(received)
+                    res.end()
+                }).catch((err)=>{
+                    res.json({
+                        "err": "001",
+                        "info": err.message
+                    })
                 })
+            }
+        }).catch((err)=>{
+            res.json({
+                "err": "002",
+                "info": err.message
             })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
         })
-    })
+    }
+
+
 })
 router.get('/red', (req, res) => {
     if (devices.serialPort2.isOpen) {
@@ -115,26 +119,26 @@ router.get('/red', (req, res) => {
             "err": "001",
             "info": "COM порт занят!"
         })
-        return
-    }
-    turn("A604FF").then((received)=>{
-        if (received.param === 255) {
-            turn("4").then((received)=>{
-                res.json(received)
-                res.end()
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
+    } else {
+        turn("A604FF").then((received)=>{
+            if (received.param === 255) {
+                turn("4").then((received)=>{
+                    res.json(received)
+                    res.end()
+                }).catch((err)=>{
+                    res.json({
+                        "err": "001",
+                        "info": err.message
+                    })
                 })
+            }
+        }).catch((err)=>{
+            res.json({
+                "err": "002",
+                "info": err.message
             })
-        }
-    }).catch((err)=>{
-        res.json({
-            "err": "002",
-            "info": err.message
         })
-    })
+    }
 })
 function turn(command) {
     let received = Buffer.alloc(0)
