@@ -23,7 +23,7 @@ router.get('/data',  (req, res) => {
                     humidity = humidity.readFloatBE(0)
                     let pressure = Buffer.from([received[21],received[22],received[19],received[20]])
                     pressure = pressure.readFloatBE(0)
-                    devices.serialPort.removeAllListeners()
+                    //devices.serialPort.removeAllListeners()
                     res.json({
                         'wind_direction': wind_direction,
                         'wind_speed': wind_speed,
