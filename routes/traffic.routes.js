@@ -30,6 +30,7 @@ router.get('/white', (req, res) => {
 })
 router.get('/blue', (req, res) => {
     if (devices.serialPort2.isOpen) {
+        console.log(devices.serialPort2.isOpen)
         res.json({
             "err": "001",
             "info": "COM порт занят!"
@@ -62,7 +63,7 @@ router.get('/green', (req, res) => {
             "err": "001",
             "info": "COM порт занят!"
         })
-    } {
+    } else {
         turn("A604FF").then((received)=>{
             if (received.param === 255) {
                 turn("A60303").then((received)=>{
