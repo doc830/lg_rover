@@ -62,11 +62,6 @@ router.get('/blue', (req, res) => {
         })
     }).finally(() => {
         portAvailable = true
-        devices.closePort(2).then(()=>{
-            portAvailable = true
-        }).catch(err => {
-            console.log(err)
-        })
     })
 })
 router.get('/green', (req, res) => {
@@ -189,12 +184,12 @@ function turn(command) {
         },2).then(()=>{
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
                  devices.serialPort2.on('data', (data)=>{
-                     received = Buffer.concat([received, Buffer.from(data, 'hex')])
+                     received = Buffer.concat([received, data])
                      if (received.length === 3) {
                          received = {
-                             "header": Buffer.from([received[0]]).readUInt8(0),
-                             "code": Buffer.from([received[1]]).readUInt8(0),
-                             "param": Buffer.from([received[2]]).readUInt8(0)
+                             "header": received.readUInt8(0),
+                             "code": received.readUInt8(1),
+                             "param": received.readUInt8(2)
                          }
                          devices.closePort(2).then(()=>{
                              resolve(received)
@@ -204,6 +199,7 @@ function turn(command) {
                      }
                  })
              }).catch(err => {
+                 devices.serialPort2(2)
                  reject (new Error(err))
              })
         }).catch(err => {
