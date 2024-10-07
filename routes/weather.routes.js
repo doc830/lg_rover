@@ -15,10 +15,10 @@ router.get('/data',  (req, res) => {
                 if (received.length ===  103) {
                     console.log(received)
                     let wind_direction = received.readUInt16LE(5)
-                    let wind_speed = received.readFloatBE(7)
-                    let temperature = received.readFloatBE(11)
-                    let humidity = received.readFloatBE(15)
-                    let pressure = received.readFloatBE(19)
+                    let wind_speed = received.readFloatLE(7)
+                    let temperature = received.readFloatLE(11)
+                    let humidity = received.readFloatLE(15)
+                    let pressure = received.readFloatLE(19)
                     devices.serialPort.removeAllListeners()
                     res.json({
                         'wind_direction': wind_direction,
