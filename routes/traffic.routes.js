@@ -49,29 +49,19 @@ router.get('/blue', (req, res) => {
     portAvailable = false
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
-            turn("A60302").then((received)=>{
-                res.json(received)
-            }).catch((err)=>{
-                res.json({
-                    "err": "001",
-                    "info": err.message
-                })
-            })
+            return turn("A60302")
+        } else {
+            throw new Error("Ошибка низкоуровневой системы устройства")
         }
+    }).then((received)=>{
+        res.json(received)
     }).catch((err)=>{
         res.json({
-            "err": "002",
+            "err": "001",
             "info": err.message
         })
     }).finally(() => {
-        devices.closePort(2).then(()=>{
-            portAvailable = true
-        }).catch(err => {
-            res.json({
-                "err": "003",
-                "info": err.message
-            })
-        })
+        portAvailable = true
     })
 })
 router.get('/green', (req, res) => {
