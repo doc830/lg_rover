@@ -8,7 +8,7 @@ router.get('/white', (req, res) => {
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
-        });
+        })
     }
     portAvailable = false
     turn("A604FF").then((received)=>{
@@ -28,7 +28,14 @@ router.get('/white', (req, res) => {
             "info": err.message
         })
     }).finally(() => {
-        portAvailable = true
+        devices.closePort(2).then(()=>{
+            portAvailable = true
+        }).catch(err => {
+            res.json({
+                "err": "003",
+                "info": err.message
+            })
+        })
     })
 })
 router.get('/blue', (req, res) => {
@@ -37,7 +44,7 @@ router.get('/blue', (req, res) => {
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
-        });
+        })
     }
     portAvailable = false
     turn("A604FF").then((received)=>{
@@ -57,7 +64,14 @@ router.get('/blue', (req, res) => {
             "info": err.message
         })
     }).finally(() => {
-        portAvailable = true
+        devices.closePort(2).then(()=>{
+            portAvailable = true
+        }).catch(err => {
+            res.json({
+                "err": "003",
+                "info": err.message
+            })
+        })
     })
 })
 router.get('/green', (req, res) => {
@@ -66,7 +80,7 @@ router.get('/green', (req, res) => {
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
-        });
+        })
     }
     portAvailable = false
     turn("A604FF").then((received)=>{
@@ -86,7 +100,14 @@ router.get('/green', (req, res) => {
             "info": err.message
         })
     }).finally(() => {
-        portAvailable = true
+        devices.closePort(2).then(()=>{
+            portAvailable = true
+        }).catch(err => {
+            res.json({
+                "err": "003",
+                "info": err.message
+            })
+        })
     })
 })
 router.get('/yellow', (req, res) => {
@@ -95,7 +116,7 @@ router.get('/yellow', (req, res) => {
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
-        });
+        })
     }
     portAvailable = false
     turn("A604FF").then((received)=>{
@@ -115,7 +136,14 @@ router.get('/yellow', (req, res) => {
             "info": err.message
         })
     }).finally(() => {
-        portAvailable = true
+        devices.closePort(2).then(()=>{
+            portAvailable = true
+        }).catch(err => {
+            res.json({
+                "err": "003",
+                "info": err.message
+            })
+        })
     })
 })
 router.get('/red', (req, res) => {
@@ -124,7 +152,7 @@ router.get('/red', (req, res) => {
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
-        });
+        })
     }
     portAvailable = false
     turn("A604FF").then((received)=>{
@@ -144,7 +172,14 @@ router.get('/red', (req, res) => {
             "info": err.message
         })
     }).finally(() => {
-        portAvailable = true
+        devices.closePort(2).then(()=>{
+            portAvailable = true
+        }).catch(err => {
+            res.json({
+                "err": "003",
+                "info": err.message
+            })
+        })
     })
 })
 function turn(command) {
@@ -157,7 +192,6 @@ function turn(command) {
             stopBits: 1,
             parity: "even"
         },2).then(()=>{
-            console.log("open")
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
                  devices.serialPort2.on('data', (data)=>{
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
