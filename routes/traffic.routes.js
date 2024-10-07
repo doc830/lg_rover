@@ -40,7 +40,7 @@ router.get('/white', (req, res) => {
 })
 router.get('/blue', (req, res) => {
     if (!portAvailable) {
-        console.log('Порт занят:', portAvailable)
+        console.log(devices.serialPort2.isOpen)
         return res.json({
             "err": "001",
             "info": "COM порт занят!"
@@ -62,6 +62,11 @@ router.get('/blue', (req, res) => {
         })
     }).finally(() => {
         portAvailable = true
+        devices.closePort(2).then(()=>{
+            portAvailable = true
+        }).catch(err => {
+            console.log(err)
+        })
     })
 })
 router.get('/green', (req, res) => {
