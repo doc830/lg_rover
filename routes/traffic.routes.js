@@ -2,6 +2,13 @@ const {Router} = require('express')
 const devices = require("../middleware/devices");
 const router = Router()
 router.get('/white', (req, res) => {
+    if (devices.serialPort2.isOpen) {
+        res.json({
+            "err": "001",
+            "info": "COM порт занят!"
+        })
+        return
+    }
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
             turn("A60301").then((received)=>{
@@ -22,6 +29,13 @@ router.get('/white', (req, res) => {
     })
 })
 router.get('/blue', (req, res) => {
+    if (devices.serialPort2.isOpen) {
+        res.json({
+            "err": "001",
+            "info": "COM порт занят!"
+        })
+        return
+    }
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
             turn("A60302").then((received)=>{
@@ -42,6 +56,13 @@ router.get('/blue', (req, res) => {
     })
 })
 router.get('/green', (req, res) => {
+    if (devices.serialPort2.isOpen) {
+        res.json({
+            "err": "001",
+            "info": "COM порт занят!"
+        })
+        return
+    }
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
             turn("A60303").then((received)=>{
@@ -62,6 +83,13 @@ router.get('/green', (req, res) => {
     })
 })
 router.get('/yellow', (req, res) => {
+    if (devices.serialPort2.isOpen) {
+        res.json({
+            "err": "001",
+            "info": "COM порт занят!"
+        })
+        return
+    }
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
             turn("A60304").then((received)=>{
@@ -82,6 +110,13 @@ router.get('/yellow', (req, res) => {
     })
 })
 router.get('/red', (req, res) => {
+    if (devices.serialPort2.isOpen) {
+        res.json({
+            "err": "001",
+            "info": "COM порт занят!"
+        })
+        return
+    }
     turn("A604FF").then((received)=>{
         if (received.param === 255) {
             turn("4").then((received)=>{
