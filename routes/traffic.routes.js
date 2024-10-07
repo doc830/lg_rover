@@ -158,16 +158,20 @@ function turn(command) {
             stopBits: 1,
             parity: "even"
         },2).then(()=>{
+            console.log("open")
              devices.sendMessage(Buffer.from(command, 'hex'), devices.serialPort2).then(()=>{
+                 console.log("send")
                  devices.serialPort2.on('data', (data)=>{
                      received = Buffer.concat([received, Buffer.from(data, 'hex')])
                      if (received.length === 3) {
+                         console.log("got data")
                          received = {
                              "header": Buffer.from([received[0]]).readUInt8(0),
                              "code": Buffer.from([received[1]]).readUInt8(0),
                              "param": Buffer.from([received[2]]).readUInt8(0)
                          }
                          devices.closePort(2).then(()=>{
+                             console.log("closed")
                              portAvailable = true
                              resolve(received)
                          }).catch(err => {
@@ -175,6 +179,8 @@ function turn(command) {
                          })
                      }
                  })
+             }).catch(err => {
+                 reject (new Error(err))
              })
         }).catch(err => {
             reject (new Error(err))
