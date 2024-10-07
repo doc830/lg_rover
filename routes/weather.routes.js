@@ -14,6 +14,7 @@ router.get('/data',  (req, res) => {
                 received = Buffer.concat([received,  Buffer.from(data, 'hex')])
                 if (received.length ===  103) {
                     console.log(received)
+                    console.log(received[0])
                     console.log(received[5])
                     console.log(received[6])
                     let wind_direction = Buffer.from([received[5],received[6]])
