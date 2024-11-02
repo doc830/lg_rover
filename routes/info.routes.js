@@ -45,12 +45,14 @@ router.get('/visibility_on',  (req, res) => {
     })
     let parser = devices.serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
     parser.on('data',  (data)=>{
+        console.log(data)
         let currentDate = new Date();
         let hours = currentDate.getHours();
         let minutes = currentDate.getMinutes();
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
         data = data.split(' ')
+
         v_data = {
             "type": "visibility",
             "meters": data[5],
