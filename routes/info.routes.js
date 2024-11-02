@@ -1,9 +1,10 @@
 const {Router} = require('express')
 const router = Router()
 const devices = require('../middleware/devices')
-const {ReadlineParser} = require("@serialport/parser-readline");
-const axios = require("axios");
-const config = require("config");
+const {ReadlineParser} = require("@serialport/parser-readline")
+const axios = require("axios")
+const config = require("config")
+let v_data = {}
 router.get('/weather_on',   (req, res) => {
      devices.setWeather(true).then(()=>{
         res.json ({
@@ -49,6 +50,11 @@ router.get('/visibility_on',  (req, res) => {
         let minutes = currentDate.getMinutes();
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
+        v_data = {
+            "type": "visibility",
+            "meters": data[5],
+            "time": formattedTime
+        }
         data = data.split(' ')
         axios.post(config.get('gw') + "/api/rover/visibility", {
             "type": "visibility",
@@ -59,10 +65,20 @@ router.get('/visibility_on',  (req, res) => {
         })
     })
 })
+router.get('/visibility', (req,res)=> {
+    if (devices.visibility) {
+        res.json(v_data)
+    } else {
+        res.json ({
+            "err": "001",
+            "info": "ДМДВ отключен!"
+        })
+    }
+})
 router.get('/visibility_off',  (req, res) => {
      devices.setVisibility(false).then(()=>{
         res.json ({
-            "err": "000",
+            "err": "00",
             "info": "ДМДВ отключен!"
         })
     }).catch(err => {
@@ -114,33 +130,4 @@ router.get('/battery',  (req, res) => {
         })
     })
 })
-// router.get('/raw_command', (req, res) => {
-//     let command
-//     command = req.query.c
-//     let port = "/dev/ttyS1"
-//     let received = Buffer.alloc(0)
-//     let serialPort = new SerialPort({
-//         path: port,
-//         dataBits: 8,
-//         baudRate: 115200,
-//         stopBits: 1,
-//         parity: "even"
-//     })
-//     serialPort.write(Buffer.from(command.toString(), 'hex'))
-//     let timeout = setTimeout(()=>{
-//         res.json("COM port message error")
-//         serialPort.close()
-//     }, 1000)
-//     serialPort.on('data', (data)=> {
-//         clearTimeout(timeout)
-//         received = Buffer.concat([received,  Buffer.from(data, 'hex')])
-//         res.json({
-//             "COM message": received,
-//         })
-//         serialPort.close()
-//     })
-//     serialPort.on('error', (err) => {
-//         res.json(err)
-//     })
-// })
 module.exports = router
