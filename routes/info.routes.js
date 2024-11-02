@@ -50,12 +50,12 @@ router.get('/visibility_on',  (req, res) => {
         let minutes = currentDate.getMinutes();
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
+        data = data.split(' ')
         v_data = {
             "type": "visibility",
             "meters": data[5],
             "time": formattedTime
         }
-        data = data.split(' ')
         axios.post(config.get('gw') + "/api/rover/visibility", {
             "type": "visibility",
             "meters": data[5],
