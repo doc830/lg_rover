@@ -85,11 +85,11 @@ router.get('/battery',  (req, res) => {
             devices.serialPort2.on('data', (data)=>{
                 received = Buffer.concat([received, data])
                 if (received.length === 3) {
-                    received = {
-                        "header": received.readUInt8(0),
-                        "code": received.readUInt8(1),
-                        "charge": received.readUInt8(2)
-                    }
+                    // received = {
+                    //     "header": received.readUInt8(0),
+                    //     "code": received.readUInt8(1),
+                    //     "charge": received.readUInt8(2)
+                    // }
                     devices.closePort(2).then(()=>{
                         res.json(received)
                     }).catch(err => {
