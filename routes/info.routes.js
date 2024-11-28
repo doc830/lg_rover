@@ -58,7 +58,7 @@ router.get('/visibility_on',  (req, res) => {
         } else {
             status = "Measured"
         }
-        if (data[5] === "") {
+        if (data[5] === "" || data[5] === "///") {
             data[5] = "0"
         }
         v_data = {
