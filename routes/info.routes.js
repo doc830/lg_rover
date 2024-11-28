@@ -52,9 +52,19 @@ router.get('/visibility_on',  (req, res) => {
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
         data = data.split(' ')
+        let status = data[2].charAt(data[2].length-1)
+        if (status === "3") {
+            status = "Measurement in process"
+        } else {
+            status = "Measured"
+        }
+        if (data[5] === "") {
+            data[5] = "0"
+        }
         v_data = {
             "type": "visibility",
-            "metric": data,
+            "status": status,
+            "meters": data[5],
             "time": formattedTime
         }
         axios.post(config.get('gw') + "/api/rover/visibility", v_data).then(() => {}).catch(() => {
