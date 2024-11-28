@@ -51,7 +51,7 @@ router.get('/visibility_on',  (req, res) => {
         let minutes = currentDate.getMinutes();
         let seconds = currentDate.getSeconds();
         let formattedTime = `${hours}:${minutes}:${seconds}`
-        data = data.split(' ')
+        //data = data.split(' ')
 
         v_data = {
             "type": "visibility",
