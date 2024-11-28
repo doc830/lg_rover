@@ -1,5 +1,6 @@
 const {Router} = require('express')
 const devices = require("../middleware/devices")
+const config = require("config");
 const router = Router()
 router.get('/data',  (req, res) => {
     if (!devices.weather) {
@@ -29,7 +30,8 @@ router.get('/data',  (req, res) => {
                         'wind_speed': wind_speed,
                         'temperature': temperature,
                         'humidity': humidity,
-                        'pressure': pressure
+                        'pressure': pressure,
+                        roverID: config.get('roverID')
                     })
                 }
             })
