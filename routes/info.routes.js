@@ -55,7 +55,7 @@ router.get('/visibility_on',  (req, res) => {
 
         v_data = {
             "type": "visibility",
-            "meters": data[4],
+            "metric": data,
             "time": formattedTime
         }
         axios.post(config.get('gw') + "/api/rover/visibility", {
