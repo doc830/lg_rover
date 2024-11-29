@@ -20,7 +20,7 @@ class Devices {
                 return resolve()
             }
             if (this.visibility===true&&status===true){
-                return  reject (new Error("Уже уже подключен!"))
+                return  reject (new Error("ДМДВ уже подключен!"))
             }
             if (this.weather===false&&status===true){
                  this.openPort({

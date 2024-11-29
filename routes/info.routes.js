@@ -5,6 +5,7 @@ const {ReadlineParser} = require("@serialport/parser-readline")
 const axios = require("axios")
 const config = require("config")
 let v_data = {}
+let v_data_raw = {}
 router.get('/weather_on',   (req, res) => {
      devices.setWeather(true).then(()=>{
         res.json ({
@@ -53,7 +54,7 @@ router.get('/visibility_on',  (req, res) => {
         let formattedTime = `${hours}:${minutes}:${seconds}`
         data = data.split(' ')
         let status = data[2].charAt(data[2].length-1)
-        if (status === "3") {
+        if (status !== "0") {
             status = "Measurement in process"
         } else {
             status = "Measured"
@@ -61,6 +62,7 @@ router.get('/visibility_on',  (req, res) => {
         if (data[5] === "" || data[5] === "///") {
             data[5] = "0"
         }
+        v_data_raw = data
         v_data = {
             "type": "visibility",
             "status": status,
@@ -76,6 +78,16 @@ router.get('/visibility_on',  (req, res) => {
 router.get('/visibility', (req,res)=> {
     if (devices.visibility) {
         res.json(v_data)
+    } else {
+        res.json ({
+            "err": "001",
+            "info": "ДМДВ отключен!"
+        })
+    }
+})
+router.get('/visibility_raw', (req,res)=> {
+    if (devices.visibility) {
+        res.json(v_data_raw)
     } else {
         res.json ({
             "err": "001",
