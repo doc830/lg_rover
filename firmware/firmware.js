@@ -20,7 +20,30 @@ function firmware() {
 //catch UBX
     serialPort.on("data",  (buffer) => {
         TIMESTAMP = Date.now()
-        ubxParser.parse(buffer)
+        ubxParser.parse(buffer).then(()=>{
+            ubxParser.on("data",  (data) => {
+                axios.post(config.get('gw') + "/api/rover/ubx", {
+                    type: 'UBX',
+                    itow: data["iTOW"],
+                    relPosN: data["relPosN"],
+                    relPosE: data["relPosE"],
+                    relPosD: data["relPosD"],
+                    relPosH: data["relPosHeading"],
+                    length: data["relPosLength"],
+                    isFix: data["diffFixOK"],
+                    diffSol: data["diffSoln"],
+                    carrSol: data["carrSoln"],
+                    r_timestamp: TIMESTAMP,
+                    roverID: config.get('roverID')
+                })
+                    .then(() => {})
+                    .catch(() => {
+                        console.error('UBX POST request error:')
+                    })
+            })
+        }).catch((err)=>{
+            console.error(err.message)
+        })
     })
 //send UBX
 //     ubxParser.on("data",  (data) => {
