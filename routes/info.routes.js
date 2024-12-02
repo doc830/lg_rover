@@ -150,4 +150,30 @@ router.get('/battery',  (req, res) => {
         })
     })
 })
+router.get('/device_off',  (req, res) => {
+    devices.openPort({
+        path: "/dev/ttyS1",
+        dataBits: 8,
+        baudRate: 115200,
+        stopBits: 1,
+        parity: "even"
+    },2).then(()=>{
+        devices.sendMessage(Buffer.from('A6AD00', 'hex'), devices.serialPort2).then(() => {
+            res.json({
+                "mes": "Я отрубаюсь",
+            })
+        }).catch(err => {
+            devices.serialPort2(2)
+            res.json({
+                "err": "001",
+                "info": err.message
+            })
+        })
+    }).catch(err => {
+        res.json({
+            "err": "001",
+            "info": err.message
+        })
+    })
+})
 module.exports = router
