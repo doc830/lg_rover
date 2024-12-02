@@ -59,14 +59,13 @@ router.get('/visibility_on',  (req, res) => {
         } else {
             status = "Measured"
         }
-        if (data[5] === "" || data[5] === "///") {
-            data[5] = "0"
-        }
+
         v_data_raw = data
         v_data = {
             "type": "visibility",
             "status": status,
-            "meters": data[5],
+            "avg_vis_1_min ": data[4],
+            "avg_vis_10_min ": data[6],
             "time": formattedTime,
             roverID: config.get('roverID')
         }
