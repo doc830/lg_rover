@@ -23,8 +23,8 @@ function firmware() {
         ubxParser.parse(buffer)
     })
 //send UBX
-    ubxParser.on("data", async (data) => {
-        await axios.post(config.get('gw') + "/api/rover/ubx", {
+    ubxParser.on("data",  (data) => {
+         axios.post(config.get('gw') + "/api/rover/ubx", {
             type: 'UBX',
             itow: data["iTOW"],
             relPosN: data["relPosN"],
@@ -48,10 +48,10 @@ function firmware() {
         TIMESTAMP = Date.now()
     })
 //send NMEA
-    nmeaParser.on("data", async (msg) => {
+    nmeaParser.on("data", (msg) => {
         if (msg.match(/^\$GNGGA,+/m)) {
             msg = msg.split(',')
-            await axios.post(config.get('gw') + "/api/rover/nmea", {
+             axios.post(config.get('gw') + "/api/rover/nmea", {
                 type: 'NMEA',
                 nTime: msg[1],
                 lat: msg[2],
