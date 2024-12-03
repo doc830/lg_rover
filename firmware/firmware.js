@@ -24,7 +24,7 @@ function firmware() {
     })
 //send UBX
     ubxParser.on("data",  (data) => {
-         axios.post(config.get('gw') + "/api/rover/ubx", {
+        let req = {
             type: 'UBX',
             itow: data["iTOW"],
             relPosN: data["relPosN"],
@@ -37,10 +37,16 @@ function firmware() {
             carrSol: data["carrSoln"],
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
-        })
+        }
+         axios.post(config.get('gw') + "/api/rover/ubx", req)
             .then(() => {})
             .catch(() => {
-                console.error('UBX POST request error:')
+                console.error('UBX POST request error for: ' + config.get('gw'))
+            })
+        axios.post(config.get('base') + "/api/rover/ubx", req)
+            .then(() => {})
+            .catch(() => {
+                console.error('UBX POST request error for: ' + config.get('base'))
             })
     })
 //catch NMEA
@@ -51,7 +57,7 @@ function firmware() {
     nmeaParser.on("data", (msg) => {
         if (msg.match(/^\$GNGGA,+/m)) {
             msg = msg.split(',')
-             axios.post(config.get('gw') + "/api/rover/nmea", {
+            let req = {
                 type: 'NMEA',
                 nTime: msg[1],
                 lat: msg[2],
@@ -60,10 +66,16 @@ function firmware() {
                 EW: msg[5],
                 r_timestamp: TIMESTAMP,
                 roverID: config.get('roverID')
-            })
+            }
+             axios.post(config.get('gw') + "/api/rover/nmea", req)
                 .then(() => {})
                 .catch(() => {
-                    console.error('NMEA POST request error:')
+                    console.error('NMEA POST request error for: ' + config.get('gw'))
+                })
+            axios.post(config.get('base') + "/api/rover/nmea", req)
+                .then(() => {})
+                .catch(() => {
+                    console.error('NMEA POST request error for: ' + config.get('base'))
                 })
         }
     })
