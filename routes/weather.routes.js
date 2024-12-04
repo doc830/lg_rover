@@ -26,11 +26,11 @@ router.get('/data',  (req, res) => {
                     }
                     devices.serialPort.removeAllListeners()
                     res.json({
-                        'wind_direction': received.readUInt16BE(5),
-                        'wind_speed': received.readFloatBE(7),
-                        'temperature': received.readFloatBE(11),
-                        'humidity': received.readFloatBE(15),
-                        'pressure': received.readFloatBE(19),
+                        'wind_direction': Buffer.from([received[5],received[6]]).readUInt16BE(0),
+                        'wind_speed': Buffer.from([received[9],received[10],received[7],received[8]]).readFloatBE(0),
+                        'temperature': Buffer.from([received[13],received[14],received[11],received[12]]).readFloatBE(0),
+                        'humidity': Buffer.from([received[17],received[18],received[15],received[16]]).readFloatBE(0),
+                        'pressure': Buffer.from([received[21],received[22],received[19],received[20]]).readFloatBE(0),
                         roverID: config.get('roverID'),
                         "raw": received
                     })
