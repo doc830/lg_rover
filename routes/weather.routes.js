@@ -20,9 +20,10 @@ router.get('/data',  (req, res) => {
                     let receivedCRC = received.readUInt16LE(received.length - 2)
                     const calculatedCRC = crc.crc16modbus(messageWithoutCRC)
                     if (calculatedCRC !== receivedCRC) {
-                        console.error('CRC mismatch: Received:', receivedCRC, 'Calculated:', calculatedCRC);
-                        res.status(400).json(
-                            { error: 'Invalid CRC' });
+                        res.json({
+                            "err": "002",
+                            "info": '\'CRC mismatch: Received:\', receivedCRC, \'Calculated:\', calculatedCRC'
+                        })
                     }
                     devices.serialPort.removeAllListeners()
                     res.json({
