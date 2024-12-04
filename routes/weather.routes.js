@@ -15,6 +15,7 @@ router.get('/data',  (req, res) => {
             devices.serialPort.on('data', (data)=> {
                 received = Buffer.concat([received,  Buffer.from(data)])
                 if (received.length ===  103) {
+                    let raw = received
                     if (!CRC(received)) {
                         received = recoverMessage(received)
                     }
@@ -27,7 +28,7 @@ router.get('/data',  (req, res) => {
                         pressure: Buffer.from([received[21],received[22],received[19],received[20]]).readFloatBE(0),
                         CRC: CRC(received),
                         roverID: config.get('roverID'),
-                        raw: received
+                        raw: raw
                     })
                 }
 
