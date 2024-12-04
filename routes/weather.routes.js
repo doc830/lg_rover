@@ -21,6 +21,7 @@ router.get('/data',  (req, res) => {
                     const calculatedCRC = crc.crc16modbus(messageWithoutCRC)
                     if (calculatedCRC !== receivedCRC) {
                         CRC16 = "BAD CRC!"
+                        return new Error("BAD CRC!")
                     } else {
                         CRC16 = "MATCH!"
                     }
