@@ -13,7 +13,7 @@ router.get('/data',  (req, res) => {
         let received = Buffer.alloc(0)
         devices.sendMessage(Buffer.from('010300000031841E', 'hex'), devices.serialPort).then(()=>{
             devices.serialPort.on('data', (data)=> {
-                received = Buffer.concat([received,  Buffer.from(data, 'hex')])
+                received = Buffer.concat([received,  Buffer.from(data)])
                 if (received.length ===  103) {
 
                     let messageWithoutCRC = received.slice(0, -2)
