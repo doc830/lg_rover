@@ -25,6 +25,7 @@ router.get('/data',  (req, res) => {
                         temperature: Buffer.from([received[13],received[14],received[11],received[12]]).readFloatBE(0),
                         humidity: Buffer.from([received[17],received[18],received[15],received[16]]).readFloatBE(0),
                         pressure: Buffer.from([received[21],received[22],received[19],received[20]]).readFloatBE(0),
+                        CRC: CRC(received),
                         roverID: config.get('roverID'),
                         raw: received
                     })
