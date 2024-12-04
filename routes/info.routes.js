@@ -70,7 +70,10 @@ router.get('/visibility_on',  (req, res) => {
             roverID: config.get('roverID')
         }
         axios.post(config.get('gw') + "/api/rover/visibility", v_data).then(() => {}).catch(() => {
-            console.error('Visibility POST request error:')
+            console.error('Visibility POST request error for: ' + config.get('gw'))
+        })
+        axios.post(config.get('base') + "/api/rover/visibility", v_data).then(() => {}).catch(() => {
+            console.error('Visibility POST request error for: ' + config.get('base'))
         })
     })
 })
