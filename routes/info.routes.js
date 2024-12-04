@@ -19,6 +19,7 @@ router.get('/weather_on',   (req, res) => {
         })
     })
 })
+
 router.get('/weather_off',  (req, res) => {
      devices.setWeather(false).then(()=>{
         res.json ({
@@ -46,7 +47,6 @@ router.get('/visibility_on',  (req, res) => {
     })
     let parser = devices.serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }))
     parser.on('data',  (data)=>{
-
         let currentDate = new Date();
         let hours = currentDate.getHours();
         let minutes = currentDate.getMinutes();
@@ -59,7 +59,6 @@ router.get('/visibility_on',  (req, res) => {
         } else {
             status = "Measured"
         }
-
         v_data_raw = data
         v_data = {
             "type": "visibility",

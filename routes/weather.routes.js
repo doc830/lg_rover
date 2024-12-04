@@ -14,6 +14,7 @@ router.get('/data',  (req, res) => {
             devices.serialPort.on('data', (data)=> {
                 received = Buffer.concat([received,  Buffer.from(data, 'hex')])
                 if (received.length ===  103) {
+
                     let wind_direction = Buffer.from([received[5],received[6]])
                     wind_direction = wind_direction.readUInt16BE(0)
                     let wind_speed = Buffer.from([received[9],received[10],received[7],received[8]])
@@ -31,7 +32,8 @@ router.get('/data',  (req, res) => {
                         'temperature': temperature,
                         'humidity': humidity,
                         'pressure': pressure,
-                        roverID: config.get('roverID')
+                        roverID: config.get('roverID'),
+                        "raw": received
                     })
                 }
             })
