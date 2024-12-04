@@ -37,6 +37,11 @@ router.get('/data',  (req, res) => {
                         raw: received
                     })
                 }
+            }).catch((err)=>{
+                res.json({
+                    "err": "001",
+                    "info": err.message
+                })
             })
         }).catch((err)=>{
             res.json({
