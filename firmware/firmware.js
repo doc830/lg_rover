@@ -26,7 +26,7 @@ function firmware() {
 //send UBX
     ubxParser.on("data",  (data) => {
         console.log(data)
-        data = Object.fromEntries(['type', "UBX"], data, ['r_timestamp', TIMESTAMP], ['roverID', config.get('roverID')])
+        data = Object.fromEntries(['type', "UBX"], Object.entries(data), ['r_timestamp', TIMESTAMP], ['roverID', config.get('roverID')])
         // let req = {
         //     type: 'UBX',
         //     itow: data["iTOW"],
