@@ -25,29 +25,18 @@ function firmware() {
     })
 //send UBX
     ubxParser.on("data",  (data) => {
-        console.log(data)
-        Object.entries(data)
+        let type
+        if (Object.keys(data).length === 22) {
+            type = 'UBX-RELPOSNED'
+        } else {
+            type = 'UBX-PVT'
+        }
         data = {
-            type: 'UBX',
+            'type': type,
             ...data,
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
-        // let req = {
-        //     type: 'UBX',
-        //     itow: data["iTOW"],
-        //     relPosN: data["relPosN"],
-        //     relPosE: data["relPosE"],
-        //     relPosD: data["relPosD"],
-        //     relPosH: data["relPosHeading"],
-        //     length: data["relPosLength"],
-        //     isFix: data["diffFixOK"],
-        //     diffSol: data["diffSoln"],
-        //     carrSol: data["carrSoln"],
-        //     r_timestamp: TIMESTAMP,
-        //     roverID: config.get('roverID')
-        // }
-
          axios.post(config.get('gw') + "/api/rover/ubx", data)
             .then(() => {})
             .catch(() => {
