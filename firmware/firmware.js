@@ -25,11 +25,10 @@ function firmware() {
     })
 //send UBX
     ubxParser.on("data",  (data) => {
-        let type
-        console.log(Object.keys(data).length)
-        if (Object.keys(data).length === 22) {
+        let type = 'UBX-?'
+        if (Object.keys(data).length === 25) {
             type = 'UBX-RELPOSNED'
-        } else {
+        } else if (Object.keys(data).length === 44) {
             type = 'UBX-PVT'
         }
         data = {
