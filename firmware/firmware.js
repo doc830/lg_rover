@@ -25,6 +25,7 @@ function firmware() {
     })
 //send UBX
     ubxParser.on("data",  (data) => {
+        console.log(data)
         let req = {
             type: 'UBX',
             itow: data["iTOW"],
@@ -39,6 +40,7 @@ function firmware() {
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
+
          axios.post(config.get('gw') + "/api/rover/ubx", req)
             .then(() => {})
             .catch(() => {
