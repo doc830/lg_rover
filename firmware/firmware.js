@@ -26,9 +26,10 @@ function firmware() {
 //send UBX
     ubxParser.on("data",  (data) => {
         console.log(data)
+        Object.entries(data)
         data = {
             type: 'UBX',
-            data,
+            ...data,
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
