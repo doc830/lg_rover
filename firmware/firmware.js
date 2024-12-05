@@ -26,6 +26,7 @@ function firmware() {
 //send UBX
     ubxParser.on("data",  (data) => {
         let type
+        console.log(Object.keys(data).length)
         if (Object.keys(data).length === 22) {
             type = 'UBX-RELPOSNED'
         } else {
