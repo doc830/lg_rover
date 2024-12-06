@@ -21,7 +21,7 @@ function rs485() {
     connectDevice().then((result)=>{
         if (result.device === 'weather') {
             console.log('weather')
-            //weatherService(result.port)
+            weatherService(result.port)
         } else if (result.device === 'visibility') {
             console.log('vis')
             visibilityService(result.port)
@@ -84,32 +84,36 @@ function weatherService(port) {
         listenPort(port).then((result)=>{
             console.log(result)
         }).catch((err)=>{
+            closePort(port).then(()=>{
+                console.log(err)
+                rs485()
+            }).catch((err)=>{
+                console.log(err)
+                rs485()
+            })
+        })
+    }).catch((err)=>{
+        closePort(port).then(()=>{
+            console.log(err)
+            rs485()
+        }).catch((err)=>{
             console.log(err)
             rs485()
         })
-    }).catch((err)=>{
-        console.log(err)
-        rs485()
     })
 }
 function visibilityService(port) {
     let timeout = setTimeout(()=>{
-        port.closePort().then(()=>{
+        closePort(port).then(()=>{
             rs485()
-        }).catch((err)=> {
+        }).catch((err)=>{
             console.log(err)
+            rs485()
         })
     }, 5000)
     port.on('data', (data)=>{
         clearTimeout(timeout)
         console.log(data)
-    })
-    port.on('error', () => {
-        port.closePort().then(()=>{
-            rs485()
-        }).catch((err)=> {
-            console.log(err)
-        })
     })
 }
 function listenPort(port) {
