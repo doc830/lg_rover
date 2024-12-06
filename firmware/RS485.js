@@ -38,8 +38,18 @@ function connectDevice() {
             console.log('Timeout: No visibility data')
             closePort(openedPort).then(()=>{
                 openPort(serialPortConfigWeather).then((port)=>{
-                    openedPort = port
-
+                    sendMessage(port).then(()=>{
+                        listenPort(port).then(()=>{
+                            resolve({
+                                device: 'weather',
+                                port
+                            })
+                        }).catch((err) => {
+                            reject (err)
+                        })
+                    }).catch((err)=>{
+                        reject (err)
+                    })
                 }).catch((err) => {
                     reject (err)
                 })
@@ -48,7 +58,6 @@ function connectDevice() {
             })
         }, 5000)
         openPort(serialPortConfigVisibility).then((port)=>{
-            console.log(port)
             openedPort = port
             port.on('data', ()=> {
                 clearTimeout(timeout)
@@ -60,32 +69,6 @@ function connectDevice() {
         }).catch((err)=>{
             reject(err)
         })
-
-        // const timeout = setTimeout(() => {
-        //     closePort(port).then(()=>{
-        //         port = new SerialPort(serialPortConfigWeather, ()=>{
-        //             sendMessage().then(()=>{
-        //                 listenPort(port).then(()=>{
-        //                     resolve ({
-        //                         device: 'weather',
-        //                         port
-        //                     })
-        //                 }).catch((err)=>{
-        //                     closePort(port).then(()=>{
-        //                         return  reject (err)
-        //                     }).catch((err) => {
-        //                         return reject (err)
-        //                     })
-        //                 })
-        //             }).catch((err)=>{
-        //                 reject (err)
-        //             })
-        //         })
-        //     }).catch((err)=> {
-        //         reject(err)
-        //     })
-        // }, 5000)
-
     })
 }
 function weatherService(port) {
