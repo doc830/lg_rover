@@ -115,7 +115,7 @@ function visibilityService(port) {
         })
     }, 5000)
     port.on('data', (data)=>{
-        clearTimeout(timeout)
+        timeout.refresh()
         console.log(data)
     })
 }
