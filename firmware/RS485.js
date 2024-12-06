@@ -81,7 +81,7 @@ function connectDevice() {
 }
 function weatherService(port) {
     setInterval(()=>{
-        sendMessage().then(()=>{
+        sendMessage(port).then(()=>{
             listenPort(port).then((result)=>{
                 console.log(result)
             }).catch((err)=>{
