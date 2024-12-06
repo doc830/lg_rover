@@ -41,7 +41,8 @@ function connectDevice() {
             closePort(openedPort).then(()=>{
                 openPort(serialPortConfigWeather).then((port)=>{
                     sendMessage(port).then(()=>{
-                        listenPort(port).then(()=>{
+                        listenPort(port).then((result)=>{
+                            console.log(result)
                             resolve({
                                 device: 'weather',
                                 port
@@ -62,7 +63,7 @@ function connectDevice() {
             }).catch((err)=> {
                 reject (err)
             })
-        }, 10000)
+        }, 5000)
         openPort(serialPortConfigVisibility).then((port)=>{
             openedPort = port
             port.on('data', ()=> {
@@ -119,6 +120,11 @@ function visibilityService(port) {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
+        let timeout = setTimeout(() => {
+            port.removeAllListeners()
+            reject (new Error ('Weather station does not respond'))
+        }, 1000)
+
         port.on('data', (data) => {
             clearTimeout(timeout)
             received = Buffer.concat([received,  Buffer.from(data)])
@@ -127,7 +133,7 @@ function listenPort(port) {
                     received = recoverMessage(received)
                 }
                 port.removeAllListeners()
-                return resolve ({
+                resolve ({
                     wind_direction: Buffer.from([received[5],received[6]]).readUInt16BE(0),
                     wind_speed: Buffer.from([received[9],received[10],received[7],received[8]]).readFloatBE(0),
                     temperature: Buffer.from([received[13],received[14],received[11],received[12]]).readFloatBE(0),
@@ -140,15 +146,11 @@ function listenPort(port) {
                 return reject (new Error('No valid data via RS485'))
             }
         })
-        let timeout = setTimeout(() => {
-            port.removeAllListeners()
-            reject (new Error ('Weather station does not respond'))
-        }, 5000)
     })
 }
 function sendMessage(port) {
     return new Promise((resolve, reject) => {
-        port.write(Buffer.from('010300000031841E', 'hex'), err => {
+        port.write(message, err => {
             if (err) {
                 return reject (new Error(err.message))
             }
