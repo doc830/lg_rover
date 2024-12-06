@@ -80,9 +80,19 @@ function connectDevice() {
     })
 }
 function weatherService(port) {
-    sendMessage().then(()=>{
-        listenPort(port).then((result)=>{
-            console.log(result)
+    setInterval(()=>{
+        sendMessage().then(()=>{
+            listenPort(port).then((result)=>{
+                console.log(result)
+            }).catch((err)=>{
+                closePort(port).then(()=>{
+                    console.log(err)
+                    rs485()
+                }).catch((err)=>{
+                    console.log(err)
+                    rs485()
+                })
+            })
         }).catch((err)=>{
             closePort(port).then(()=>{
                 console.log(err)
@@ -92,15 +102,7 @@ function weatherService(port) {
                 rs485()
             })
         })
-    }).catch((err)=>{
-        closePort(port).then(()=>{
-            console.log(err)
-            rs485()
-        }).catch((err)=>{
-            console.log(err)
-            rs485()
-        })
-    })
+    }, 1000)
 }
 function visibilityService(port) {
     let timeout = setTimeout(()=>{
