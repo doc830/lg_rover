@@ -64,7 +64,7 @@ function connectDevice() {
             }).catch((err)=> {
                 reject (err)
             })
-        }, 5000)
+        }, 10000)
         openPort(serialPortConfigVisibility).then((port)=>{
             openedPort = port
             port.on('data', ()=> {
@@ -125,7 +125,7 @@ function listenPort(port) {
         let timeout = setTimeout(() => {
             port.removeAllListeners()
             reject (new Error ('Weather station does not respond'))
-        }, 1000)
+        }, 5000)
 
         port.on('data', (data) => {
             clearTimeout(timeout)
