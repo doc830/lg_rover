@@ -23,6 +23,7 @@ function rs485() {
             console.log('weather')
             //weatherService(result.port)
         } else if (result.device === 'visibility') {
+            console.log('vis')
             visibilityService(result.port)
         } else {
             console.log('Error in RS485')
@@ -112,7 +113,7 @@ function listenPort(port) {
 
         let timeout = setTimeout(() => {
             port.removeAllListeners()
-            return reject (new Error ('Weather station does not respond'))
+            reject (new Error ('Weather station does not respond'))
         }, 1000)
 
         port.on('data', (data) => {
