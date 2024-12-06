@@ -107,13 +107,12 @@ function weatherService(port) {
 function visibilityService(port) {
     let timeout = setTimeout(()=>{
         closePort(port).then(()=>{
-            console.log("closed")
             rs485()
         }).catch((err)=>{
             console.log(err)
             rs485()
         })
-    }, 5000)
+    }, 10000)
     port.on('data', (data)=>{
         timeout.refresh()
         console.log(data)
