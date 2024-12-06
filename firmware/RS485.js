@@ -40,23 +40,11 @@ function connectDevice() {
             console.log('Timeout: No visibility data')
             closePort(openedPort).then(()=>{
                 openPort(serialPortConfigWeather).then((port)=>{
-                    sendMessage(port).then(()=>{
-                        listenPort(port).then(()=>{
-                            resolve({
-                                device: 'weather',
-                                port
-                            })
-                        }).catch((err) => {
-                            closePort(port).then(()=>{
-                                reject (err)
-                            }).catch((err)=>{
-                                reject (err)
-                            })
+                    listenPort(port).then(()=>{
+                        sendMessage(port).then().catch((err)=>{
+                            closePort(port).then(()=>{reject(err)}).catch((err)=>{reject(err)})
                         })
-                    }).catch((err)=>{
-                        reject (err)
-                    })
-
+                    }).catch((err)=> {closePort(port).then(()=>{reject(err)}).catch((err)=>{reject(err)})})
                 }).catch((err) => {
                     reject (err)
                 })
