@@ -120,7 +120,7 @@ function visibilityService(port) {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
-        console.log('here')
+
         let timeout = setTimeout(() => {
             port.removeAllListeners()
             reject (new Error ('Weather station does not respond'))
@@ -160,6 +160,7 @@ function sendMessage(port) {
                     return reject (new Error(err.message))
                 }
             })
+            resolve()
         })
     })
 }
