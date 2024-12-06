@@ -30,6 +30,7 @@ function rs485() {
         }
     }).catch((err)=>{
         console.log('Renew')
+        console.log(err)
         rs485()
     })
 }
@@ -47,7 +48,11 @@ function connectDevice() {
                                 port
                             })
                         }).catch((err) => {
-                            reject (err)
+                            closePort(port).then(()=>{
+                                reject (err)
+                            }).catch((err)=>{
+                                reject (err)
+                            })
                         })
                     }).catch((err)=>{
                         reject (err)
