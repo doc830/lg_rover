@@ -33,8 +33,33 @@ function rs485() {
 }
 function connectDevice() {
     return new Promise((resolve, reject) => {
+        let openedPort
+        const timeout = setTimeout(() => {
+            console.log('Timeout: No visibility data')
+            closePort(openedPort).then(()=>{
+                openPort(serialPortConfigWeather).then((port)=>{
+                    openedPort = port
 
-        let port = new SerialPort(serialPortConfigVisibility)
+                }).catch((err) => {
+                    reject (err)
+                })
+            }).catch((err)=> {
+                reject (err)
+            })
+        }, 5000)
+        openPort(serialPortConfigVisibility).then((port)=>{
+            console.log(port)
+            openedPort = port
+            port.on('data', ()=> {
+                clearTimeout(timeout)
+                resolve({
+                    device: 'visibility',
+                    port
+                })
+            })
+        }).catch((err)=>{
+            reject(err)
+        })
 
         // const timeout = setTimeout(() => {
         //     closePort(port).then(()=>{
@@ -60,22 +85,6 @@ function connectDevice() {
         //         reject(err)
         //     })
         // }, 5000)
-
-        const timeout = setTimeout(() => {
-            port.close(() => reject(new Error('Timeout: No data received within 5 seconds')));
-        }, 5000);
-        port.on('data', () => {
-            clearTimeout(timeout)
-            resolve({
-                device: 'visibility',
-                port
-            })
-        })
-
-        port.on('error', (err) => {
-            clearTimeout(timeout)
-            port.close(() => reject(err))
-        })
 
     })
 }
@@ -156,6 +165,16 @@ function sendMessage(port) {
                 }
             })
             resolve()
+        })
+    })
+}
+function openPort (config) {
+    return new Promise((resolve, reject)=> {
+        let port = new SerialPort(config, (err) => {
+            if (err) {
+                return reject (err)
+            }
+            return resolve (port)
         })
     })
 }
