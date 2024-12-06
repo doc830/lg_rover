@@ -3,7 +3,7 @@ const config = require('config')
 const cors = require('cors')
 const server = express()
 const firmware = require('./firmware/firmware')
-const rs485 = require("./firmware/RS485");
+//const rs485 = require("./firmware/RS485");
 async function initialization () {
     await server.listen(config.get('port'))
 }
