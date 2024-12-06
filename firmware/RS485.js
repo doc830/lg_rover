@@ -27,7 +27,7 @@ function rs485() {
             console.log('Error in RS485')
         }
     }).catch((err)=>{
-        console.log(err)
+        console.log('Renew')
         rs485()
     })
 }
