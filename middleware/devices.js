@@ -1,4 +1,4 @@
-const {SerialPort} = require("serialport");
+const {SerialPort} = require("serialport")
 class Devices {
     constructor() {
         this.weather = false
@@ -6,6 +6,7 @@ class Devices {
         this.serialPort = ""
         this.serialPort2 = ""
     }
+
      setVisibility (status) {
         return new Promise( (resolve, reject) => {
             if (this.weather===true){

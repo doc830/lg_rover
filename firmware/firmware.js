@@ -3,7 +3,6 @@ const {UBXParser} = require('ubx-parser')
 const {SerialPort} = require("serialport")
 const {ReadlineParser} = require('@serialport/parser-readline')
 const config = require("config")
-
 function firmware() {
     let TIMESTAMP = 0
 //open serial
@@ -80,5 +79,4 @@ function firmware() {
     })
 
 }
-
 module.exports = firmware

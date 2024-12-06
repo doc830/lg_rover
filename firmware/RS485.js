@@ -46,7 +46,11 @@ function connectDevice() {
                                 port
                             })
                         }).catch((err)=>{
-                            reject (err)
+                            closePort(port).then(()=>{
+                                return  reject (err)
+                            }).catch((err) => {
+                                return reject (err)
+                            })
                         })
                     }).catch((err)=>{
                         reject (err)
@@ -110,6 +114,7 @@ function listenPort(port) {
     return new Promise((resolve, reject)=> {
 
         let timeout = setTimeout(() => {
+            port.removeAllListeners()
            return reject (new Error ('Weather station does not respond'))
         }, 1000)
 

@@ -29,7 +29,6 @@ router.get('/data',  (req, res) => {
                         roverID: config.get('roverID'),
                     })
                 }
-
             })
         }).catch((err)=>{
             res.json({
