@@ -36,31 +36,34 @@ function connectDevice() {
 
         let port = new SerialPort(serialPortConfigVisibility)
 
-        const timeout = setTimeout(() => {
-            closePort(port).then(()=>{
-                port = new SerialPort(serialPortConfigWeather, ()=>{
-                    sendMessage().then(()=>{
-                        listenPort(port).then(()=>{
-                            resolve ({
-                                device: 'weather',
-                                port
-                            })
-                        }).catch((err)=>{
-                            closePort(port).then(()=>{
-                                return  reject (err)
-                            }).catch((err) => {
-                                return reject (err)
-                            })
-                        })
-                    }).catch((err)=>{
-                        reject (err)
-                    })
-                })
-            }).catch((err)=> {
-                reject(err)
-            })
-        }, 5000)
+        // const timeout = setTimeout(() => {
+        //     closePort(port).then(()=>{
+        //         port = new SerialPort(serialPortConfigWeather, ()=>{
+        //             sendMessage().then(()=>{
+        //                 listenPort(port).then(()=>{
+        //                     resolve ({
+        //                         device: 'weather',
+        //                         port
+        //                     })
+        //                 }).catch((err)=>{
+        //                     closePort(port).then(()=>{
+        //                         return  reject (err)
+        //                     }).catch((err) => {
+        //                         return reject (err)
+        //                     })
+        //                 })
+        //             }).catch((err)=>{
+        //                 reject (err)
+        //             })
+        //         })
+        //     }).catch((err)=> {
+        //         reject(err)
+        //     })
+        // }, 5000)
 
+        const timeout = setTimeout(() => {
+            port.close(() => reject(new Error('Timeout: No data received within 5 seconds')));
+        }, 5000);
         port.on('data', () => {
             clearTimeout(timeout)
             resolve({
