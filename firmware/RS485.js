@@ -146,7 +146,7 @@ function listenPort(port) {
 function sendMessage(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject) => {
-        port.write(message, err => {
+        port.write(Buffer.from('010300000031841E', 'hex'), err => {
             if (err) {
                 return reject (new Error(err.message))
             }
