@@ -17,105 +17,55 @@ const serialPortConfigWeather = {
     parity: "even"
 }
 const message = Buffer.from('010300000031841E', 'hex')
-function rs485() {
-    connectDevice().then((result)=>{
-        if (result.device === 'weather') {
-            console.log('weather')
-            weatherService(result.port)
-        } else if (result.device === 'visibility') {
-            console.log('vis')
-            visibilityService(result.port)
-        } else {
-            console.log('Error in RS485')
-        }
-    }).catch((err)=>{
-        console.log(err)
-        rs485()
-    })
-}
-function connectDevice() {
-    return new Promise((resolve, reject) => {
-        let openedPort
-        const timeout = setTimeout(() => {
-            console.log('Timeout: No visibility data')
-            closePort(openedPort).then(()=>{
-                openPort(serialPortConfigWeather).then((port)=>{
-                    sendMessage(port).then(()=>{
-                        listenPort(port).then((result)=>{
-                            console.log(result)
-                            resolve({
-                                device: 'weather',
-                                port
-                            })
-                        }).catch((err)=>{
-                            closePort(port).then(()=>{
-                                reject(err)
-                            }).catch(err => {
-                                reject(err)
-                            })
-                        })
-                    }).catch((err)=>{
-                        reject(err)
-                    })
-                }).catch((err) => {
-                    reject (err)
-                })
-            }).catch((err)=> {
-                reject (err)
-            })
-        }, 5000)
-        openPort(serialPortConfigVisibility).then((port)=>{
-            openedPort = port
-            port.on('data', ()=> {
-                clearTimeout(timeout)
-                resolve({
-                    device: 'visibility',
-                    port
-                })
-            })
-        }).catch((err)=>{
-            reject(err)
-        })
-    })
-}
-function weatherService(port) {
-    setInterval(()=>{
-        sendMessage(port).then(()=>{
-            listenPort(port).then((result)=>{
-                console.log(result)
-            }).catch((err)=>{
-                closePort(port).then(()=>{
-                    console.log(err)
-                    rs485()
+
+function weatherService() {
+
+    openPort(serialPortConfigWeather).then((port)=>{
+        setInterval(()=>{
+            sendMessage(port).then(()=>{
+                listenPort(port).then((result)=>{
+                    console.log(result)
+
                 }).catch((err)=>{
                     console.log(err)
-                    rs485()
+                    closePort(port).then(()=>{
+                        visibilityService()
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
                 })
-            })
-        }).catch((err)=>{
-            closePort(port).then(()=>{
-                console.log(err)
-                rs485()
             }).catch((err)=>{
                 console.log(err)
-                rs485()
+            })
+        }, 1000)
+    }).catch((err) => {
+        console.log(err)
+    })
+
+}
+function visibilityService() {
+
+    openPort(serialPortConfigVisibility).then((port)=>{
+
+        let timeout = setTimeout(()=>{
+            console.log('No visibility data')
+            closePort(port).then(()=>{
+                weatherService()
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }, 10000)
+
+        port.on('data', ()=> {
+            port.on('data', (data)=>{
+                timeout.refresh()
+                console.log(data)
             })
         })
-    }, 1000)
-}
-function visibilityService(port) {
-    let timeout = setTimeout(()=>{
-        closePort(port).then(()=>{
-            rs485()
-        }).catch((err)=>{
-            console.log(err)
-            rs485()
-        })
-    }, 10000)
-    port.on('data', (data)=>{
-        timeout.refresh()
-        console.log(data)
+    }).catch((err)=>{
+        console.log(err)
     })
+
 }
 function listenPort(port) {
     let received = Buffer.alloc(0)
