@@ -120,12 +120,10 @@ function visibilityService(port) {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
-
         let timeout = setTimeout(() => {
             port.removeAllListeners()
             reject (new Error ('Weather station does not respond'))
         }, 1000)
-
         port.on('data', (data) => {
             clearTimeout(timeout)
             received = Buffer.concat([received,  Buffer.from(data)])
@@ -143,8 +141,6 @@ function listenPort(port) {
                     CRC: CRC(received),
                     roverID: config.get('roverID'),
                 })
-            } else {
-                return reject (new Error('No valid data via RS485'))
             }
         })
     })
