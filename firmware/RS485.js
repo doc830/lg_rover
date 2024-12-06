@@ -20,7 +20,8 @@ const message = '010300000031841E'
 function rs485() {
     connectDevice().then((result)=>{
         if (result.device === 'weather') {
-            weatherService(result.port)
+            console.log('weather')
+            //weatherService(result.port)
         } else if (result.device === 'visibility') {
             visibilityService(result.port)
         } else {
@@ -39,15 +40,14 @@ function connectDevice() {
             closePort(openedPort).then(()=>{
                 openPort(serialPortConfigWeather).then((port)=>{
                     sendMessage(port).then(()=>{
-                        console.log('send for weather')
-                        // listenPort(port).then(()=>{
-                        //     resolve({
-                        //         device: 'weather',
-                        //         port
-                        //     })
-                        // }).catch((err) => {
-                        //     reject (err)
-                        // })
+                        listenPort(port).then(()=>{
+                            resolve({
+                                device: 'weather',
+                                port
+                            })
+                        }).catch((err) => {
+                            reject (err)
+                        })
                     }).catch((err)=>{
                         reject (err)
                     })
@@ -112,7 +112,7 @@ function listenPort(port) {
 
         let timeout = setTimeout(() => {
             port.removeAllListeners()
-           return reject (new Error ('Weather station does not respond'))
+            return reject (new Error ('Weather station does not respond'))
         }, 1000)
 
         port.on('data', (data) => {
