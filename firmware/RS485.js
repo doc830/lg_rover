@@ -29,7 +29,6 @@ function rs485() {
             console.log('Error in RS485')
         }
     }).catch((err)=>{
-        console.log('Renew')
         console.log(err)
         rs485()
     })
@@ -121,12 +120,6 @@ function visibilityService(port) {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
-
-        let timeout = setTimeout(() => {
-            port.removeAllListeners()
-            reject (new Error ('Weather station does not respond'))
-        }, 5000)
-
         port.on('data', (data) => {
             clearTimeout(timeout)
             received = Buffer.concat([received,  Buffer.from(data)])
@@ -148,6 +141,10 @@ function listenPort(port) {
                 return reject (new Error('No valid data via RS485'))
             }
         })
+        let timeout = setTimeout(() => {
+            port.removeAllListeners()
+            reject (new Error ('Weather station does not respond'))
+        }, 5000)
     })
 }
 function sendMessage(port) {
