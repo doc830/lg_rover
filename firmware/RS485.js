@@ -33,6 +33,7 @@ function weatherService() {
             } catch (err) {
                 console.log(err)
                 try {
+                    console.log('closing')
                     await closePort(openedPort)
                     openedPort.removeAllListeners()
                     visibilityService()
@@ -100,6 +101,7 @@ function visibilityService() {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
+        console.log('listen')
         port.removeAllListeners()
 
         let timeout = setTimeout(() => {
@@ -111,7 +113,7 @@ function listenPort(port) {
             received = Buffer.concat([received, Buffer.from(data)])
             if (received.length === 103) {
                 clearTimeout(timeout)
-                port.removeAllListeners() // Убираем обработчик после завершения
+                port.removeAllListeners()
                 if (!CRC(received)) {
                     received = recoverMessage(received)
                 }
@@ -141,6 +143,7 @@ function sendMessage(port, message) {
                 reject (new Error(err.message))
             }
             port.drain((err) =>{
+                console.log('sent')
                 if (err) {
                     reject (new Error(err.message))
                 }
