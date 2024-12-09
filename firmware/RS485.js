@@ -105,7 +105,7 @@ function listenPort(port) {
         let timeout = setTimeout(() => {
             port.removeAllListeners()
             reject (new Error ('Weather station does not respond'))
-        }, 1000)
+        }, 2000)
 
         port.on('data', (data)=> {
             received = Buffer.concat([received, Buffer.from(data)])
@@ -113,7 +113,6 @@ function listenPort(port) {
                 clearTimeout(timeout)
                 port.removeAllListeners() // Убираем обработчик после завершения
                 if (!CRC(received)) {
-                    console.log('recovering')
                     received = recoverMessage(received)
                 }
                 let wind_direction = Buffer.from([received[5], received[6]]).readUInt16BE(0)
