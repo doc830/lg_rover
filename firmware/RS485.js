@@ -20,10 +20,6 @@ const serialPortConfigWeather = {
 }
 const message = Buffer.from('010300000031841E', 'hex')
 
-function f() {
-
-}
-
 function weatherService() {
     let openedPort
     openPort (serialPortConfigWeather).then((port)=> {
@@ -32,9 +28,8 @@ function weatherService() {
             try {
                 await sendMessage(openedPort)
                 const weather = await listenPort(openedPort)
-
                 console.log(weather)
-                //postData(weather, "/api/rover/weather")
+                postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
             } catch (err) {
                 console.log(err)
@@ -67,6 +62,7 @@ function visibilityService() {
         parser.on('data', (data)=> {
             data = data.split(' ')
             if (data[0] !== "\x01PW") {
+                console.error('Invalid visibility data')
                 return
             }
             timeout.refresh()
@@ -84,7 +80,7 @@ function visibilityService() {
                 time: measureTime(),
                 roverID: config.get('roverID')
             }
-            //postData(v_data, "/api/rover/visibility")
+            postData(v_data, "/api/rover/visibility")
             console.log(v_data)
         })
 
@@ -184,4 +180,4 @@ function postData (data, url) {
         console.error('Visibility POST request error for: ' + config.get('base'))
     })
 }
-module.exports = visibilityService
+module.exports = weatherService
