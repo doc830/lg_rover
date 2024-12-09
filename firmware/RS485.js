@@ -76,11 +76,11 @@ function visibilityService() {
                 status = "Measured"
             }
             let v_data = {
-                "type": "visibility",
-                "status": status,
-                "avg_vis_1_min ": data[4],
-                "avg_vis_10_min ": data[6],
-                "time": measureTime(),
+                type: "visibility",
+                status: status,
+                avg_vis_1_min: data[4],
+                avg_vis_10_min: data[6],
+                time: measureTime(),
                 roverID: config.get('roverID')
             }
             postData(v_data, "/api/rover/visibility")
