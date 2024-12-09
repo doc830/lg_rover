@@ -107,6 +107,7 @@ function listenPort(port) {
                     reject (new Error ('Invalid weather data'))
                 }
                 resolve ({
+                    type: "weather",
                     wind_direction: Buffer.from([received[5],received[6]]).readUInt16BE(0),
                     wind_speed: Buffer.from([received[9],received[10],received[7],received[8]]).readFloatBE(0),
                     temperature: Buffer.from([received[13],received[14],received[11],received[12]]).readFloatBE(0),
