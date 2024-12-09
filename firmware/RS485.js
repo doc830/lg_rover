@@ -20,7 +20,7 @@ const message = Buffer.from('010300000031841E', 'hex')
 
 function weatherService() {
     let openedPort
-    openedPort (serialPortConfigWeather).then((port)=> {
+    openPort (serialPortConfigWeather).then((port)=> {
         openedPort = port
     }).catch(err=>{
         console.log(err)
