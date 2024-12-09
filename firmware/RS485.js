@@ -20,15 +20,15 @@ const message = Buffer.from('010300000031841E', 'hex')
 
 function weatherService() {
     let openedPort
-    let timerID
+    let flag = true
     openPort (serialPortConfigWeather).then((port)=> {
         openedPort = port
-        timerID = setInterval(()=>{
+        while (flag) {
             sendMessage(openedPort).then(()=>{
                 listenPort(openedPort).then((result)=>{
                     console.log(result)
                 }).catch(err=>{
-                    clearInterval(timerID)
+                    flag = false
                     console.log(err)
                     closePort(openedPort).then(()=>{
                         visibilityService()
@@ -37,32 +37,15 @@ function weatherService() {
                     })
                 })
             }).catch((err)=>{
-                clearInterval(timerID)
+                flag = false
                 console.log(err)
             })
-        },1000)
-        // sendMessage(openedPort).then(()=>{
-        //     listenPort(openedPort).then((result)=>{
-        //         console.log(result)
-        //     }).catch(err=>{
-        //         console.log(err)
-        //         closePort(openedPort).then(()=>{
-        //             visibilityService()
-        //         }).catch((err)=>{
-        //             console.log(err)
-        //         })
-        //     })
-        // }).catch((err)=>{
-        //     console.log(err)
-        // })
+        }
 
     }).catch(err=>{
         console.log(err)
     })
 
-}
-function weatherReqTimer() {
-    setTimeout()
 }
 function visibilityService() {
     openPort(serialPortConfigVisibility).then((port)=>{
