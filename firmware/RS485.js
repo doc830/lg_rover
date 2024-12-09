@@ -139,4 +139,4 @@ function CRC (message) {
 function recoverMessage(message) {
     return message.slice(1)
 }
-module.exports = rs485
+module.exports = visibilityService
