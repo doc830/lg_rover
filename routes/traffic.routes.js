@@ -75,16 +75,18 @@ router.get('/yellow_2', async (req, res) => {
 })
 router.get('/yellow_blink', async (req, res) => {
     try {
-        await response(res, ["A60304", "A60305"])
-        blink_flag = true
+        await response(res, ["A60304"]);
+        blink_flag = true;
+        blink();
+        res.json({
+            message: "Сигнал включен, мигание запущено",
+        });
     } catch (err) {
-        blink_flag = false
         res.status(500).json({
             err: "001",
-            info: "Не удалось обработать запрос: " + err.message
+            info: "Не удалось обработать запрос: " + err.message,
         })
     }
-    blink()
 })
 router.get('/off', async (req, res) => {
     try {
@@ -163,13 +165,27 @@ function turn(command) {
 }
 
 async function blink() {
-    await turn("A60405")
-    let timer = setTimeout(async ()=>{
-        await turn("A60305")
-        if (blink_flag) {
-            timer.refresh()
-            blink()
-        }
-    }, 1000)
+    try {
+        // Настраиваем мигание с интервалом
+        const timer = setInterval(async () => {
+            try {
+                if (!blink_flag) {
+                    clearInterval(timer); // Останавливаем мигание
+                    console.log("Мигание остановлено.");
+                    return;
+                }
+                await turn("A60305"); // Включаем сигнал
+                console.log("Сигнал включен.");
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // Ждем 1 секунду
+                await turn("A60405"); // Выключаем сигнал
+                console.log("Сигнал выключен.");
+            } catch (err) {
+                console.error("Ошибка в процессе мигания:", err.message);
+                clearInterval(timer); // Останавливаем мигание при ошибке
+            }
+        }, 2000); // Интервал повторений
+    } catch (err) {
+        console.error("Ошибка в процессе запуска мигания:", err.message);
+    }
 }
 module.exports = router
