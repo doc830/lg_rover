@@ -66,7 +66,9 @@ function visibilityService() {
         parser.on('data', (data)=> {
             timeout.refresh()
             data = data.split(' ')
-            console.log(data.length)
+            if (data[0] !== "\x01PW") {
+                return new Error('Invalid visibility data')
+            }
             let status = data[2].charAt(data[2].length-1)
             if (status !== "0") {
                 status = "Measurement in process"
@@ -82,8 +84,11 @@ function visibilityService() {
                 roverID: config.get('roverID')
             }
             postData(v_data, "/api/rover/visibility")
-            console.log(data)
+            console.log(v_data)
         })
+        parser.on('error', (err) => {
+            console.log(err)
+        } )
     }).catch((err)=>{
         console.log(err)
     })
