@@ -25,10 +25,13 @@ function weatherService() {
         openedPort =  port
         async function messaging() {
             try {
-                await sendMessage(openedPort, weather_command)
-                const weather = await listenPort(openedPort)
-                console.log(weather)
-                postData(weather, "/api/rover/weather")
+                await sendMessage(openedPort, weather_command).then(()=>{
+                    listenPort(openedPort).then((weather)=>{
+                        postData(weather, "/api/rover/weather")
+                        console.log(weather)
+                    })
+                })
+
                 setTimeout(messaging, 2000)
             } catch (err) {
                 console.log(err)
