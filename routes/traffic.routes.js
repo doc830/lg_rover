@@ -2,36 +2,90 @@ const {Router} = require('express')
 const firmware = require("../firmware/RS485")
 const router = Router()
 let portAvailable = true
-router.get('/red', (req, res) => {
-    response(res, ["A60305"])
+router.get('/red', async (req, res) => {
+    try {
+        await response(res, ["A60305"]);
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        })
+    }
 })
-router.get('/yellow', (req, res) => {
-    response(res, ["A60304"])
+router.get('/yellow', async (req, res) => {
+    try {
+        await response(res, ["A60304"]);
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        })
+    }
 })
-router.get('/green', (req, res) => {
-    response(res, "A60303")
+router.get('/green', async (req, res) => {
+    try {
+        await response(res, ["A60303"]);
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        })
+    }
 })
-router.get('/white', (req, res) => {
-    response(res, "A60301")
+router.get('/white', async (req, res) => {
+    try {
+        await response(res, ["A60301"]);
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        })
+    }
 })
-router.get('/blue', (req, res) => {
-    response(res, "A60302")
+router.get('/blue', async (req, res) => {
+    try {
+        await response(res, ["A60302"]);
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        })
+    }
 })
-router.get('/yellow_green', (req, res) => {
-
+router.get('/yellow_green', async (req, res) => {
+    try {
+        await response(res, ["A60304", "A60303"])
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        });
+    }
 })
-router.get('/yellow_2', (req, res) => {
-
+router.get('/yellow_2', async (req, res) => {
+    try {
+        await response(res, ["A60304", "A60305"]) // Два желтых
+    } catch (err) {
+        res.status(500).json({
+            err: "001",
+            info: "Не удалось обработать запрос: " + err.message
+        });
+    }
 })
-router.get('/yellow_blink', (req, res) => {
-
+// router.get('/yellow_blink', (req, res) => {
+//
+// })
+router.get('/off', async (req, res) => {
+    try {
+        await response(res, ["A604FF"])
+    } catch (err) {
+        res.status(500).json({
+            err: "002",
+            info: "Не удалось обработать запрос: " + err.message
+        });
+    }
 })
-
-router.get('/off', (req, res) => {
-
-})
-function response(res, commands) {
-    let receives = []
+async function response(res, commands) {
     if (!portAvailable) {
         return res.json({
             "err": "001",
@@ -39,22 +93,26 @@ function response(res, commands) {
         })
     }
     portAvailable = false
-    for (const command in commands) {
-        turn(command).then((received)=>{
-            receives.push(received.param)
-        }).catch((err)=>{
-            res.json({
-                "err": "001",
-                "info": err.message
-            })
-        }).finally(() => {
-            portAvailable = true
+    let receives = []
+    try {
+        await turn("A604FF")
+        for (const command of commands) {
+            const result = await turn(command)
+            receives.push(result.param)
+        }
+    } catch (err) {
+        return res.json({
+            err: "001",
+            info: err.message
         })
+    } finally {
+        portAvailable = true
     }
     return res.json({
-        signals: receives
+        signals: receives.map(r => r.param)
     })
 }
+
 function turn(command) {
     let received = Buffer.alloc(0)
     return new Promise( (resolve, reject) => {
