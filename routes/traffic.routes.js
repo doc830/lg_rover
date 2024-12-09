@@ -77,13 +77,14 @@ router.get('/yellow_blink', async (req, res) => {
     try {
         await response(res, ["A60304", "A60305"])
         blink_flag = true
-        blink()
     } catch (err) {
+        blink_flag = false
         res.status(500).json({
             err: "001",
             info: "Не удалось обработать запрос: " + err.message
         })
     }
+    blink()
 })
 router.get('/off', async (req, res) => {
     try {
