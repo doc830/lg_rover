@@ -64,12 +64,12 @@ function visibilityService() {
         }, 10000)
         const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
         parser.on('data', (data)=> {
+            data = data.split(' ')
             console.log(data[0])
             if (data[0] !== "\x01PW") {
                 return new Error('Invalid visibility data')
             }
             timeout.refresh()
-            data = data.split(' ')
             let status = data[2].charAt(data[2].length-1)
             if (status !== "0") {
                 status = "Measurement in process"
