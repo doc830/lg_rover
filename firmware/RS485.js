@@ -33,7 +33,7 @@ function weatherService() {
                 await sendMessage(openedPort)
                 const weather = await listenPort(openedPort)
                 console.log(weather)
-                postData(weather, "/api/rover/weather")
+                //postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
             } catch (err) {
                 console.log(err)
@@ -83,7 +83,7 @@ function visibilityService() {
                 time: measureTime(),
                 roverID: config.get('roverID')
             }
-            postData(v_data, "/api/rover/visibility")
+            //postData(v_data, "/api/rover/visibility")
             console.log(v_data)
         })
         parser.on('error', (err) => {
