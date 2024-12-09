@@ -1,6 +1,8 @@
 const {SerialPort} = require('serialport')
 const config = require("config")
 const crc = require('crc')
+const axios = require("axios");
+const {ReadlineParser} = require("@serialport/parser-readline");
 
 const serialPortConfigVisibility = {
     path: "/dev/ttyUSB1",
@@ -29,10 +31,9 @@ function weatherService() {
         async function messaging() {
             try {
                 await sendMessage(openedPort)
-                const response = await listenPort(openedPort)
-
-                console.log(response)
-
+                const weather = await listenPort(openedPort)
+                console.log(weather)
+                postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
             } catch (err) {
                 console.log(err)
@@ -61,9 +62,26 @@ function visibilityService() {
                 console.log(err)
             })
         }, 10000)
-
-        port.on('data', (data)=> {
+        const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
+        parser.on('data', (data)=> {
             timeout.refresh()
+            data = data.split(' ')
+            console.log(data.length)
+            let status = data[2].charAt(data[2].length-1)
+            if (status !== "0") {
+                status = "Measurement in process"
+            } else {
+                status = "Measured"
+            }
+            let v_data = {
+                "type": "visibility",
+                "status": status,
+                "avg_vis_1_min ": data[4],
+                "avg_vis_10_min ": data[6],
+                "time": measureTime(),
+                roverID: config.get('roverID')
+            }
+            postData(v_data, "/api/rover/visibility")
             console.log(data)
         })
     }).catch((err)=>{
@@ -103,11 +121,11 @@ function sendMessage(port) {
     return new Promise((resolve, reject) => {
         port.write(message, err => {
             if (err) {
-                return reject (new Error(err.message))
+                reject (new Error(err.message))
             }
             port.drain((err) =>{
                 if (err) {
-                    return reject (new Error(err.message))
+                    reject (new Error(err.message))
                 }
             })
             resolve()
@@ -118,9 +136,9 @@ function openPort (config) {
     return new Promise((resolve, reject)=> {
         let port = new SerialPort(config, (err) => {
             if (err) {
-                return reject (err)
+                reject (err)
             }
-            return resolve (port)
+            resolve (port)
         })
     })
 }
@@ -128,7 +146,7 @@ function closePort(port) {
     return new Promise((resolve, reject)=> {
         port.close((err)=>{
             if (err) {
-                return reject (err)
+                reject (err)
             }
             resolve()
         })
@@ -142,5 +160,20 @@ function CRC (message) {
 }
 function recoverMessage(message) {
     return message.slice(1)
+}
+function measureTime() {
+    let currentDate = new Date()
+    let hours = currentDate.getHours()
+    let minutes = currentDate.getMinutes()
+    let seconds = currentDate.getSeconds()
+    return `${hours}:${minutes}:${seconds}`
+}
+function postData (data, url) {
+    axios.post(config.get('gw') + url, data).then(() => {}).catch(() => {
+        console.error('Visibility POST request error for: ' + config.get('gw'))
+    })
+    axios.post(config.get('base') + url, data).then(() => {}).catch(() => {
+        console.error('Visibility POST request error for: ' + config.get('base'))
+    })
 }
 module.exports = visibilityService
