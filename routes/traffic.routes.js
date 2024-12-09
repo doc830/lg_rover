@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const firmware = require("../firmware/RS485")
+const {firmware} = require("../firmware/RS485")
 const router = Router()
 let portAvailable = true
 router.get('/red', async (req, res) => {
