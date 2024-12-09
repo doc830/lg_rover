@@ -51,7 +51,6 @@ function response(res, commands) {
             portAvailable = true
         })
     }
-
     return res.json({
         signals: receives
     })
