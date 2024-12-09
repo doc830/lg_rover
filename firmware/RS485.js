@@ -29,7 +29,7 @@ function weatherService() {
                 const weather = await listenPort(openedPort)
                 console.log(weather)
                 //postData(weather, "/api/rover/weather")
-                setTimeout(messaging, 2000)
+                setTimeout(messaging, 1000)
             } catch (err) {
                 console.log(err)
                 try {
@@ -99,20 +99,20 @@ function visibilityService() {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
-        port.removeAllListeners('data')
+        port.removeAllListeners()
 
         let timeout = setTimeout(() => {
-            port.removeAllListeners('data')
+            port.removeAllListeners()
             reject (new Error ('Weather station does not respond'))
         }, 1000)
+        console.log('listen')
 
-        const onData = (data) => {
-            console.log('listen')
+        port.on('data', (data)=> {
             console.log('Listeners count:', port.listenerCount('data'))
             received = Buffer.concat([received, Buffer.from(data)])
             if (received.length === 103) {
                 clearTimeout(timeout)
-                port.removeAllListeners('data') // Убираем обработчик после завершения
+                port.removeAllListeners() // Убираем обработчик после завершения
                 if (!CRC(received)) {
                     console.log('recovering')
                     received = recoverMessage(received)
@@ -133,10 +133,7 @@ function listenPort(port) {
                     roverID: config.get('roverID'),
                 })
             }
-        };
-
-        // Установка нового обработчика
-        port.on('data', onData)
+        })
     })
 }
 function sendMessage(port, message) {
