@@ -1,16 +1,16 @@
 const {Router} = require('express')
 const router = Router()
-const devices = require('../middleware/devices')
+const firmware = require('../middleware/devices')
 router.get('/battery',  (req, res) => {
     let received = Buffer.alloc(0)
-     devices.openPort({
+     firmware.openPort({
             path: "/dev/ttyS1",
             dataBits: 8,
             baudRate: 115200,
             stopBits: 1,
             parity: "even"
     }).then((port)=>{
-        devices.sendMessage(port, Buffer.from('A60100', 'hex')).then(() => {
+        firmware.sendMessage(port, Buffer.from('A60100', 'hex')).then(() => {
             port.on('data', (data)=>{
                 received = Buffer.concat([received, data])
                 if (received.length === 3) {
@@ -19,7 +19,7 @@ router.get('/battery',  (req, res) => {
                         "code": received.readUInt8(1),
                         "charge": ((received.readUInt8(2) >> 1)*0.042519+9).toFixed(2)
                     }
-                    devices.closePort(port).then(()=>{
+                    firmware.closePort(port).then(()=>{
                         res.json(received)
                     }).catch(err => {
                         res.json({
@@ -43,14 +43,14 @@ router.get('/battery',  (req, res) => {
     })
 })
 router.get('/device_off',  (req, res) => {
-    devices.openPort({
+    firmware.openPort({
         path: "/dev/ttyS1",
         dataBits: 8,
         baudRate: 115200,
         stopBits: 1,
         parity: "even"
     }).then((port)=>{
-        devices.sendMessage( port, Buffer.from('A6AD00', 'hex')).then(() => {
+        firmware.sendMessage( port, Buffer.from('A6AD00', 'hex')).then(() => {
             res.json("Device off")
         }).catch(err => {
             res.json({

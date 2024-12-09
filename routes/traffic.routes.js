@@ -109,7 +109,7 @@ async function response(res, commands) {
         portAvailable = true
     }
     return res.json({
-        signals: receives.map(r => r.param)
+        signals: receives
     })
 }
 
