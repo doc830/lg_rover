@@ -22,7 +22,6 @@ server.use(cors({
 }))
 server.use("/api/info", require("./routes/info.routes"))
 server.use("/api/traffic", require("./routes/traffic.routes"))
-server.use("/api/weather", require("./routes/weather.routes"))
 
 
 
