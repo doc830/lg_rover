@@ -33,7 +33,7 @@ function weatherService() {
             } catch (err) {
                 console.log(err)
                 try {
-                    console.log('closing')
+                    console.log('Closing weather port')
                     await closePort(openedPort)
                     openedPort.removeAllListeners()
                     visibilityService()
@@ -51,7 +51,7 @@ function weatherService() {
 function visibilityService() {
     openPort(serialPortConfigVisibility).then((port)=>{
         let timeout = setTimeout(()=>{
-            console.log('No visibility data')
+            console.log('No visibility data, closing port')
             closePort(port).then(()=>{
                 port.removeAllListeners()
                 weatherService()
@@ -101,7 +101,7 @@ function visibilityService() {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
-        console.log('listen')
+        console.log('Listening weather')
         port.removeAllListeners()
 
         let timeout = setTimeout(() => {
@@ -143,7 +143,7 @@ function sendMessage(port, message) {
                 reject (new Error(err.message))
             }
             port.drain((err) =>{
-                console.log('sent')
+                console.log('Sent command via RS485')
                 if (err) {
                     reject (new Error(err.message))
                 }
