@@ -64,12 +64,12 @@ function postData(data, url) {
     axios.post(config.get('gw') + url, data)
         .then(() => {})
         .catch(() => {
-            console.error('UBX POST request error for: ' + config.get('gw'))
+            //console.error('UBX POST request error for: ' + config.get('gw'))
         })
     axios.post(config.get('base') + url, data)
         .then(() => {})
         .catch(() => {
-            console.error('UBX POST request error for: ' + config.get('base'))
+           // console.error('UBX POST request error for: ' + config.get('base'))
         })
 }
 module.exports = firmware

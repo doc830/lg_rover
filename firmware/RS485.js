@@ -174,10 +174,10 @@ function recoverMessage(message) {
 
 function postData (data, url) {
     axios.post(config.get('gw') + url, data).then(() => {}).catch(() => {
-        console.error('Visibility POST request error for: ' + config.get('gw'))
+        //console.error('Visibility POST request error for: ' + config.get('gw'))
     })
     axios.post(config.get('base') + url, data).then(() => {}).catch(() => {
-        console.error('Visibility POST request error for: ' + config.get('base'))
+        //console.error('Visibility POST request error for: ' + config.get('base'))
     })
 }
 module.exports = weatherService
