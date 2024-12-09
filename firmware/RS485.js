@@ -50,6 +50,7 @@ function weatherService() {
 }
 function visibilityService() {
     openPort(serialPortConfigVisibility).then((port)=>{
+
         let timeout = setTimeout(()=>{
             console.log('No visibility data, closing port')
             closePort(port).then(()=>{
@@ -61,6 +62,7 @@ function visibilityService() {
         }, 10000)
         const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
         parser.on('data', (data)=> {
+            console.log('Listening visibility data')
             data = data.split(' ')
             if (data[0] !== "\x01PW") {
                 console.error('Invalid visibility data')
