@@ -108,6 +108,7 @@ function listenPort(port) {
             received = Buffer.concat([received,  Buffer.from(data)])
             if (received.length ===  103) {
                 if (!CRC(received)) {
+                    console.log('recovering')
                     received = recoverMessage(received)
                 }
                 port.removeAllListeners()
