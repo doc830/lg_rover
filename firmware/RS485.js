@@ -22,6 +22,7 @@ function weatherService() {
     let openedPort
     openPort (serialPortConfigWeather).then((port)=> {
         openedPort = port
+        console.log(port)
     }).catch(err=>{
         console.log(err)
     })
