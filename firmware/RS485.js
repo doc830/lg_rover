@@ -23,28 +23,24 @@ function weatherService() {
     let openedPort
     openPort (serialPortConfigWeather).then((port)=> {
         openedPort =  port
-        async function messaging() {
-            try {
-                sendMessage(openedPort, weather_command).then(()=>{
-                    listenPort(openedPort).then((weather)=>{
-                        postData(weather, "/api/rover/weather")
-                        console.log(weather)
-                    }).catch(err=>{
-                        return new Error(err)
-                    })
+        function messaging() {
+            sendMessage(openedPort, weather_command).then(()=>{
+                listenPort(openedPort).then((weather)=>{
+                    postData(weather, "/api/rover/weather")
+                    console.log(weather)
+                    setTimeout(messaging, 2000)
                 }).catch(err=>{
-                    return new Error(err)
-                })
-                setTimeout(messaging, 2000)
-            } catch (err) {
-                console.log(err)
-                try {
-                    await closePort(openedPort)
-                    visibilityService()
-                } catch (err) {
                     console.log(err)
-                }
-            }
+                    closePort(openedPort).then(()=>{
+                        visibilityService()
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                })
+            }).catch(err=>{
+                console.log(err)
+            })
+
         }
         messaging()
     }).catch(err=>{
