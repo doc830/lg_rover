@@ -26,9 +26,9 @@ function firmware() {
     ubxParser.on("data",  (data) => {
         let type = 'UBX-?'
         if (Object.keys(data).length === 25) {
-            type = 'ubx-relposned'
+            type = "ubx-relposned"
         } else if (Object.keys(data).length === 44) {
-            type = 'ubx-pvt'
+            type = "ubx-pvt"
         }
         data = {
             'type': type,
@@ -36,8 +36,8 @@ function firmware() {
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
-        console.log(data)
-        postData(data, "/api/rover/"+type)
+        console.log(type)
+        postData(data, "/api/rover/" + type)
     })
 //catch NMEA
     const nmeaParser = serialPort.pipe(new ReadlineParser({delimiter: '\r\n'}), () => {
