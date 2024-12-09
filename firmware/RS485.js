@@ -21,7 +21,7 @@ const message = Buffer.from('010300000031841E', 'hex')
 function weatherService() {
 
     openPort(serialPortConfigWeather).then((port)=>{
-        setInterval(()=>{
+       let timerID = setInterval(()=>{
             sendMessage(port).then(()=>{
                 listenPort(port).then((result)=>{
                     console.log(result)
@@ -29,6 +29,7 @@ function weatherService() {
                 }).catch((err)=>{
                     console.log(err)
                     closePort(port).then(()=>{
+                        clearInterval(timerID)
                         visibilityService()
                     }).catch((err)=>{
                         console.log(err)
