@@ -36,7 +36,6 @@ function firmware() {
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
-        console.log(type)
         postData(data, "/api/rover/" + type)
     })
 //catch NMEA
