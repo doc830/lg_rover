@@ -20,32 +20,52 @@ const message = Buffer.from('010300000031841E', 'hex')
 
 function weatherService() {
     let openedPort
+    let timerID
     openPort (serialPortConfigWeather).then((port)=> {
         openedPort = port
-        sendMessage(openedPort).then(()=>{
-            listenPort(openedPort).then((result)=>{
-                console.log(result)
-            }).catch((err)=>{
-                console.log(err)
-                closePort(openedPort).then(()=>{
-                    visibilityService()
-                }).catch((err)=>{
+        timerID = setInterval(()=>{
+            sendMessage(openedPort).then(()=>{
+                listenPort(openedPort).then((result)=>{
+                    console.log(result)
+                }).catch(err=>{
+                    clearInterval(timerID)
                     console.log(err)
+                    closePort(openedPort).then(()=>{
+                        visibilityService()
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
                 })
+            }).catch((err)=>{
+                clearInterval(timerID)
+                console.log(err)
             })
-        }).catch((err)=>{
-            console.log(err)
-        })
+        },1000)
+        // sendMessage(openedPort).then(()=>{
+        //     listenPort(openedPort).then((result)=>{
+        //         console.log(result)
+        //     }).catch(err=>{
+        //         console.log(err)
+        //         closePort(openedPort).then(()=>{
+        //             visibilityService()
+        //         }).catch((err)=>{
+        //             console.log(err)
+        //         })
+        //     })
+        // }).catch((err)=>{
+        //     console.log(err)
+        // })
+
     }).catch(err=>{
         console.log(err)
     })
 
 }
-
+function weatherReqTimer() {
+    setTimeout()
+}
 function visibilityService() {
-
     openPort(serialPortConfigVisibility).then((port)=>{
-
         let timeout = setTimeout(()=>{
             console.log('No visibility data')
             closePort(port).then(()=>{
@@ -64,8 +84,8 @@ function visibilityService() {
     }).catch((err)=>{
         console.log(err)
     })
-
 }
+
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
