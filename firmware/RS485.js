@@ -18,65 +18,45 @@ const serialPortConfigWeather = {
 }
 const message = Buffer.from('010300000031841E', 'hex')
 
-function weatherService() {
-    let openedPort
-    openPort (serialPortConfigWeather).then((port)=> {
-        openedPort = port
-        messagingPort(openedPort).then().catch(err=>{
-            console.log(err)
-            closePort(openedPort).then(()=>{
-                visibilityService()
-            }).catch(err=>{
-                console.log(err)
-            })
-        })
-    }).catch(err=>{
-        console.log(err)
-    })
+async function weatherService() {
+    let openedPort;
+    let timerID;
 
+    try {
+        // Открываем порт
+        openedPort = await openPort(serialPortConfigWeather);
+        console.log("Порт открыт:", openedPort);
 
+        // Устанавливаем интервал
+        timerID = setInterval(async () => {
+            try {
+                // Отправляем сообщение
+                await sendMessage(openedPort);
 
-    // openPort(serialPortConfigWeather).then((port)=>{
-    //     openedPort = port
-    //    let timerID = setInterval(()=>{
-    //         sendMessage(openedPort).then(()=>{
-    //             listenPort(openedPort).then((result)=>{
-    //                 console.log(result)
-    //             }).catch((err)=>{
-    //                 console.log(err)
-    //                 closePort(openedPort).then(()=>{
-    //                     clearInterval(timerID)
-    //                     visibilityService()
-    //                 }).catch((err)=>{
-    //                     console.log(err)
-    //                 })
-    //             })
-    //         }).catch((err)=>{
-    //             console.log(err)
-    //         })
-    //     }, 1000)
-    // }).catch((err) => {
-    //     console.log(err)
-    // })
+                // Слушаем порт
+                const result = await listenPort(openedPort);
+                console.log("Результат:", result);
+            } catch (err) {
+                console.error(err);
 
+                // Если ошибка - закрываем порт и очищаем таймер
+                clearInterval(timerID);
+                try {
+                    await closePort(openedPort);
+                    console.log("Порт закрыт");
+                } catch (closeErr) {
+                    console.error( closeErr);
+                }
+
+                // Вызываем visibilityService
+                visibilityService();
+            }
+        }, 1000);
+    } catch (err) {
+        console.error("Ошибка при открытии порта:", err);
+    }
 }
-function messagingPort(port) {
-    return new Promise((resolve, reject) => {
-        let timerWeather = setInterval(()=>{
-            sendMessage(port).then(()=>{
-                listenPort(port).then((result)=>{
-                    console.log(result)
-                }).catch((err)=>{
-                    console.log(err)
-                    clearInterval(timerWeather)
-                    reject()
-                })
-            }).catch((err)=>{
-                console.log(err)
-            })
-        }, 1000)
-    })
-}
+
 function visibilityService() {
 
     openPort(serialPortConfigVisibility).then((port)=>{
