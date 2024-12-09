@@ -19,7 +19,7 @@ router.get('/battery',  (req, res) => {
                         "code": received.readUInt8(1),
                         "charge": ((received.readUInt8(2) >> 1)*0.042519+9).toFixed(2)
                     }
-                    port.closePort().then(()=>{
+                    devices.closePort(port).then(()=>{
                         res.json(received)
                     }).catch(err => {
                         res.json({
