@@ -28,7 +28,7 @@ function weatherService() {
                 await sendMessage(openedPort, weather_command)
                 const weather = await listenPort(openedPort)
                 console.log(weather)
-                //postData(weather, "/api/rover/weather")
+                postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
             } catch (err) {
                 console.log(err)
@@ -88,6 +88,7 @@ function visibilityService() {
                 time: Date.now(),
                 roverID: config.get('roverID')
             }
+            console.log(v_data)
             postData(v_data, "/api/rover/visibility")
         })
 
@@ -105,7 +106,6 @@ function listenPort(port) {
             port.removeAllListeners()
             reject (new Error ('Weather station does not respond'))
         }, 1000)
-        console.log('listen')
 
         port.on('data', (data)=> {
             received = Buffer.concat([received, Buffer.from(data)])
