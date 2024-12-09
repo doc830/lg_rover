@@ -23,24 +23,22 @@ function weatherService() {
     let openedPort
     openPort (serialPortConfigWeather).then((port)=> {
         openedPort =  port
-        function messaging() {
-            sendMessage(openedPort, weather_command).then(()=>{
-                listenPort(openedPort).then((weather)=>{
-                    postData(weather, "/api/rover/weather")
-                    console.log(weather)
-                    setTimeout(messaging, 2000)
-                }).catch(err=>{
-                    console.log(err)
-                    closePort(openedPort).then(()=>{
-                        visibilityService()
-                    }).catch(err=>{
-                        console.log(err)
-                    })
-                })
-            }).catch(err=>{
+        async function messaging() {
+            try {
+                await sendMessage(openedPort, weather_command)
+                const weather = await listenPort(openedPort)
+                console.log(weather)
+                postData(weather, "/api/rover/weather")
+                setTimeout(messaging, 2000)
+            } catch (err) {
                 console.log(err)
-            })
-
+                try {
+                    await closePort(openedPort)
+                    visibilityService()
+                } catch (err) {
+                    console.log(err)
+                }
+            }
         }
         messaging()
     }).catch(err=>{
@@ -100,8 +98,9 @@ function visibilityService() {
 function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
+        port.removeAllListeners('data')
         let timeout = setTimeout(() => {
-            port.removeAllListeners()
+            port.removeAllListeners('data')
             reject (new Error ('Weather station does not respond'))
         }, 1000)
         port.on('data', (data) => {
@@ -109,6 +108,7 @@ function listenPort(port) {
             clearTimeout(timeout)
             received = Buffer.concat([received,  Buffer.from(data)])
             if (received.length ===  103) {
+                port.removeAllListeners('data')
                 if (!CRC(received)) {
                     console.log('recovering')
                     received = recoverMessage(received)
