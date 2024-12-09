@@ -28,7 +28,7 @@ function weatherService() {
                 await sendMessage(openedPort, weather_command)
                 const weather = await listenPort(openedPort)
                 postData(weather, "/api/rover/weather")
-                setTimeout(messaging, 1000)
+                setTimeout(messaging, 2000)
             } catch (err) {
                 console.log(err)
                 try {
