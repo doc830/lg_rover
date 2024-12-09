@@ -64,7 +64,7 @@ function visibilityService() {
         }, 10000)
         const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
         parser.on('data', (data)=> {
-            console.log(data)
+            console.log(data[0])
             if (data[0] !== "\x01PW") {
                 return new Error('Invalid visibility data')
             }
