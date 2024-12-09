@@ -36,6 +36,7 @@ function firmware() {
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
+        console.log(data)
         postData(data, "/api/rover/"+type)
     })
 //catch NMEA
@@ -56,13 +57,12 @@ function firmware() {
                 r_timestamp: TIMESTAMP,
                 roverID: config.get('roverID')
             }
-             postData(req,"/api/rover/nmea" )
+             postData(req,"/api/rover/nmea")
         }
     })
 }
 function postData(data, url) {
-    axios.post(config.get('gw') + url +
-        "", data)
+    axios.post(config.get('gw') + url, data)
         .then(() => {})
         .catch(() => {
             console.error('UBX POST request error for: ' + config.get('gw'))
