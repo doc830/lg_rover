@@ -32,6 +32,7 @@ function weatherService() {
             try {
                 await sendMessage(openedPort)
                 const weather = await listenPort(openedPort)
+
                 console.log(weather)
                 //postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
@@ -67,7 +68,7 @@ function visibilityService() {
             data = data.split(' ')
             console.log(data[0])
             if (data[0] !== "\x01PW") {
-                return new Error('Invalid visibility data')
+                throw new Error('Invalid visibility data')
             }
             timeout.refresh()
             let status = data[2].charAt(data[2].length-1)
@@ -110,6 +111,10 @@ function listenPort(port) {
                     received = recoverMessage(received)
                 }
                 port.removeAllListeners()
+                let wind_direction = Buffer.from([received[5],received[6]]).readUInt16BE(0)
+                if ( wind_direction >= 0 && wind_direction <= 360) {
+                    reject()
+                }
                 resolve ({
                     wind_direction: Buffer.from([received[5],received[6]]).readUInt16BE(0),
                     wind_speed: Buffer.from([received[9],received[10],received[7],received[8]]).readFloatBE(0),
