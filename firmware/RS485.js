@@ -103,33 +103,35 @@ function listenPort(port) {
             port.removeAllListeners('data')
             reject (new Error ('Weather station does not respond'))
         }, 1000)
-        port.on('data', (data) => {
+        const onData = (data) => {
             console.log('listen')
             clearTimeout(timeout)
-            received = Buffer.concat([received,  Buffer.from(data)])
-            if (received.length ===  103) {
-                port.removeAllListeners('data')
+            received = Buffer.concat([received, Buffer.from(data)])
+            if (received.length === 103) {
+                port.removeAllListeners('data'); // Убираем обработчик после завершения
                 if (!CRC(received)) {
-                    console.log('recovering')
-                    received = recoverMessage(received)
+                    console.log('recovering');
+                    received = recoverMessage(received);
                 }
-                port.removeAllListeners()
-                let wind_direction = Buffer.from([received[5],received[6]]).readUInt16BE(0)
-                if ( !(wind_direction >= 0 && wind_direction <= 360)) {
-                    reject (new Error ('Invalid weather data'))
+                let wind_direction = Buffer.from([received[5], received[6]]).readUInt16BE(0)
+                if (!(wind_direction >= 0 && wind_direction <= 360)) {
+                    reject(new Error('Invalid weather data'))
                 }
-                resolve ({
+                resolve({
                     type: "weather",
-                    wind_direction: Buffer.from([received[5],received[6]]).readUInt16BE(0),
-                    wind_speed: Buffer.from([received[9],received[10],received[7],received[8]]).readFloatBE(0),
-                    temperature: Buffer.from([received[13],received[14],received[11],received[12]]).readFloatBE(0),
-                    humidity: Buffer.from([received[17],received[18],received[15],received[16]]).readFloatBE(0),
-                    pressure: Buffer.from([received[21],received[22],received[19],received[20]]).readFloatBE(0),
+                    wind_direction: Buffer.from([received[5], received[6]]).readUInt16BE(0),
+                    wind_speed: Buffer.from([received[9], received[10], received[7], received[8]]).readFloatBE(0),
+                    temperature: Buffer.from([received[13], received[14], received[11], received[12]]).readFloatBE(0),
+                    humidity: Buffer.from([received[17], received[18], received[15], received[16]]).readFloatBE(0),
+                    pressure: Buffer.from([received[21], received[22], received[19], received[20]]).readFloatBE(0),
                     CRC: CRC(received),
                     roverID: config.get('roverID'),
-                })
+                });
             }
-        })
+        };
+
+        // Установка нового обработчика
+        port.on('data', onData)
     })
 }
 function sendMessage(port, message) {
