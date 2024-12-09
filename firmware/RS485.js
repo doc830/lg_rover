@@ -19,18 +19,16 @@ const serialPortConfigWeather = {
 const message = Buffer.from('010300000031841E', 'hex')
 
 function weatherService() {
-    let openedPort
     openPort (serialPortConfigWeather).then((port)=> {
-        openedPort = port
-        console.log(port)
+        closePort(port).then(()=>{
+            visibilityService()
+        }).catch(err=>{
+            console.log(err)
+        })
     }).catch(err=>{
         console.log(err)
     })
-    closePort(openedPort).then(()=>{
-        visibilityService()
-    }).catch(err=>{
-        console.log(err)
-    })
+
 
 
     // openPort(serialPortConfigWeather).then((port)=>{
