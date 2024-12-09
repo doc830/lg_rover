@@ -75,7 +75,7 @@ router.get('/yellow_2', async (req, res) => {
 })
 router.get('/yellow_blink', async (req, res) => {
     try {
-        await response(res, ["A60304"])
+        await response(res, ["A60304", "A60305"])
         blink_flag = true
         blink()
     } catch (err) {
@@ -160,13 +160,15 @@ function turn(command) {
         })
     })
 }
+
 async function blink() {
     await turn("A60405")
     let timer = setTimeout(async ()=>{
         await turn("A60305")
         if (blink_flag) {
             timer.refresh()
+            blink()
         }
-    }, 2000)
+    }, 1000)
 }
 module.exports = router
