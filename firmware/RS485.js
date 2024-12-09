@@ -34,6 +34,7 @@ function weatherService() {
                 console.log(err)
                 try {
                     await closePort(openedPort)
+                    openedPort.removeAllListeners()
                     visibilityService()
                 } catch (err) {
                     console.log(err)
@@ -99,19 +100,22 @@ function listenPort(port) {
     let received = Buffer.alloc(0)
     return new Promise((resolve, reject)=> {
         port.removeAllListeners('data')
+
         let timeout = setTimeout(() => {
             port.removeAllListeners('data')
             reject (new Error ('Weather station does not respond'))
         }, 1000)
+
         const onData = (data) => {
             console.log('listen')
+            console.log('Listeners count:', port.listenerCount('data'))
             clearTimeout(timeout)
             received = Buffer.concat([received, Buffer.from(data)])
             if (received.length === 103) {
                 port.removeAllListeners('data'); // Убираем обработчик после завершения
                 if (!CRC(received)) {
-                    console.log('recovering');
-                    received = recoverMessage(received);
+                    console.log('recovering')
+                    received = recoverMessage(received)
                 }
                 let wind_direction = Buffer.from([received[5], received[6]]).readUInt16BE(0)
                 if (!(wind_direction >= 0 && wind_direction <= 360)) {
@@ -126,7 +130,7 @@ function listenPort(port) {
                     pressure: Buffer.from([received[21], received[22], received[19], received[20]]).readFloatBE(0),
                     CRC: CRC(received),
                     roverID: config.get('roverID'),
-                });
+                })
             }
         };
 
