@@ -44,6 +44,7 @@ function weatherService() {
                 }
             }
         }
+        messaging()
     }).catch(err=>{
         console.log(err)
     })
