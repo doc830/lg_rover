@@ -26,9 +26,9 @@ function firmware() {
     ubxParser.on("data",  (data) => {
         let type = 'UBX-?'
         if (Object.keys(data).length === 25) {
-            type = 'UBX-RELPOSNED'
+            type = 'ubx-relposned'
         } else if (Object.keys(data).length === 44) {
-            type = 'UBX-PVT'
+            type = 'ubx-pvt'
         }
         data = {
             'type': type,
@@ -36,16 +36,7 @@ function firmware() {
             r_timestamp: TIMESTAMP,
             roverID: config.get('roverID')
         }
-         axios.post(config.get('gw') + "/api/rover/ubx", data)
-            .then(() => {})
-            .catch(() => {
-                console.error('UBX POST request error for: ' + config.get('gw'))
-            })
-        axios.post(config.get('base') + "/api/rover/ubx", data)
-            .then(() => {})
-            .catch(() => {
-                console.error('UBX POST request error for: ' + config.get('base'))
-            })
+        postData(data, "/api/rover/"+type)
     })
 //catch NMEA
     const nmeaParser = serialPort.pipe(new ReadlineParser({delimiter: '\r\n'}), () => {
@@ -65,18 +56,21 @@ function firmware() {
                 r_timestamp: TIMESTAMP,
                 roverID: config.get('roverID')
             }
-             axios.post(config.get('gw') + "/api/rover/nmea", req)
-                .then(() => {})
-                .catch(() => {
-                    console.error('NMEA POST request error for: ' + config.get('gw'))
-                })
-            axios.post(config.get('base') + "/api/rover/nmea", req)
-                .then(() => {})
-                .catch(() => {
-                    console.error('NMEA POST request error for: ' + config.get('base'))
-                })
+             postData(req,"/api/rover/nmea" )
         }
     })
-
+}
+function postData(data, url) {
+    axios.post(config.get('gw') + url +
+        "", data)
+        .then(() => {})
+        .catch(() => {
+            console.error('UBX POST request error for: ' + config.get('gw'))
+        })
+    axios.post(config.get('base') + url, data)
+        .then(() => {})
+        .catch(() => {
+            console.error('UBX POST request error for: ' + config.get('base'))
+        })
 }
 module.exports = firmware

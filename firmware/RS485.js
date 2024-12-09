@@ -28,7 +28,6 @@ function weatherService() {
             try {
                 await sendMessage(openedPort)
                 const weather = await listenPort(openedPort)
-                console.log(weather)
                 postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
             } catch (err) {
@@ -81,7 +80,6 @@ function visibilityService() {
                 roverID: config.get('roverID')
             }
             postData(v_data, "/api/rover/visibility")
-            console.log(v_data)
         })
 
     }).catch((err)=>{
