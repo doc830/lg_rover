@@ -103,6 +103,7 @@ function listenPort(port) {
             reject (new Error ('Weather station does not respond'))
         }, 1000)
         port.on('data', (data) => {
+            console.log('listen')
             clearTimeout(timeout)
             received = Buffer.concat([received,  Buffer.from(data)])
             if (received.length ===  103) {
