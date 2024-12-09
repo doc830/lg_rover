@@ -113,12 +113,13 @@ function listenPort(port) {
             received = Buffer.concat([received, Buffer.from(data)])
             if (received.length === 103) {
                 port.removeAllListeners('data'); // Убираем обработчик после завершения
-                if (!CRC(received)) {
-                    console.log('recovering')
-                    received = recoverMessage(received)
-                }
+                // if (!CRC(received)) {
+                //     console.log('recovering')
+                //     received = recoverMessage(received)
+                // }
                 let wind_direction = Buffer.from([received[5], received[6]]).readUInt16BE(0)
                 if (!(wind_direction >= 0 && wind_direction <= 360)) {
+                    console.log('invalid')
                     reject(new Error('Invalid weather data'))
                 }
                 resolve({
