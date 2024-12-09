@@ -20,28 +20,40 @@ const message = Buffer.from('010300000031841E', 'hex')
 
 function weatherService() {
     let openedPort
-    openPort(serialPortConfigWeather).then((port)=>{
+    openedPort (serialPortConfigWeather).then((port)=> {
         openedPort = port
-       let timerID = setInterval(()=>{
-            sendMessage(openedPort).then(()=>{
-                listenPort(openedPort).then((result)=>{
-                    console.log(result)
-                }).catch((err)=>{
-                    console.log(err)
-                    closePort(openedPort).then(()=>{
-                        clearInterval(timerID)
-                        visibilityService()
-                    }).catch((err)=>{
-                        console.log(err)
-                    })
-                })
-            }).catch((err)=>{
-                console.log(err)
-            })
-        }, 1000)
-    }).catch((err) => {
+    }).catch(err=>{
         console.log(err)
     })
+    closePort(openedPort).then(()=>{
+        visibilityService()
+    }).catch(err=>{
+        console.log(err)
+    })
+
+
+    // openPort(serialPortConfigWeather).then((port)=>{
+    //     openedPort = port
+    //    let timerID = setInterval(()=>{
+    //         sendMessage(openedPort).then(()=>{
+    //             listenPort(openedPort).then((result)=>{
+    //                 console.log(result)
+    //             }).catch((err)=>{
+    //                 console.log(err)
+    //                 closePort(openedPort).then(()=>{
+    //                     clearInterval(timerID)
+    //                     visibilityService()
+    //                 }).catch((err)=>{
+    //                     console.log(err)
+    //                 })
+    //             })
+    //         }).catch((err)=>{
+    //             console.log(err)
+    //         })
+    //     }, 1000)
+    // }).catch((err) => {
+    //     console.log(err)
+    // })
 
 }
 function visibilityService() {
