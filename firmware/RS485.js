@@ -18,7 +18,7 @@ const serialPortConfigWeather = {
     stopBits: 1,
     parity: "even"
 }
-const message = Buffer.from('010300000031841E', 'hex')
+const weather_command = Buffer.from('010300000031841E', 'hex')
 
 function weatherService() {
     let openedPort
@@ -26,7 +26,7 @@ function weatherService() {
         openedPort =  port
         async function messaging() {
             try {
-                await sendMessage(openedPort)
+                await sendMessage(openedPort, weather_command)
                 const weather = await listenPort(openedPort)
                 postData(weather, "/api/rover/weather")
                 setTimeout(messaging, 1000)
@@ -71,12 +71,20 @@ function visibilityService() {
             } else {
                 status = "Measured"
             }
+            let avg_vis_1_min = Number(data[4])
+            let avg_vis_10_min = Number(data[6])
+            if (!Number.isInteger(avg_vis_1_min)) {
+                avg_vis_1_min = null
+            }
+            if (!Number.isInteger(avg_vis_10_min)) {
+                avg_vis_10_min = null
+            }
             let v_data = {
                 type: "visibility",
                 status: status,
-                avg_vis_1_min: data[4],
-                avg_vis_10_min: data[6],
-                time: measureTime(),
+                avg_vis_1_min: avg_vis_1_min,
+                avg_vis_10_min: avg_vis_10_min,
+                time: Date.now(),
                 roverID: config.get('roverID')
             }
             postData(v_data, "/api/rover/visibility")
@@ -120,7 +128,7 @@ function listenPort(port) {
         })
     })
 }
-function sendMessage(port) {
+function sendMessage(port, message) {
     return new Promise((resolve, reject) => {
         port.write(message, err => {
             if (err) {
@@ -164,13 +172,7 @@ function CRC (message) {
 function recoverMessage(message) {
     return message.slice(1)
 }
-function measureTime() {
-    let currentDate = new Date()
-    let hours = currentDate.getHours()
-    let minutes = currentDate.getMinutes()
-    let seconds = currentDate.getSeconds()
-    return `${hours}:${minutes}:${seconds}`
-}
+
 function postData (data, url) {
     axios.post(config.get('gw') + url, data).then(() => {}).catch(() => {
         console.error('Visibility POST request error for: ' + config.get('gw'))
