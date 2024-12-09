@@ -109,6 +109,7 @@ function listenPort(port) {
                 }
                 port.removeAllListeners()
                 let wind_direction = parseInt((Buffer.from([received[5],received[6]]).readUInt16BE(0)).toString())
+                console.log(wind_direction)
                 if ( wind_direction >= 0 && wind_direction <= 360) {
                     reject (new Error ('Invalid weather data'))
                 }
