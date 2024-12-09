@@ -108,7 +108,6 @@ function listenPort(port) {
         console.log('listen')
 
         port.on('data', (data)=> {
-            console.log('Listeners count:', port.listenerCount('data'))
             received = Buffer.concat([received, Buffer.from(data)])
             if (received.length === 103) {
                 clearTimeout(timeout)
