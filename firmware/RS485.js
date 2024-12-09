@@ -66,9 +66,8 @@ function visibilityService() {
         const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
         parser.on('data', (data)=> {
             data = data.split(' ')
-            console.log(data[0])
             if (data[0] !== "\x01PW") {
-                throw new Error('Invalid visibility data')
+                return
             }
             timeout.refresh()
             let status = data[2].charAt(data[2].length-1)
@@ -88,9 +87,7 @@ function visibilityService() {
             //postData(v_data, "/api/rover/visibility")
             console.log(v_data)
         })
-        parser.on('error', (err) => {
-            console.log(err)
-        } )
+
     }).catch((err)=>{
         console.log(err)
     })
