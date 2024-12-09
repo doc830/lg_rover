@@ -55,17 +55,16 @@ function visibilityService() {
         let timeout = setTimeout(()=>{
             console.log('No visibility data')
             closePort(port).then(()=>{
+                port.removeAllListeners()
                 weatherService()
             }).catch((err)=>{
                 console.log(err)
             })
         }, 10000)
 
-        port.on('data', ()=> {
-            port.on('data', (data)=>{
-                timeout.refresh()
-                console.log(data)
-            })
+        port.on('data', (data)=> {
+            timeout.refresh()
+            console.log(data)
         })
     }).catch((err)=>{
         console.log(err)
