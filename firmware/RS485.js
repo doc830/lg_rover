@@ -109,10 +109,10 @@ function listenPort(port) {
         const onData = (data) => {
             console.log('listen')
             console.log('Listeners count:', port.listenerCount('data'))
-            clearTimeout(timeout)
             received = Buffer.concat([received, Buffer.from(data)])
             if (received.length === 103) {
-                port.removeAllListeners('data'); // Убираем обработчик после завершения
+                clearTimeout(timeout)
+                port.removeAllListeners('data') // Убираем обработчик после завершения
                 if (!CRC(received)) {
                     console.log('recovering')
                     received = recoverMessage(received)
