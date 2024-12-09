@@ -2,8 +2,7 @@ const {SerialPort} = require('serialport')
 const config = require("config")
 const crc = require('crc')
 const axios = require("axios");
-const {ReadlineParser} = require("@serialport/parser-readline");
-
+const {ReadlineParser} = require("@serialport/parser-readline")
 const serialPortConfigVisibility = {
     path: "/dev/ttyUSB1",
     dataBits: 7,

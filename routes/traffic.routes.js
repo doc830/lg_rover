@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const {firmware} = require("../firmware/RS485")
+const firmware = require('../middleware/devices')
 const router = Router()
 let portAvailable = true
 router.get('/red', async (req, res) => {
@@ -69,7 +69,7 @@ router.get('/yellow_2', async (req, res) => {
         res.status(500).json({
             err: "001",
             info: "Не удалось обработать запрос: " + err.message
-        });
+        })
     }
 })
 // router.get('/yellow_blink', (req, res) => {

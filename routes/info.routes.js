@@ -1,7 +1,6 @@
 const {Router} = require('express')
 const router = Router()
 const devices = require('../middleware/devices')
-
 router.get('/battery',  (req, res) => {
     let received = Buffer.alloc(0)
      devices.openPort({
@@ -10,9 +9,9 @@ router.get('/battery',  (req, res) => {
             baudRate: 115200,
             stopBits: 1,
             parity: "even"
-    },2).then(()=>{
-        devices.sendMessage(Buffer.from('A60100', 'hex'), devices.serialPort2).then(() => {
-            devices.serialPort2.on('data', (data)=>{
+    }).then((port)=>{
+        devices.sendMessage(Buffer.from('A60100', 'hex'), port).then(() => {
+            port.on('data', (data)=>{
                 received = Buffer.concat([received, data])
                 if (received.length === 3) {
                     received = {
@@ -20,7 +19,7 @@ router.get('/battery',  (req, res) => {
                         "code": received.readUInt8(1),
                         "charge": ((received.readUInt8(2) >> 1)*0.042519+9).toFixed(2)
                     }
-                    devices.closePort(2).then(()=>{
+                    port.closePort().then(()=>{
                         res.json(received)
                     }).catch(err => {
                         res.json({
@@ -31,7 +30,6 @@ router.get('/battery',  (req, res) => {
                 }
             })
         }).catch(err => {
-            devices.serialPort2(2)
             res.json({
                 "err": "001",
                 "info": err.message
@@ -52,9 +50,9 @@ router.get('/batch_number',  (req, res) => {
         baudRate: 115200,
         stopBits: 1,
         parity: "even"
-    },2).then(()=>{
-        devices.sendMessage(Buffer.from('A60700', 'hex'), devices.serialPort2).then(() => {
-            devices.serialPort2.on('data', (data)=>{
+    }).then((port)=>{
+        devices.sendMessage(Buffer.from('A60700', 'hex'), port).then(() => {
+            port.on('data', (data)=>{
                 received = Buffer.concat([received, data])
                 if (received.length === 3) {
                     received = {
@@ -62,7 +60,7 @@ router.get('/batch_number',  (req, res) => {
                         "code": received.readUInt8(1),
                         "batch_number": received.readUInt8(2)
                     }
-                    devices.closePort(2).then(()=>{
+                    port.closePort().then(()=>{
                         res.json(received)
                     }).catch(err => {
                         res.json({
@@ -73,7 +71,6 @@ router.get('/batch_number',  (req, res) => {
                 }
             })
         }).catch(err => {
-            devices.serialPort2(2)
             res.json({
                 "err": "001",
                 "info": err.message
@@ -94,9 +91,9 @@ router.get('/serial_number',  (req, res) => {
         baudRate: 115200,
         stopBits: 1,
         parity: "even"
-    },2).then(()=>{
-        devices.sendMessage(Buffer.from('A60800', 'hex'), devices.serialPort2).then(() => {
-            devices.serialPort2.on('data', (data)=>{
+    }).then((port)=>{
+        devices.sendMessage(Buffer.from('A60800', 'hex'), port).then(() => {
+            port.on('data', (data)=>{
                 received = Buffer.concat([received, data])
                 if (received.length === 3) {
                     received = {
@@ -104,7 +101,7 @@ router.get('/serial_number',  (req, res) => {
                         "code": received.readUInt8(1),
                         "serial_number": received.readUInt8(2)
                     }
-                    devices.closePort(2).then(()=>{
+                    devices.closePort(port).then(()=>{
                         res.json(received)
                     }).catch(err => {
                         res.json({
@@ -115,7 +112,6 @@ router.get('/serial_number',  (req, res) => {
                 }
             })
         }).catch(err => {
-            devices.serialPort2(2)
             res.json({
                 "err": "001",
                 "info": err.message
@@ -135,11 +131,10 @@ router.get('/device_off',  (req, res) => {
         baudRate: 115200,
         stopBits: 1,
         parity: "even"
-    },2).then(()=>{
-        devices.sendMessage(Buffer.from('A6AD00', 'hex'), devices.serialPort2).then(() => {
+    }).then((port)=>{
+        devices.sendMessage(Buffer.from('A6AD00', 'hex'), port).then(() => {
             res.json("Device off")
         }).catch(err => {
-            devices.serialPort2(2)
             res.json({
                 "err": "001",
                 "info": err.message
