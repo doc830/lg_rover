@@ -77,7 +77,8 @@ router.get('/yellow_2', async (req, res) => {
 })
 router.get('/yellow_blink', async (req, res) => {
     try {
-        await response(res, ["A60304"])
+        await turn("A604FF")
+        await turn("A60304")
         blink_flag = true
         if (!blinkTimer) {
             blinkTimer = setInterval(async () => {
@@ -89,7 +90,8 @@ router.get('/yellow_blink', async (req, res) => {
                     }
                     await turn("A60303")
                     await new Promise((resolve) => setTimeout(resolve, 500))
-                    await response(res, ["A60304"])
+                    await turn("A604FF")
+                    await turn("A60304")
                 } catch (err) {
                     clearInterval(blinkTimer)
                     blinkTimer = null
@@ -129,7 +131,11 @@ async function response(res, commands) {
     let receives = []
     try {
         await turn("A604FF")
-
+        if (blink_flag) {
+            blink_flag = false
+            clearInterval(blinkTimer)
+            blinkTimer = null
+        }
         for (const command of commands) {
             const result = await turn(command)
             receives.push(result.param)
