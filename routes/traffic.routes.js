@@ -87,10 +87,9 @@ router.get('/yellow_blink', async (req, res) => {
                         blinkTimer = null
                         return
                     }
-                    await turn("A60305")
+                    await turn("A60303")
                     await new Promise((resolve) => setTimeout(resolve, 500))
-                    await turn("A604FF")
-                    await turn("A60304")
+                    await response(res, ["A60304"])
                 } catch (err) {
                     clearInterval(blinkTimer)
                     blinkTimer = null
