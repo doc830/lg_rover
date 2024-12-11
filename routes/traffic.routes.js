@@ -57,6 +57,7 @@ router.get('/blue', async (req, res) => {
 router.get('/yellow_green', async (req, res) => {
     try {
         await response(res, ["A60304", "A60303"])
+        await turn("A60403")
     } catch (err) {
         res.status(500).json({
             err: "001",
@@ -66,7 +67,7 @@ router.get('/yellow_green', async (req, res) => {
 })
 router.get('/yellow_2', async (req, res) => {
     try {
-        await response(res, ["A60304", "A60305"])
+        await response(res, ["A60304", "A60303"])
     } catch (err) {
         res.status(500).json({
             err: "001",
@@ -76,7 +77,7 @@ router.get('/yellow_2', async (req, res) => {
 })
 router.get('/yellow_blink', async (req, res) => {
     try {
-        await response(res, ["A60304","A60305"])
+        await response(res, ["A60304","A60303"])
         blink_flag = true
         if (!blinkTimer) {
             blinkTimer = setInterval(async () => {
@@ -86,14 +87,14 @@ router.get('/yellow_blink', async (req, res) => {
                         blinkTimer = null
                         return
                     }
-                    await turn("A60405")
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    await turn("A60305")
+                    await turn("A60403")
+                    await new Promise((resolve) => setTimeout(resolve, 500))
+                    await turn("A60303")
                 } catch (err) {
                     clearInterval(blinkTimer)
                     blinkTimer = null
                 }
-            }, 2000);
+            }, 1000);
         }
     } catch (err) {
         res.status(500).json({
@@ -105,9 +106,9 @@ router.get('/yellow_blink', async (req, res) => {
 router.get('/off', async (req, res) => {
     try {
         if (blinkTimer) {
-            clearInterval(blinkTimer);
-            blinkTimer = null;
-            blink_flag = false;
+            clearInterval(blinkTimer)
+            blinkTimer = null
+            blink_flag = false
         }
         await response(res, ["A604FF"])
     } catch (err) {
@@ -130,6 +131,8 @@ async function response(res, commands) {
         await turn("A604FF")
         if (blink_flag) {
             blink_flag = false
+            clearInterval(blinkTimer)
+            blinkTimer = null
         }
         for (const command of commands) {
             const result = await turn(command)
