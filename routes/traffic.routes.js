@@ -57,7 +57,7 @@ router.get('/blue', async (req, res) => {
 router.get('/yellow_green', async (req, res) => {
     try {
         await response(res, ["A60304", "A60303"])
-        await turn("A60403")
+        await turn("A60303")
     } catch (err) {
         res.status(500).json({
             err: "001",
