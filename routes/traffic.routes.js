@@ -129,11 +129,7 @@ async function response(res, commands) {
     let receives = []
     try {
         await turn("A604FF")
-        if (blink_flag) {
-            blink_flag = false
-            clearInterval(blinkTimer)
-            blinkTimer = null
-        }
+
         for (const command of commands) {
             const result = await turn(command)
             receives.push(result.param)
