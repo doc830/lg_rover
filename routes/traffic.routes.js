@@ -77,8 +77,7 @@ router.get('/yellow_2', async (req, res) => {
 })
 router.get('/yellow_blink', async (req, res) => {
     try {
-        await turn("A604FF")
-        await turn("A60304")
+        await response(res, ["A60304"])
         blink_flag = true
         if (!blinkTimer) {
             blinkTimer = setInterval(async () => {
