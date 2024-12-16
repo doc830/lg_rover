@@ -42,6 +42,47 @@ router.get('/battery',  (req, res) => {
         })
     })
 })
+router.get('/restart_navi',  (req, res) => {
+    let received = Buffer.alloc(0)
+    firmware.openPort({
+        path: "/dev/ttyS1",
+        dataBits: 8,
+        baudRate: 115200,
+        stopBits: 1,
+        parity: "even"
+    }).then((port)=>{
+        firmware.sendMessage(port, Buffer.from('A6DAFF', 'hex')).then(() => {
+            port.on('data', (data)=>{
+                received = Buffer.concat([received, data])
+                if (received.length === 3) {
+                    received = {
+                        "header": received.readUInt8(0),
+                        "code": received.readUInt8(1),
+                        "charge": received.readUInt8(2)
+                    }
+                    firmware.closePort(port).then(()=>{
+                        res.json(received)
+                    }).catch(err => {
+                        res.json({
+                            "err": "001",
+                            "info": err.message
+                        })
+                    })
+                }
+            })
+        }).catch(err => {
+            res.json({
+                "err": "001",
+                "info": err.message
+            })
+        })
+    }).catch(err => {
+        res.json({
+            "err": "001",
+            "info": err.message
+        })
+    })
+})
 router.get('/device_off',  (req, res) => {
     firmware.openPort({
         path: "/dev/ttyS1",

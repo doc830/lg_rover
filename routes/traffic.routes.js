@@ -62,7 +62,7 @@ router.get('/yellow_green', async (req, res) => {
         res.status(500).json({
             err: "001",
             info: "Не удалось обработать запрос: " + err.message
-        });
+        })
     }
 })
 router.get('/yellow_2', async (req, res) => {
@@ -87,8 +87,7 @@ router.get('/yellow_blink', async (req, res) => {
                         blinkTimer = null
                         return
                     }
-                    await turn("A604FF")
-                    await turn("A60304")
+                    await turn("A60403")
                     await new Promise((resolve) => setTimeout(resolve, 500))
                     await turn("A60303")
                 } catch (err) {
