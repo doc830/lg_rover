@@ -58,7 +58,7 @@ router.get('/restart_navi',  (req, res) => {
                     received = {
                         "header": received.readUInt8(0),
                         "code": received.readUInt8(1),
-                        "charge": received.readUInt8(2)
+                        "param": received.readUInt8(2)
                     }
                     firmware.closePort(port).then(()=>{
                         res.json(received)
